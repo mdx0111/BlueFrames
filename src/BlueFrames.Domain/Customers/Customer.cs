@@ -10,6 +10,7 @@ public class Customer
 
     public Customer(string firstName, string lastName, string phone, string email)
     {
+        Id = GuidProvider.Create();
         FirstName = firstName;
         LastName = lastName;
         Phone = phone;

@@ -1,0 +1,1 @@
+global using BlueFrames.Domain.Common.CombGuid;
