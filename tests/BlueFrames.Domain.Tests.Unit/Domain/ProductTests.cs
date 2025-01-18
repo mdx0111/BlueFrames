@@ -94,6 +94,30 @@ public class ProductTests
         // Assert
         changeName.Should().Throw<ValidationException>();
     }
+    
+    [Fact]
+    public void ChangeDescription_ShouldUpdateProductDescription()
+    {
+        // Arrange
+        var newProductDescription = ProductDescription.From("New Product Description");
+
+        // Act
+        _product.ChangeDescription(newProductDescription);
+
+        // Assert
+        _product.Description.Should().Be(newProductDescription);
+    }
+    
+    [Theory]
+    [MemberData(nameof(InvalidProductDescriptions))]
+    public void ChangeDescription_ShouldThrowException_WhenDescriptionIsInvalid(string productDescription)
+    {
+        // Act
+        Action changeDescription = () => _product.ChangeDescription(ProductDescription.From(productDescription));
+
+        // Assert
+        changeDescription.Should().Throw<ValidationException>();
+    }
 
     public static TheoryData<string> InvalidProductNames =>
     [
