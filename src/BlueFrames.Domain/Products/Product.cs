@@ -6,25 +6,15 @@ public class Product
 {
     public ProductId Id { get; private set; }
     public ProductName Name { get; private set; }
-    public string Description { get; private set; }
+    public ProductDescription Description { get; private set; }
     public string SKU { get; private set; }
     
     protected Product()
     {
     }
 
-    public Product(ProductName name, string description, string sku)
+    public Product(ProductName name, ProductDescription description, string sku)
     {
-        if (string.IsNullOrWhiteSpace(description))
-        {
-            throw new ValidationException("Description is required");
-        }
-        
-        if (Regex.IsMatch(description, @"^[\p{L}0-9.,\-()%'& ]{10,200}$") == false)
-        {
-            throw new ValidationException("Description is invalid");
-        }
-        
         if (string.IsNullOrWhiteSpace(sku))
         {
             throw new ValidationException("SKU is required");
