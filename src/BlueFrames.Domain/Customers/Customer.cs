@@ -10,6 +10,7 @@ public class Customer : Entity, IAggregateRoot
     public LastName LastName { get; private set; }
     public PhoneNumber Phone { get; private set; }
     public Email Email { get; private set; }
+    public bool IsDeleted { get; private set; }
 
     private readonly List<Order> _orders = [];
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
@@ -65,5 +66,10 @@ public class Customer : Entity, IAggregateRoot
         }
         
         _orders.Add(order);
+    }
+
+    public void Deactivate()
+    {
+        IsDeleted = true;
     }
 }

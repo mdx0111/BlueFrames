@@ -1,4 +1,3 @@
-using BlueFrames.Application.Customers.Commands.CreateCustomer;
 using BlueFrames.Application.Customers.Commands.UpdateCustomer;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;

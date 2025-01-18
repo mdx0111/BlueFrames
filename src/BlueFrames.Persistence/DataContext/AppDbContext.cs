@@ -28,6 +28,8 @@ public class AppDbContext : DbContext
 
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
+        builder.Entity<Customer>().HasQueryFilter(customer => customer.IsDeleted == false);
+
         base.OnModelCreating(builder);
     }
 
