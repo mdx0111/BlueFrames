@@ -7,7 +7,6 @@ public partial class ProductName : ValueOf<string, ProductName>
     
     private static readonly Regex ProductNameRegex = CompiledProductNameRegex();
 
-    
     protected override void Validate()
     {
         var isNameValid = !string.IsNullOrWhiteSpace(Value)

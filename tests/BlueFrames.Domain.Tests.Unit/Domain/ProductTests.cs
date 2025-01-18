@@ -39,11 +39,7 @@ public class ProductTests
     }
     
     [Theory]
-    [InlineData("a")]
-    [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
-    [InlineData("aaa$")]
-    [InlineData("")]
-    [InlineData(null)]
+    [MemberData(nameof(InvalidProductNames))]
     public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act
@@ -52,6 +48,15 @@ public class ProductTests
         // Assert
         act.Should().Throw<ValidationException>();
     }
+    
+    public static TheoryData<string> InvalidProductNames =>
+    [
+        "a",
+        new('a', 51),
+        "aaa$",
+        "",
+        null
+    ];
 }
 
 internal record ProductDetails(ProductName Name, string Description, string SKU);
