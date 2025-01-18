@@ -1,4 +1,3 @@
-using BlueFrames.Application.Customers.Commands;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
 
 namespace BlueFrames.App.Tests.Unit.Customers;

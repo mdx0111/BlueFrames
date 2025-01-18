@@ -1,7 +1,5 @@
 using System.Reflection;
 using BlueFrames.Application.Common.Behaviours;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlueFrames.Application;

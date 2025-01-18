@@ -1,6 +1,4 @@
 using BlueFrames.Application.Common.Exceptions;
-using FluentValidation;
-using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace BlueFrames.Application.Common.Behaviours;
