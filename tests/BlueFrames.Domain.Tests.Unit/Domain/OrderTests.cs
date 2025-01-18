@@ -1,5 +1,6 @@
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders;
+using BlueFrames.Domain.Orders.Common;
 using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Tests.Unit.Domain;
@@ -9,11 +10,11 @@ public class OrderTests
     private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
     private readonly ProductId _productId = ProductId.From(Guid.NewGuid());
     private readonly CustomerId _customerId = CustomerId.From(Guid.NewGuid());
-    private readonly DateTime _createdDate = new DateTime(2025, 01, 18, 14, 45, 0);
+    private readonly OrderDate _createdDate = OrderDate.From(new(2025, 01, 18, 14, 45, 0));
 
     public OrderTests()
     {
-        _dateTimeService.UtcNow.Returns(_createdDate);
+        _dateTimeService.UtcNow.Returns(_createdDate.Value);
     }
     
     [Fact]
@@ -26,8 +27,8 @@ public class OrderTests
         order.Should().NotBeNull();
         order.ProductId.Should().Be(_productId);
         order.CustomerId.Should().Be(_customerId);
-        order.CreatedDate.Should().Be(_createdDate);
-        order.UpdatedDate.Should().Be(DateTime.MinValue);
+        order.CreatedDate.Should().BeEquivalentTo(_createdDate);
+        order.UpdatedDate.Should().Be(null);
     }
 
     [Fact]
@@ -77,7 +78,7 @@ public class OrderTests
         var invalidCreatedDate = new DateTime(2020, 01, 18, 14, 45, 0);
         
         // Act
-        Action createOrder = () => _ =new Order(_productId, _customerId, invalidCreatedDate, _dateTimeService.UtcNow);
+        Action createOrder = () => _ =new Order(_productId, _customerId, OrderDate.From(invalidCreatedDate), _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();
@@ -96,7 +97,7 @@ public class OrderTests
         
         // Assert
         order.Status.Should().Be(Status.Cancelled);
-        order.UpdatedDate.Should().Be(updatedDate);
+        order.UpdatedDate.Value.Should().Be(updatedDate);
     }
     
     [Fact]
@@ -126,7 +127,7 @@ public class OrderTests
         
         // Assert
         order.Status.Should().Be(Status.Complete);
-        order.UpdatedDate.Should().Be(updatedDate);
+        order.UpdatedDate.Value.Should().Be(updatedDate);
     }
     
     [Fact]

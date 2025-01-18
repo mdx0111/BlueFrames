@@ -10,12 +10,12 @@ public class Order
     public ProductId ProductId { get; private set; }
     public CustomerId CustomerId { get; private set; }
     public Status Status { get; private set; }
-    public DateTime CreatedDate { get; private set; }
-    public DateTime UpdatedDate { get; private set; }
+    public OrderDate CreatedDate { get; private set; }
+    public OrderDate UpdatedDate { get; private set; }
 
-    public Order(ProductId productId, CustomerId customerId, DateTime createdDate, DateTime now)
+    public Order(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
     {
-        if (createdDate < now)
+        if (createdDate.Value < now)
         {
             throw new ValidationException("Invalid Created Date");
         }
@@ -35,7 +35,7 @@ public class Order
         }
         
         Status = Status.Cancelled;
-        UpdatedDate = now;
+        UpdatedDate = OrderDate.From(now);
     }
     
     public void Complete(DateTime now)
@@ -46,6 +46,6 @@ public class Order
         }
         
         Status = Status.Complete;
-        UpdatedDate = now;
+        UpdatedDate = OrderDate.From(now);
     }
 }
