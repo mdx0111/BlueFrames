@@ -1,6 +1,5 @@
 using BlueFrames.Domain.Common.Domain;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlueFrames.Persistence.Common.Extensions;
 

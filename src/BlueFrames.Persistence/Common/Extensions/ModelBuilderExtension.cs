@@ -1,5 +1,3 @@
-using Microsoft.EntityFrameworkCore;
-
 namespace BlueFrames.Persistence.Common.Extensions;
 
 public static class ModelBuilderExtension

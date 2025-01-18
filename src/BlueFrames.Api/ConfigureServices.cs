@@ -1,4 +1,3 @@
-using Asp.Versioning;
 using BlueFrames.Persistence.DataContext;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;

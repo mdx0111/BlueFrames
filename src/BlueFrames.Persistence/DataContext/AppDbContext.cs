@@ -1,6 +1,5 @@
 using System.Reflection;
 using BlueFrames.Persistence.Common.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlueFrames.Persistence.DataContext;
 

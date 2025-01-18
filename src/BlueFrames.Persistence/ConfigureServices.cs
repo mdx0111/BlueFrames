@@ -3,7 +3,6 @@ using BlueFrames.Persistence.Common.Database;
 using BlueFrames.Persistence.Common.Extensions;
 using BlueFrames.Persistence.Common.Services;
 using BlueFrames.Persistence.DataContext;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

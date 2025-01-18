@@ -3,7 +3,6 @@ using BlueFrames.Domain.Common.Domain;
 using BlueFrames.Persistence.Common.Extensions;
 using BlueFrames.Persistence.DataContext;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace BlueFrames.Persistence.Common.Database;

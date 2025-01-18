@@ -1,6 +1,5 @@
 ﻿using System.Linq.Expressions;
 using System.Transactions;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlueFrames.Persistence.Common.Extensions;
 

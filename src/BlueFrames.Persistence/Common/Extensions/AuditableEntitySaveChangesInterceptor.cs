@@ -1,6 +1,5 @@
 using BlueFrames.Application.Interfaces.Common;
 using BlueFrames.Domain.Common.Domain;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 
