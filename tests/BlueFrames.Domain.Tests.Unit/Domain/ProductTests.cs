@@ -6,6 +6,7 @@ public class ProductTests
 {
     private readonly Product _product;
     private readonly ProductDetails _productDetails;
+    private const int ProductSKUCharacterCount = 5;
     
     public ProductTests()
     {
@@ -14,7 +15,7 @@ public class ProductTests
         _productDetails = new ProductDetails(
             Name: commerce.ProductName(),
             Description: commerce.ProductDescription(),
-            SKU: commerce.Random.AlphaNumeric(5).ToUpper()
+            SKU: commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()
         );
 
         _product = new Product(_productDetails.Name, _productDetails.Description, _productDetails.SKU);
