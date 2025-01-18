@@ -19,7 +19,7 @@ public class ProductTests
             SKU: ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper())
         );
 
-        _product = new Product(_productDetails.Name, _productDetails.Description, _productDetails.SKU);
+        _product = Product.Create(_productDetails.Name, _productDetails.Description, _productDetails.SKU);
     }
 
     [Fact]
@@ -43,7 +43,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act
-        Action createProduct = () => _ = new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
+        Action createProduct = () => _ = Product.Create(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
 
         // Assert
         createProduct.Should().Throw<ValidationException>();
@@ -54,7 +54,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenDescriptionIsInvalid(string productDescription)
     {
         // Act
-        Action createProduct = () => _ = new Product(_productDetails.Name, ProductDescription.From(productDescription), _productDetails.SKU);
+        Action createProduct = () => _ = Product.Create(_productDetails.Name, ProductDescription.From(productDescription), _productDetails.SKU);
 
         // Assert
         createProduct.Should().Throw<ValidationException>();
@@ -65,7 +65,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenSkuIsInvalid(string sku)
     {
         // Act
-        Action createProduct = () => _ = new Product(_productDetails.Name, _productDetails.Description, ProductSku.From(sku));
+        Action createProduct = () => _ = Product.Create(_productDetails.Name, _productDetails.Description, ProductSku.From(sku));
 
         // Assert
         createProduct.Should().Throw<ValidationException>();

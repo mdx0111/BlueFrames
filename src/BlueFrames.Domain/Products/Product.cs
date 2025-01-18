@@ -9,11 +9,16 @@ public class Product
     public ProductDescription Description { get; private set; }
     public ProductSku SKU { get; private set; }
     
+    public static Product Create(ProductName name, ProductDescription description, ProductSku sku)
+    {
+        return new Product(name, description, sku);
+    }
+    
     protected Product()
     {
     }
 
-    public Product(ProductName name, ProductDescription description, ProductSku sku)
+    private Product(ProductName name, ProductDescription description, ProductSku sku)
     {
         Id = ProductId.From(GuidProvider.Create());
         Name = name ?? throw new ValidationException("Name is required");
