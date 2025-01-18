@@ -52,7 +52,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsEmpty()
     {
         // Act
-        Action act = () => new Product(ProductName.From(string.Empty), _productDetails.Description, _productDetails.SKU);
+        Action act = () => _ = new Product(ProductName.From(string.Empty), _productDetails.Description, _productDetails.SKU);
 
         // Assert
         act.Should().Throw<ValidationException>();
@@ -65,7 +65,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act
-        Action act = () => new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
+        Action act = () => _ = new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
 
         // Assert
         act.Should().Throw<ValidationException>();

@@ -57,10 +57,7 @@ public class CustomerTests
     }
 
     [Theory]
-    [InlineData("A")]
-    [InlineData("$")]
-    [InlineData("John123")]
-    [InlineData("John@Doe")]
+    [MemberData(nameof(InvalidFirstNames))]
     public void Create_ShouldThrowException_WhenFirstNameIsInvalid(string firstName)
     {
         // Act
@@ -91,10 +88,7 @@ public class CustomerTests
     }
 
     [Theory]
-    [InlineData("A")]
-    [InlineData("$")]
-    [InlineData("Doe123")]
-    [InlineData("@Doe")]
+    [MemberData(nameof(InvalidLastNames))]
     public void Create_ShouldThrowException_WhenLastNameIsInvalid(string lastName)
     {
         // Act
@@ -125,11 +119,7 @@ public class CustomerTests
     }
 
     [Theory]
-    [InlineData("075633856515")]
-    [InlineData("0A7563385651")]
-    [InlineData("07563-385651")]
-    [InlineData("0756338565")]
-    [InlineData("+44956338565")]
+    [MemberData(nameof(InvalidPhoneNumbers))]
     public void Create_ShouldThrowException_WhenPhoneNumberIsInvalid(string phoneNumber)
     {
         // Act
@@ -160,12 +150,7 @@ public class CustomerTests
     }
 
     [Theory]
-    [InlineData("name")]
-    [InlineData("name@")]
-    [InlineData("name@domain")]
-    [InlineData("@domain")]
-    [InlineData("@domain.com")]
-    [InlineData("domain.com")]
+    [MemberData(nameof(InvalidEmailAddresses))]
     public void Create_ShouldThrowException_WhenEmailIsInvalid(string email)
     {
         // Act
@@ -209,10 +194,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [InlineData("A")]
-    [InlineData("$")]
-    [InlineData("John123")]
-    [InlineData("John@Doe")]
+    [MemberData(nameof(InvalidFirstNames))]
     public void ChangeFirstName_ShouldThrowException_WhenFirstNameIsInvalid(string firstName)
     {
         // Act
@@ -256,11 +238,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [InlineData("A")]
-    [InlineData("$")]
-    [InlineData("Doe123")]
-    [InlineData("@Doe")]
-
+    [MemberData(nameof(InvalidLastNames))]
     public void ChangeLastName_ShouldThrowException_WhenLastNameIsInvalid(string lastName)
     {
         // Act
@@ -284,7 +262,7 @@ public class CustomerTests
     }
     
     [Fact]
-    public void ChangePhone_ShouldThrowException_WhenPhoneIsNull()
+    public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsNull()
     {
         // Act
         Action changePhone = () => _customer.ChangePhone(null);
@@ -294,7 +272,7 @@ public class CustomerTests
     }
     
     [Fact]
-    public void ChangePhone_ShouldThrowException_WhenPhoneIsEmpty()
+    public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsEmpty()
     {
         // Act
         Action changePhone = () => _customer.ChangePhone(PhoneNumber.From(string.Empty));
@@ -304,12 +282,8 @@ public class CustomerTests
     }
     
     [Theory]
-    [InlineData("075633856515")]
-    [InlineData("0A7563385651")]
-    [InlineData("07563-385651")]
-    [InlineData("0756338565")]
-    [InlineData("+44956338565")]
-    public void ChangePhone_ShouldThrowException_WhenPhoneIsInvalid(string phoneNumber)
+    [MemberData(nameof(InvalidPhoneNumbers))]
+    public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsInvalid(string phoneNumber)
     {
         // Act
         Action changePhone = () => _customer.ChangePhone(PhoneNumber.From(phoneNumber));
@@ -353,12 +327,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [InlineData("name")]
-    [InlineData("name@")]
-    [InlineData("name@domain")]
-    [InlineData("@domain")]
-    [InlineData("@domain.com")]
-    [InlineData("domain.com")]
+    [MemberData(nameof(InvalidEmailAddresses))]
     public void ChangeEmail_ShouldThrowException_WhenEmailIsInvalid(string email)
     {
         // Act
@@ -367,4 +336,39 @@ public class CustomerTests
         //Assert
         changeEmail.Should().Throw<ValidationException>();
     }
+ 
+    public static TheoryData<string> InvalidFirstNames =>
+    [
+        "A",
+        "$",
+        "John123",
+        "John@Doe"
+    ];
+    
+    public static TheoryData<string> InvalidLastNames =>
+    [
+        "A",
+        "$",
+        "Doe123",
+        "@Doe"
+    ];
+    
+    public static TheoryData<string> InvalidPhoneNumbers =>
+    [
+        "075633856515",
+        "0A7563385651",
+        "07563-385651",
+        "0756338565",
+        "+44956338565"
+    ];
+    
+    public static TheoryData<string> InvalidEmailAddresses =>
+    [
+        "name",
+        "name@",
+        "name@domain",
+        "@domain",
+        "@domain.com",
+        "domain.com"
+    ];
 }
