@@ -52,4 +52,19 @@ public class OrderTests
         // Assert
         createOrder.Should().Throw<ValidationException>();
     }
+    
+    [Fact]
+    public void CreateOrder_ShouldFail_WhenCustomerIdIsInvalid()
+    {
+        // Arrange
+        var productId = Guid.NewGuid();
+        var customerId = Guid.Empty;
+        var createdDate = new DateTime(2025, 01, 18, 14, 45, 0);
+        
+        // Act
+        Action createOrder = () => _ =new Order(productId, customerId, createdDate);
+        
+        // Assert
+        createOrder.Should().Throw<ValidationException>();
+    }
 }

@@ -16,6 +16,11 @@ public class Order
             throw new ValidationException("Invalid Product ID");
         }
         
+        if (customerId == Guid.Empty)
+        {
+            throw new ValidationException("Invalid Customer ID");
+        }
+        
         ProductId = productId;
         CustomerId = customerId;
         Status = Status.Pending;
