@@ -15,6 +15,9 @@ public class Order : Entity, IAggregateRoot
     public OrderDate CreatedDate { get; private set; }
     public OrderDate UpdatedDate { get; private set; }
 
+    public Product Product { get; private set; }
+    public Customer Customer { get; private set; }
+
     public static Order Create(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
     {
         return new Order(productId, customerId, createdDate, now);

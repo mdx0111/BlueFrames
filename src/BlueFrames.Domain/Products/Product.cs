@@ -1,3 +1,4 @@
+using BlueFrames.Domain.Orders;
 using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Products;
@@ -8,6 +9,9 @@ public class Product : Entity, IAggregateRoot
     public ProductName Name { get; private set; }
     public ProductDescription Description { get; private set; }
     public ProductSku SKU { get; private set; }
+    
+    private readonly List<Order> _orders = [];
+    public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
     
     public static Product Create(ProductName name, ProductDescription description, ProductSku sku)
     {

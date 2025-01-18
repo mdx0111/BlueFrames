@@ -28,6 +28,12 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
             .Property(product => product.SKU)
             .IsRequired()
             .HasConversion(productSku => productSku.Value, value => ProductSku.From(value));
+        
+        builder
+            .HasMany(product => product.Orders)
+            .WithOne(order => order.Product)
+            .HasForeignKey(order => order.ProductId)
+            .OnDelete(DeleteBehavior.NoAction);
 
         builder.Ignore(product => product.DomainEvents);
     }

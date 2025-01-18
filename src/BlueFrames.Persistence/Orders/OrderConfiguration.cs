@@ -22,9 +22,21 @@ public class OrderConfiguration : IEntityTypeConfiguration<Order>
             .HasConversion(productId => productId.Value, value => ProductId.From(value));
 
         builder
+            .HasOne(order => order.Product)
+            .WithMany(product => product.Orders)
+            .HasForeignKey(order => order.ProductId)
+            .OnDelete(DeleteBehavior.NoAction);
+
+        builder
             .Property(order => order.CustomerId)
             .IsRequired()
             .HasConversion(customerId => customerId.Value, value => CustomerId.From(value));
+        
+        builder
+            .HasOne(order => order.Customer)
+            .WithMany(customer => customer.Orders)
+            .HasForeignKey(order => order.CustomerId)
+            .OnDelete(DeleteBehavior.NoAction);
         
         builder
             .Property(order => order.Status)
