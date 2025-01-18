@@ -28,7 +28,7 @@ public class OrderTests
         order.ProductId.Should().Be(_productId);
         order.CustomerId.Should().Be(_customerId);
         order.CreatedDate.Should().BeEquivalentTo(_createdDate);
-        order.UpdatedDate.Should().Be(null);
+        order.UpdatedDate.Should().BeNull();
     }
 
     [Fact]
