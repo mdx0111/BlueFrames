@@ -15,6 +15,19 @@ public class Product
 
     public Product(string name, string description, string sku)
     {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            throw new ValidationException("Name is required");
+        }
+
+        var isNameValid = !string.IsNullOrWhiteSpace(name)
+                          && name.Length is >= 3 and <= 50
+                          && Regex.IsMatch(name, @"^[a-zA-Z0-9\s\-\\_]{3,50}$");
+        if (!isNameValid)
+        {
+            throw new ValidationException($"{name} is not a valid product name");
+        }
+        
         Id = ProductId.From(GuidProvider.Create());
         Name = name;
         Description = description;

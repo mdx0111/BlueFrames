@@ -36,6 +36,37 @@ public class ProductTests
         //Assert
         _product.Id.Value.Should().NotBeEmpty();
     }
+    
+    [Fact]
+    public void Create_ShouldThrowException_WhenNameIsNull()
+    {
+        // Act
+        Action act = () => new Product(null, _productDetails.Description, _productDetails.SKU);
+
+        // Assert
+        act.Should().Throw<ValidationException>();
+    }
+    
+    [Fact]
+    public void Create_ShouldThrowException_WhenNameIsEmpty()
+    {
+        // Act
+        Action act = () => new Product(string.Empty, _productDetails.Description, _productDetails.SKU);
+
+        // Assert
+        act.Should().Throw<ValidationException>();
+    }
+    
+    [Fact]
+    public void Create_ShouldThrowException_WhenNameIsInvalid()
+    {
+        // Act
+        Action act = () => new Product(" ", _productDetails.Description, _productDetails.SKU);
+
+        // Assert
+        act.Should().Throw<ValidationException>();
+    }
+    
 }
 
 internal record ProductDetails(string Name, string Description, string SKU);
