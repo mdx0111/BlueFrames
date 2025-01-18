@@ -1,4 +1,5 @@
 using BlueFrames.Domain.Customers.Common;
+using BlueFrames.Domain.Orders;
 
 namespace BlueFrames.Domain.Customers;
 
@@ -9,6 +10,9 @@ public class Customer
     public LastName LastName { get; private set; }
     public PhoneNumber Phone { get; private set; }
     public Email Email { get; private set; }
+
+    private readonly List<Order> _orders = [];
+    public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
 
     public static Customer Create(FirstName firstName, LastName lastName, PhoneNumber phone, Email email)
     {
@@ -46,5 +50,20 @@ public class Customer
     public void ChangeEmail(Email email)
     {
         Email = email ?? throw new ValidationException("Email is required");
+    }
+
+    public void PlaceOrder(Order order)
+    {
+        if (order is null)
+        {
+            throw new ValidationException("Order is required");
+        }
+        
+        if (order.CustomerId != Id)
+        {
+            throw new ValidationException("Order does not belong to this customer");
+        }
+        
+        _orders.Add(order);
     }
 }

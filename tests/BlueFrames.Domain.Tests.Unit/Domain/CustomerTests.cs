@@ -1,5 +1,8 @@
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
+using BlueFrames.Domain.Orders;
+using BlueFrames.Domain.Orders.Common;
+using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Tests.Unit.Domain;
 
@@ -175,6 +178,25 @@ public class CustomerTests
 
         //Assert
         changeEmail.Should().Throw<ValidationException>();
+    }
+    
+    [Fact]
+    public void PlaceOrder_ShouldAddOrder()
+    {
+        // Arrange
+        var productId = ProductId.From(Guid.NewGuid());
+
+        var createdDate = OrderDate.From(new DateTime(2025, 01, 18, 14, 45, 0));
+        var dateTimeService = Substitute.For<IDateTimeService>();
+        dateTimeService.UtcNow.Returns(createdDate.Value);
+
+        var order = Order.Create(productId, _customer.Id, createdDate, dateTimeService.UtcNow);
+
+        // Act
+        _customer.PlaceOrder(order);
+
+        // Assert
+        _customer.Orders.Should().Contain(order);
     }
 }
 
