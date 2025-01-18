@@ -118,6 +118,30 @@ public class ProductTests
         // Assert
         changeDescription.Should().Throw<ValidationException>();
     }
+    
+    [Fact]
+    public void ChangeSKU_ShouldUpdateProductSKU()
+    {
+        // Arrange
+        var newProductSKU = ProductSku.From("NESKU");
+
+        // Act
+        _product.ChangeSKU(newProductSKU);
+
+        // Assert
+        _product.SKU.Should().Be(newProductSKU);
+    }
+    
+    [Theory]
+    [MemberData(nameof(InvalidProductSkus))]
+    public void ChangeSKU_ShouldThrowException_WhenSkuIsInvalid(string sku)
+    {
+        // Act
+        Action changeSKU = () => _product.ChangeSKU(ProductSku.From(sku));
+
+        // Assert
+        changeSKU.Should().Throw<ValidationException>();
+    }
 
     public static TheoryData<string> InvalidProductNames =>
     [
