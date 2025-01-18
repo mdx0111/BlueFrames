@@ -3,13 +3,17 @@ using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Customers.Queries.GetCustomerById;
 
-internal class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, Result<CustomerDto>>
+public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery, Result<CustomerDto>>
 {
     private readonly ICustomerRepository _repository;
+    private readonly ILoggerAdapter<GetCustomerByIdQueryHandler> _logger;
 
-    public GetCustomerByIdQueryHandler(ICustomerRepository repository)
+    public GetCustomerByIdQueryHandler(
+        ICustomerRepository repository,
+        ILoggerAdapter<GetCustomerByIdQueryHandler> logger)
     {
         _repository = repository;
+        _logger = logger;
     }
     
     public async Task<Result<CustomerDto>> Handle(GetCustomerByIdQuery request, CancellationToken cancellationToken)
@@ -37,6 +41,7 @@ internal class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuer
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error retrieving customer");
             return Result.Failure<CustomerDto>("Error retrieving customer");
         }
     }

@@ -38,7 +38,8 @@ public class GetCustomerTests
         _repository.GetAllAsync(10, 0, _cancellationToken).Returns(_listOfCustomers);
         
         var query = new GetAllCustomersQuery(10, 0);
-        var handler = new GetAllCustomersQueryHandler(_repository);
+        var logger = Substitute.For<ILoggerAdapter<GetAllCustomersQueryHandler>>();
+        var handler = new GetAllCustomersQueryHandler(_repository, logger);
 
         // Act
         var result = await handler.Handle(query, _cancellationToken);
@@ -59,7 +60,8 @@ public class GetCustomerTests
         _repository.GetAllAsync(10, 10, _cancellationToken).Returns([]);
         
         var query = new GetAllCustomersQuery(10, 0);
-        var handler = new GetAllCustomersQueryHandler(_repository);
+        var logger = Substitute.For<ILoggerAdapter<GetAllCustomersQueryHandler>>();
+        var handler = new GetAllCustomersQueryHandler(_repository, logger);
 
         // Act
         var result = await handler.Handle(query, _cancellationToken);
@@ -79,7 +81,8 @@ public class GetCustomerTests
         _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).Returns(firstCustomer);
         
         var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
-        var handler = new GetCustomerByIdQueryHandler(_repository);
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerByIdQueryHandler>>();
+        var handler = new GetCustomerByIdQueryHandler(_repository, logger);
 
         // Act
         var result = await handler.Handle(query, _cancellationToken);
@@ -106,7 +109,8 @@ public class GetCustomerTests
         _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).ReturnsNull();
         
         var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
-        var handler = new GetCustomerByIdQueryHandler(_repository);
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerByIdQueryHandler>>();
+        var handler = new GetCustomerByIdQueryHandler(_repository, logger);
 
         // Act
         var result = await handler.Handle(query, _cancellationToken);
