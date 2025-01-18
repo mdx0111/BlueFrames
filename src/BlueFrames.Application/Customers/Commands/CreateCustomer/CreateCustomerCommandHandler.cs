@@ -4,7 +4,7 @@ using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
 
-namespace BlueFrames.Application.Customers.Commands;
+namespace BlueFrames.Application.Customers.Commands.CreateCustomer;
 
 internal class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<Guid>>
 {

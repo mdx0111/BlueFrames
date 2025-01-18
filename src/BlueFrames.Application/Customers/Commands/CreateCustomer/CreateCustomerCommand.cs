@@ -1,4 +1,4 @@
-namespace BlueFrames.Application.Customers.Commands;
+namespace BlueFrames.Application.Customers.Commands.CreateCustomer;
 
 public record CreateCustomerCommand : IRequest<Result<Guid>>
 {
