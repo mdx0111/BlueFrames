@@ -37,7 +37,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidFirstNames))]
+    [ClassData(typeof(InvalidFirstNames))]
     public void Create_ShouldThrowException_WhenFirstNameIsInvalid(string firstName)
     {
         // Act
@@ -48,7 +48,7 @@ public class CustomerTests
     }
 
     [Theory]
-    [MemberData(nameof(InvalidLastNames))]
+    [ClassData(typeof(InvalidLastNames))]
     public void Create_ShouldThrowException_WhenLastNameIsInvalid(string lastName)
     {
         // Act
@@ -59,7 +59,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidPhoneNumbers))]
+    [ClassData(typeof(InvalidPhoneNumbers))]
     public void Create_ShouldThrowException_WhenPhoneNumberIsInvalid(string phoneNumber)
     {
         // Act
@@ -70,7 +70,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidEmailAddresses))]
+    [ClassData(typeof(InvalidEmailAddresses))]
     public void Create_ShouldThrowException_WhenEmailIsInvalid(string email)
     {
         // Act
@@ -94,7 +94,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidFirstNames))]
+    [ClassData(typeof(InvalidFirstNames))]
     public void ChangeFirstName_ShouldThrowException_WhenFirstNameIsInvalid(string firstName)
     {
         // Act
@@ -118,7 +118,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidLastNames))]
+    [ClassData(typeof(InvalidLastNames))]
     public void ChangeLastName_ShouldThrowException_WhenLastNameIsInvalid(string lastName)
     {
         // Act
@@ -142,7 +142,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidPhoneNumbers))]
+    [ClassData(typeof(InvalidPhoneNumbers))]
     public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsInvalid(string phoneNumber)
     {
         // Act
@@ -167,7 +167,7 @@ public class CustomerTests
     }
     
     [Theory]
-    [MemberData(nameof(InvalidEmailAddresses))]
+    [ClassData(typeof(InvalidEmailAddresses))]
     public void ChangeEmail_ShouldThrowException_WhenEmailIsInvalid(string email)
     {
         // Act
@@ -176,47 +176,59 @@ public class CustomerTests
         //Assert
         changeEmail.Should().Throw<ValidationException>();
     }
- 
-    public static TheoryData<string> InvalidFirstNames =>
-    [
-        "A",
-        "$",
-        "John123",
-        "John@Doe",
-        string.Empty,
-        null
-    ];
-    
-    public static TheoryData<string> InvalidLastNames =>
-    [
-        "A",
-        "$",
-        "Doe123",
-        "@Doe",
-        string.Empty,
-        null
-    ];
-    
-    public static TheoryData<string> InvalidPhoneNumbers =>
-    [
-        "075633856515",
-        "0A7563385651",
-        "07563-385651",
-        "0756338565",
-        "+44956338565",
-        string.Empty,
-        null
-    ];
-    
-    public static TheoryData<string> InvalidEmailAddresses =>
-    [
-        "name",
-        "name@",
-        "name@domain",
-        "@domain",
-        "@domain.com",
-        "domain.com",
-        string.Empty,
-        null
-    ];
+}
+
+public class InvalidFirstNames : TheoryData<string>
+{
+    public InvalidFirstNames()
+    {
+        Add("A");
+        Add("$");
+        Add("Doe123");
+        Add("@Doe");
+        Add(string.Empty);
+        Add(null);
+    }
+}
+
+public class InvalidLastNames : TheoryData<string>
+{
+    public InvalidLastNames()
+    {
+        Add("A");
+        Add("$");
+        Add("Doe123");
+        Add("@Doe");
+        Add(string.Empty);
+        Add(null);
+    }
+}
+
+public class InvalidPhoneNumbers : TheoryData<string>
+{
+    public InvalidPhoneNumbers()
+    {
+        Add("075633856515");
+        Add("0A7563385651");
+        Add("07563-385651");
+        Add("0756338565");
+        Add("+44956338565");
+        Add(string.Empty);
+        Add(null);
+    }
+}
+
+public class InvalidEmailAddresses : TheoryData<string>
+{
+    public InvalidEmailAddresses()
+    {
+        Add("name");
+        Add("name@");
+        Add("name@domain");
+        Add("@domain");
+        Add("@domain.com");
+        Add("domain.com");
+        Add(string.Empty);
+        Add(null);
+    }
 }
