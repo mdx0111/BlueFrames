@@ -2,7 +2,7 @@ using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Products;
 
-public class Product
+public class Product : Entity, IAggregateRoot
 {
     public ProductId Id { get; private set; }
     public ProductName Name { get; private set; }

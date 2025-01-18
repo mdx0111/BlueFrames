@@ -3,7 +3,7 @@ using BlueFrames.Domain.Orders;
 
 namespace BlueFrames.Domain.Customers;
 
-public class Customer
+public class Customer : Entity, IAggregateRoot
 {
     public CustomerId Id { get; private set; }
     public FirstName FirstName { get; private set; }

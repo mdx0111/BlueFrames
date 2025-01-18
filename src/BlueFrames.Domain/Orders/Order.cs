@@ -1,10 +1,12 @@
+using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders.Common;
+using BlueFrames.Domain.Products;
 using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Orders;
 
-public class Order
+public class Order : Entity, IAggregateRoot
 {
     public OrderId Id { get; private set; }
     public ProductId ProductId { get; private set; }
@@ -12,7 +14,7 @@ public class Order
     public Status Status { get; private set; }
     public OrderDate CreatedDate { get; private set; }
     public OrderDate UpdatedDate { get; private set; }
-    
+
     public static Order Create(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
     {
         return new Order(productId, customerId, createdDate, now);
