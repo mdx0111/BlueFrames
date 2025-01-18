@@ -46,4 +46,38 @@ public class UpdateCustomerTests
         customer.Phone.Value.Should().Be(updateCustomer.Phone);
         customer.Email.Value.Should().Be(updateCustomer.Email);
     }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldFail_WhenGivenInvalidData()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        
+        var customer = Customer.Create(
+            FirstName.From("John"),
+            LastName.From("Doe"),
+            PhoneNumber.From("07563385651"),
+            Email.From("john@doe.com"));
+        
+        var repository = Substitute.For<ICustomerRepository>();
+        repository.GetByIdAsync(customer.Id.Value, cancellationToken).Returns(customer);
+        
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.SaveChangesAsync(cancellationToken).Returns(1);
+        
+        var updateCustomer = new UpdateCustomerCommand(
+            customer.Id.Value,
+            "Jane",
+            "Doee",
+            "07512345671",
+            "");
+        var updateHandler = new UpdateCustomerCommandHandler(repository, unitOfWork);
+        
+        // Act
+        var updateResult = await updateHandler.Handle(updateCustomer, cancellationToken);
+        
+        // Assert
+        updateResult.IsSuccess.Should().BeFalse();
+        updateResult.Value.Should().BeEmpty();
+    }
 }
