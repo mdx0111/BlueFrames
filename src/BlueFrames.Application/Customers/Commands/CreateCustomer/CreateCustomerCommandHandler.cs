@@ -5,17 +5,20 @@ using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Application.Customers.Commands.CreateCustomer;
 
-internal class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<Guid>>
+public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILoggerAdapter<CreateCustomerCommandHandler> _logger;
 
     public CreateCustomerCommandHandler(
         ICustomerRepository repository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILoggerAdapter<CreateCustomerCommandHandler> logger)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
     
     public async Task<Result<Guid>> Handle(CreateCustomerCommand request, CancellationToken cancellationToken)
@@ -36,10 +39,12 @@ internal class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComm
         }
         catch (ValidationException ex)
         {
+            _logger.LogError(ex, "Validation error creating customer");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error creating customer");
             return Result.Failure<Guid>(ex.Message);
         }
     }

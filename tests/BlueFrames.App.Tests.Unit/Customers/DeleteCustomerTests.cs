@@ -9,6 +9,7 @@ public class DeleteCustomerTests
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly ILoggerAdapter<DeleteCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<DeleteCustomerCommandHandler>>();
 
     private readonly Customer _customer = Customer.Create(
         FirstName.From("John"),
@@ -28,7 +29,7 @@ public class DeleteCustomerTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
 
         var deleteCustomer = new DeleteCustomerCommand(_customer.Id.Value);
-        var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork);
+        var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var deleteResult = await deleteHandler.Handle(deleteCustomer, _cancellationToken);
@@ -44,7 +45,7 @@ public class DeleteCustomerTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var deleteCustomer = new DeleteCustomerCommand(Guid.NewGuid());
-        var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork);
+        var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var updateResult = await deleteHandler.Handle(deleteCustomer, _cancellationToken);

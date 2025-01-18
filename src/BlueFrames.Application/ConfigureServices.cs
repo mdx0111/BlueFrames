@@ -1,5 +1,6 @@
 using System.Reflection;
 using BlueFrames.Application.Common.Behaviours;
+using BlueFrames.Application.Common.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlueFrames.Application;
@@ -17,6 +18,7 @@ public static class ConfigureServices
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
         services.AddTransient(typeof(IPipelineBehavior<,>), typeof(UnhandledExceptionBehaviour<,>));
+        services.AddTransient(typeof(ILoggerAdapter<>), typeof(LoggerAdapter<>));
 
         return services;
     }

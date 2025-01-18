@@ -3,17 +3,20 @@ using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Customers.Commands.DeleteCustomer;
 
-internal class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
+public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
 {
     private readonly ICustomerRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILoggerAdapter<DeleteCustomerCommandHandler> _logger;
 
     public DeleteCustomerCommandHandler(
         ICustomerRepository repository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILoggerAdapter<DeleteCustomerCommandHandler> logger)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
     
     public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
@@ -35,10 +38,12 @@ internal class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComm
         }
         catch (ValidationException ex)
         {
+            _logger.LogError(ex, "Validation error deleting customer");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error deleting customer");
             return Result.Failure<Guid>(ex.Message);
         }
     }

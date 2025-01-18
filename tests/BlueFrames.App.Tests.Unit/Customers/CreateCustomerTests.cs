@@ -7,7 +7,8 @@ public class CreateCustomerTests
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
-    
+    private readonly ILoggerAdapter<CreateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateCustomerCommandHandler>>();
+ 
     [Fact]
     public async Task CreateCustomer_ShouldSuccess_WhenGivenValidData()
     {
@@ -19,7 +20,8 @@ public class CreateCustomerTests
             "Doe",
             "07512345671",
             "john@doe.com");
-        var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork);
+
+        var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var result = await handler.Handle(createCustomer, _cancellationToken);
@@ -40,7 +42,7 @@ public class CreateCustomerTests
             "Doe",
             "07512345671",
             "");
-        var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork);
+        var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
 
         // Act
         var result = await handler.Handle(createCustomer, _cancellationToken);

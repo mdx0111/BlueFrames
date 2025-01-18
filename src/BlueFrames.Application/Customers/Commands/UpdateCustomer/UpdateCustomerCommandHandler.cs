@@ -4,17 +4,20 @@ using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Application.Customers.Commands.UpdateCustomer;
 
-internal class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<Guid>>
+public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly ILoggerAdapter<UpdateCustomerCommandHandler> _logger;
 
     public UpdateCustomerCommandHandler(
         ICustomerRepository repository,
-        IUnitOfWork unitOfWork)
+        IUnitOfWork unitOfWork,
+        ILoggerAdapter<UpdateCustomerCommandHandler> logger)
     {
         _repository = repository;
         _unitOfWork = unitOfWork;
+        _logger = logger;
     }
     
     public async Task<Result<Guid>> Handle(UpdateCustomerCommand request, CancellationToken cancellationToken)
@@ -40,10 +43,12 @@ internal class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComm
         }
         catch (ValidationException ex)
         {
+            _logger.LogError(ex, "Validation error updating customer");
             return Result.Failure<Guid>(ex.Message);
         }
         catch (Exception ex)
         {
+            _logger.LogError(ex, "Error updating customer");
             return Result.Failure<Guid>(ex.Message);
         }
     }

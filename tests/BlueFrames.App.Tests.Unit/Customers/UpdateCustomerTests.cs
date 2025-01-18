@@ -9,6 +9,7 @@ public class UpdateCustomerTests
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
+    private readonly ILoggerAdapter<UpdateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<UpdateCustomerCommandHandler>>();
 
     private readonly Customer _customer = Customer.Create(
         FirstName.From("John"),
@@ -33,7 +34,7 @@ public class UpdateCustomerTests
             "Doee",
             "07512345671",
             "jan@doee.com");
-        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork);
+        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var updateResult = await updateHandler.Handle(updateCustomer, _cancellationToken);
@@ -61,7 +62,7 @@ public class UpdateCustomerTests
             "Doee",
             "07512345671",
             "");
-        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork);
+        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var updateResult = await updateHandler.Handle(updateCustomer, _cancellationToken);
@@ -83,7 +84,7 @@ public class UpdateCustomerTests
             "Doee",
             "07512345671",
             "jan@doee.com");
-        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork);
+        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
         var updateResult = await updateHandler.Handle(updateCustomer, _cancellationToken);
