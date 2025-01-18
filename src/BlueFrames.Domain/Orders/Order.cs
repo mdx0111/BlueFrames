@@ -31,4 +31,15 @@ public class Order
         Status = Status.Pending;
         CreatedDate = createdDate;
     }
+    
+    public void UpdateStatus(Status status, DateTime now)
+    {
+        if (status == this.Status)
+        {
+            throw new ValidationException("Invalid Status");
+        }
+        
+        Status = status;
+        UpdatedDate = now;
+    }
 }

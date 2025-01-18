@@ -76,4 +76,21 @@ public class OrderTests
         // Assert
         createOrder.Should().Throw<ValidationException>();
     }
+    
+    [Fact]
+    public void UpdateStatus_ShouldSuccess_WhenStatusIsValid()
+    {
+        // Arrange
+        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var newStatus = Status.Complete;
+        var updatedDate = new DateTime(2025, 01, 18, 15, 45, 0);
+        _dateTimeService.UtcNow.Returns(updatedDate);
+        
+        // Act
+        order.UpdateStatus(newStatus, _dateTimeService.UtcNow);
+        
+        // Assert
+        order.Status.Should().Be(newStatus);
+        order.UpdatedDate.Should().Be(updatedDate);
+    }
 }
