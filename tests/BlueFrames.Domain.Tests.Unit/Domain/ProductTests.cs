@@ -34,7 +34,7 @@ public class ProductTests
     public void Create_ShouldInitialiseProductWithValidId()
     {
         //Assert
-        _product.Id.Should().NotBeEmpty();
+        _product.Id.Value.Should().NotBeEmpty();
     }
 }
 
