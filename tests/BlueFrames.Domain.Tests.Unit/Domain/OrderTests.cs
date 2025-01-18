@@ -1,12 +1,14 @@
+using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders;
+using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Tests.Unit.Domain;
 
 public class OrderTests
 {
     private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
-    private readonly Guid _productId = Guid.NewGuid();
-    private readonly Guid _customerId = Guid.NewGuid();
+    private readonly ProductId _productId = ProductId.From(Guid.NewGuid());
+    private readonly CustomerId _customerId = CustomerId.From(Guid.NewGuid());
     private readonly DateTime _createdDate = new DateTime(2025, 01, 18, 14, 45, 0);
 
     public OrderTests()
@@ -35,7 +37,7 @@ public class OrderTests
         var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         
         // Assert
-        order.Id.Should().NotBeEmpty();
+        order.Id.Value.Should().NotBeEmpty();
     }
 
     [Fact]
@@ -51,11 +53,8 @@ public class OrderTests
     [Fact]
     public void CreateOrder_ShouldFail_WhenProductIdIsInvalid()
     {
-        // Arrange
-        var invalidProductId = Guid.Empty;
-        
         // Act
-        Action createOrder = () => _ =new Order(invalidProductId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        Action createOrder = () => _ =new Order(ProductId.From(Guid.Empty), _customerId, _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();
@@ -64,11 +63,8 @@ public class OrderTests
     [Fact]
     public void CreateOrder_ShouldFail_WhenCustomerIdIsInvalid()
     {
-        // Arrange
-        var invalidCustomerId = Guid.Empty;
-        
         // Act
-        Action createOrder = () => _ =new Order(_productId, invalidCustomerId, _createdDate, _dateTimeService.UtcNow);
+        Action createOrder = () => _ =new Order(_productId, CustomerId.From(Guid.Empty), _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();

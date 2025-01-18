@@ -1,34 +1,28 @@
+using BlueFrames.Domain.Customers.Common;
+using BlueFrames.Domain.Orders.Common;
+using BlueFrames.Domain.Products.Common;
+
 namespace BlueFrames.Domain.Orders;
 
 public class Order
 {
-    public Guid Id { get; private set; }
-    public Guid ProductId { get; private set; }
-    public Guid CustomerId { get; private set; }
+    public OrderId Id { get; private set; }
+    public ProductId ProductId { get; private set; }
+    public CustomerId CustomerId { get; private set; }
     public Status Status { get; private set; }
     public DateTime CreatedDate { get; private set; }
     public DateTime UpdatedDate { get; private set; }
 
-    public Order(Guid productId, Guid customerId, DateTime createdDate, DateTime now)
+    public Order(ProductId productId, CustomerId customerId, DateTime createdDate, DateTime now)
     {
-        if (productId == Guid.Empty)
-        {
-            throw new ValidationException("Invalid Product ID");
-        }
-        
-        if (customerId == Guid.Empty)
-        {
-            throw new ValidationException("Invalid Customer ID");
-        }
-        
         if (createdDate < now)
         {
             throw new ValidationException("Invalid Created Date");
         }
 
-        Id = GuidProvider.Create();
-        ProductId = productId;
-        CustomerId = customerId;
+        Id = OrderId.From(GuidProvider.Create());
+        ProductId = productId ?? throw new ValidationException("Product Id is required");
+        CustomerId = customerId ?? throw new ValidationException("Customer Id is required");
         Status = Status.Pending;
         CreatedDate = createdDate;
     }
