@@ -28,6 +28,13 @@ public class ProductTests
         _product.Description.Should().Be(_productDetails.Description);
         _product.SKU.Should().Be(_productDetails.SKU);
     }
+    
+    [Fact]
+    public void Create_ShouldInitialiseProductWithValidId()
+    {
+        //Assert
+        _product.Id.Should().NotBeEmpty();
+    }
 }
 
 internal record ProductDetails(string Name, string Description, string SKU);

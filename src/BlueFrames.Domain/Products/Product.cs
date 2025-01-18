@@ -13,6 +13,7 @@ public class Product
 
     public Product(string name, string description, string sku)
     {
+        Id = GuidProvider.Create();
         Name = name;
         Description = description;
         SKU = sku;
