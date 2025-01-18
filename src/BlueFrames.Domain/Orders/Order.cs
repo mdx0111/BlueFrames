@@ -32,14 +32,25 @@ public class Order
         CreatedDate = createdDate;
     }
     
-    public void UpdateStatus(Status status, DateTime now)
+    public void Cancel(DateTime now)
     {
-        if (status == this.Status)
+        if (Status == Status.Cancelled)
         {
-            throw new ValidationException("Invalid Status");
+            throw new ValidationException("Order is already cancelled");
         }
         
-        Status = status;
+        Status = Status.Cancelled;
+        UpdatedDate = now;
+    }
+    
+    public void Complete(DateTime now)
+    {
+        if (Status == Status.Complete)
+        {
+            throw new ValidationException("Order is already completed");
+        }
+        
+        Status = Status.Complete;
         UpdatedDate = now;
     }
 }

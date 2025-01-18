@@ -78,33 +78,62 @@ public class OrderTests
     }
     
     [Fact]
-    public void UpdateStatus_ShouldSuccess_WhenStatusIsValid()
+    public void Cancel_ShouldSuccess_WhenOrderIsNotCancelled()
     {
         // Arrange
         var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
-        var newStatus = Status.Complete;
         var updatedDate = new DateTime(2025, 01, 18, 15, 45, 0);
         _dateTimeService.UtcNow.Returns(updatedDate);
         
         // Act
-        order.UpdateStatus(newStatus, _dateTimeService.UtcNow);
+        order.Cancel(_dateTimeService.UtcNow);
         
         // Assert
-        order.Status.Should().Be(newStatus);
+        order.Status.Should().Be(Status.Cancelled);
         order.UpdatedDate.Should().Be(updatedDate);
     }
     
     [Fact]
-    public void UpdateStatus_ShouldFail_WhenStatusIsInvalid()
+    public void Cancel_ShouldFail_WhenOrderIsAlreadyCancelled()
     {
         // Arrange
         var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
-        var newStatus = Status.Pending;
+        order.Cancel(_dateTimeService.UtcNow);
         
         // Act
-        Action updateStatus = () => order.UpdateStatus(newStatus, _dateTimeService.UtcNow);
+        Action cancel = () => order.Cancel(_dateTimeService.UtcNow);
         
         // Assert
-        updateStatus.Should().Throw<ValidationException>();
+        cancel.Should().Throw<ValidationException>();
+    }
+    
+    [Fact]
+    public void Complete_ShouldSuccess_WhenOrderIsNotCompleted()
+    {
+        // Arrange
+        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var updatedDate = new DateTime(2025, 01, 18, 15, 45, 0);
+        _dateTimeService.UtcNow.Returns(updatedDate);
+        
+        // Act
+        order.Complete(_dateTimeService.UtcNow);
+        
+        // Assert
+        order.Status.Should().Be(Status.Complete);
+        order.UpdatedDate.Should().Be(updatedDate);
+    }
+    
+    [Fact]
+    public void Complete_ShouldFail_WhenOrderIsAlreadyCompleted()
+    {
+        // Arrange
+        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        order.Complete(_dateTimeService.UtcNow);
+        
+        // Act
+        Action complete = () => order.Complete(_dateTimeService.UtcNow);
+        
+        // Assert
+        complete.Should().Throw<ValidationException>();
     }
 }
