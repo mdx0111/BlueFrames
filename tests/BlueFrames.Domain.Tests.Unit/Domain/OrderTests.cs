@@ -93,4 +93,18 @@ public class OrderTests
         order.Status.Should().Be(newStatus);
         order.UpdatedDate.Should().Be(updatedDate);
     }
+    
+    [Fact]
+    public void UpdateStatus_ShouldFail_WhenStatusIsInvalid()
+    {
+        // Arrange
+        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var newStatus = Status.Pending;
+        
+        // Act
+        Action updateStatus = () => order.UpdateStatus(newStatus, _dateTimeService.UtcNow);
+        
+        // Assert
+        updateStatus.Should().Throw<ValidationException>();
+    }
 }
