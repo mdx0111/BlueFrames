@@ -1,6 +1,7 @@
 using BlueFrames.Application.Common.Results;
 using BlueFrames.Application.Customers.Queries.Common;
 using BlueFrames.Application.Customers.Queries.GetAllCustomers;
+using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
 
@@ -44,6 +45,7 @@ public class GetCustomerTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<List<CustomerDto>>>();
+        result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeNull();
         result.Value.Should().BeOfType<List<CustomerDto>>();
         result.Value.Count.Should().Be(_listOfCustomers.Count);
@@ -66,5 +68,32 @@ public class GetCustomerTests
         result.Should().BeOfType<Result<List<CustomerDto>>>();
         result.IsFailure.Should().BeTrue();
         result.Value.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task GetCustomer_ShouldReturnCustomer_WhenFound()
+    {
+        // Arrange
+        var firstCustomer = _listOfCustomers.First();
+        _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).Returns(firstCustomer);
+        
+        var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
+        var handler = new GetCustomerByIdQueryHandler(_repository);
+
+        // Act
+        var result = await handler.Handle(query, _cancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<CustomerDto>>();
+        result.IsSuccess.Should().BeTrue();
+        result.Value.Should().BeEquivalentTo(new CustomerDto
+        {
+            Id = firstCustomer.Id.Value,
+            FirstName = firstCustomer.FirstName.ToString(),
+            LastName = firstCustomer.LastName.ToString(),
+            Phone = firstCustomer.Phone.ToString(),
+            Email = firstCustomer.Email.ToString()
+        });
     }
 }
