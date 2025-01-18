@@ -25,7 +25,8 @@ public class Order
         {
             throw new ValidationException("Invalid Created Date");
         }
-        
+
+        Id = GuidProvider.Create();
         ProductId = productId;
         CustomerId = customerId;
         Status = Status.Pending;

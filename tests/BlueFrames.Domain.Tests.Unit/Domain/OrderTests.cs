@@ -29,6 +29,16 @@ public class OrderTests
     }
 
     [Fact]
+    public void CreateOrder_ShouldCreateOrder_WithValidId()
+    {
+        // Act
+        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        
+        // Assert
+        order.Id.Should().NotBeEmpty();
+    }
+
+    [Fact]
     public void CreateOrder_ShouldSuccess_WithPendingStatus()
     {
         // Act
