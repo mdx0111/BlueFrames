@@ -6,11 +6,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="MediatR" Version="12.4.1" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Common\Providers\" />
+    <PackageReference Include="ValueOf" Version="2.0.31" />
   </ItemGroup>
 
 </Project>
