@@ -23,7 +23,7 @@ public static class ConfigureServices
         services.AddOpenApi(options =>
         {
             options.OpenApiVersion = OpenApiSpecVersion.OpenApi3_0;
-            options.AddDocumentTransformer((document, context, cancellationToken) =>
+            options.AddDocumentTransformer((document, _, _) =>
             {
                 document.Info.Contact = new OpenApiContact
                 {
