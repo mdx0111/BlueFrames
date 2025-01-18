@@ -43,12 +43,12 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act
-        Action act = () => _ = new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
+        Action createProduct = () => _ = new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
 
         // Assert
-        act.Should().Throw<ValidationException>();
+        createProduct.Should().Throw<ValidationException>();
     }
-    
+
     public static TheoryData<string> InvalidProductNames =>
     [
         "a",
