@@ -37,4 +37,19 @@ public class OrderTests
         // Assert
         order.Status.Should().Be(Status.Pending);
     }
+    
+    [Fact]
+    public void CreateOrder_ShouldFail_WhenProductIdIsInvalid()
+    {
+        // Arrange
+        var productId = Guid.Empty;
+        var customerId = Guid.NewGuid();
+        var createdDate = new DateTime(2025, 01, 18, 14, 45, 0);
+        
+        // Act
+        Action createOrder = () => _ =new Order(productId, customerId, createdDate);
+        
+        // Assert
+        createOrder.Should().Throw<ValidationException>();
+    }
 }

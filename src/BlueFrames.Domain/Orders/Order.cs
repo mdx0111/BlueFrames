@@ -11,6 +11,11 @@ public class Order
 
     public Order(Guid productId, Guid customerId, DateTime createdDate)
     {
+        if (productId == Guid.Empty)
+        {
+            throw new ValidationException("Invalid Product ID");
+        }
+        
         ProductId = productId;
         CustomerId = customerId;
         Status = Status.Pending;
