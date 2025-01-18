@@ -49,10 +49,49 @@ public class ProductTests
         createProduct.Should().Throw<ValidationException>();
     }
 
+    [Theory]
+    [MemberData(nameof(InvalidProductDescriptions))]
+    public void Create_ShouldThrowException_WhenDescriptionIsInvalid(string productDescription)
+    {
+        // Act
+        Action createProduct = () => _ = new Product(_productDetails.Name, productDescription, _productDetails.SKU);
+
+        // Assert
+        createProduct.Should().Throw<ValidationException>();
+    }
+    
+    [Theory]
+    [MemberData(nameof(InvalidProductSkus))]
+    public void Create_ShouldThrowException_WhenSkuIsInvalid(string sku)
+    {
+        // Act
+        Action createProduct = () => _ = new Product(_productDetails.Name, _productDetails.Description, sku);
+
+        // Assert
+        createProduct.Should().Throw<ValidationException>();
+    }
+
     public static TheoryData<string> InvalidProductNames =>
     [
         "a",
         new('a', 51),
+        "aaa$",
+        "",
+        null
+    ];
+    
+    public static TheoryData<string> InvalidProductDescriptions =>
+    [
+        "a",
+        new('a', 201),
+        "",
+        null
+    ];
+    
+    public static TheoryData<string> InvalidProductSkus =>
+    [
+        "a",
+        new('a', 6),
         "aaa$",
         "",
         null
