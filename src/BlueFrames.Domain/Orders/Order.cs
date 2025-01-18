@@ -13,6 +13,7 @@ public class Order
     {
         ProductId = productId;
         CustomerId = customerId;
+        Status = Status.Pending;
         CreatedDate = createdDate;
     }
 }
