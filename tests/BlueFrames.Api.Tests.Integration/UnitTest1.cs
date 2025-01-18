@@ -8,9 +8,4 @@ public class UnitTest1 : IClassFixture<BlueFramesApiFactory>
     {
         _httpClient = factory.CreateClient();
     }
-
-    [Fact]
-    public void Test1()
-    {
-    }
 }

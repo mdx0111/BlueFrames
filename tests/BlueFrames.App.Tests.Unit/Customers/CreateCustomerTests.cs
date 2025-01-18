@@ -27,4 +27,28 @@ public class CreateCustomerTests
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
     }
+
+    [Fact]
+    public async Task CreateCustomer_ShouldFail_WhenGivenInvalidData()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        var repository = Substitute.For<ICustomerRepository>();
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.SaveChangesAsync(cancellationToken).Returns(0);
+
+        var createCustomer = new CreateCustomerCommand(
+            "John",
+            "Doe",
+            "07512345671",
+            "");
+        var handler = new CreateCustomerCommandHandler(repository, unitOfWork);
+
+        // Act
+        var result = await handler.Handle(createCustomer, cancellationToken);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Value.Should().BeEmpty();
+    }
 }

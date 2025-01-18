@@ -1,6 +1,6 @@
 namespace BlueFrames.Application.Customers.Commands;
 
-public class CreateCustomerCommand : IRequest<Result<Guid>>
+public record CreateCustomerCommand : IRequest<Result<Guid>>
 {
     public string FirstName { get; }
     public string LastName { get; }
