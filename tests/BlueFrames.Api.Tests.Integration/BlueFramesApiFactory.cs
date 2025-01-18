@@ -1,5 +1,3 @@
-using BlueFrames.Domain.Customers;
-using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Persistence.DataContext;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;

@@ -19,6 +19,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1B6BDA5F-3F5
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueFrames.Api.Tests.Integration", "tests\BlueFrames.Api.Tests.Integration\BlueFrames.Api.Tests.Integration.csproj", "{11A67C7D-00D7-473C-AD78-793381CB877A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlueFrames.App.Tests.Unit", "tests\BlueFrames.App.Tests.Unit\BlueFrames.App.Tests.Unit.csproj", "{B78D3EF7-4733-4F09-8700-DE2B4388B51F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -52,6 +54,10 @@ Global
 		{11A67C7D-00D7-473C-AD78-793381CB877A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{11A67C7D-00D7-473C-AD78-793381CB877A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{11A67C7D-00D7-473C-AD78-793381CB877A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B78D3EF7-4733-4F09-8700-DE2B4388B51F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B78D3EF7-4733-4F09-8700-DE2B4388B51F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B78D3EF7-4733-4F09-8700-DE2B4388B51F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B78D3EF7-4733-4F09-8700-DE2B4388B51F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{65378F92-76FA-47F6-BE85-9081D183EAC9} = {BC0EF1BA-4375-4704-B9D7-415EE785D183}
@@ -60,5 +66,6 @@ Global
 		{3AD9EE96-09DC-41DA-8808-2DA3D0135964} = {1B6BDA5F-3F54-4D50-8ED0-164D9BC84767}
 		{65D68F56-C9B6-4446-A072-AD2ECCDA6143} = {1B6BDA5F-3F54-4D50-8ED0-164D9BC84767}
 		{11A67C7D-00D7-473C-AD78-793381CB877A} = {BC0EF1BA-4375-4704-B9D7-415EE785D183}
+		{B78D3EF7-4733-4F09-8700-DE2B4388B51F} = {BC0EF1BA-4375-4704-B9D7-415EE785D183}
 	EndGlobalSection
 EndGlobal
