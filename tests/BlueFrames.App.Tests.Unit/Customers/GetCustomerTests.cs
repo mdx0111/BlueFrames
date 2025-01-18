@@ -4,6 +4,7 @@ using BlueFrames.Application.Customers.Queries.GetAllCustomers;
 using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
+using NSubstitute.ReturnsExtensions;
 
 namespace BlueFrames.App.Tests.Unit.Customers;
 
@@ -95,5 +96,25 @@ public class GetCustomerTests
             Phone = firstCustomer.Phone.ToString(),
             Email = firstCustomer.Email.ToString()
         });
+    }
+    
+    [Fact]
+    public async Task GetCustomer_ShouldReturnFailure_WhenNotFound()
+    {
+        // Arrange
+        var firstCustomer = _listOfCustomers.First();
+        _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).ReturnsNull();
+        
+        var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
+        var handler = new GetCustomerByIdQueryHandler(_repository);
+
+        // Act
+        var result = await handler.Handle(query, _cancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<CustomerDto>>();
+        result.IsFailure.Should().BeTrue();
+        result.Value.Should().BeNull();
     }
 }
