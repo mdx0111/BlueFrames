@@ -20,4 +20,9 @@ public class Product
         Description = description ?? throw new ValidationException("Description is required");
         SKU = sku ?? throw new ValidationException("SKU is required");
     }
+    
+    public void ChangeName(ProductName name)
+    {
+        Name = name ?? throw new ValidationException("Name is required");
+    }
 }

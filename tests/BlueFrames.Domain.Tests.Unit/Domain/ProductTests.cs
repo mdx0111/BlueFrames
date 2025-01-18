@@ -71,6 +71,30 @@ public class ProductTests
         createProduct.Should().Throw<ValidationException>();
     }
 
+    [Fact]
+    public void ChangeName_ShouldUpdateProductName()
+    {
+        // Arrange
+        var newProductName = ProductName.From("New Product Name");
+
+        // Act
+        _product.ChangeName(newProductName);
+
+        // Assert
+        _product.Name.Should().Be(newProductName);
+    }
+    
+    [Theory]
+    [MemberData(nameof(InvalidProductNames))]
+    public void ChangeName_ShouldThrowException_WhenNameIsInvalid(string productName)
+    {
+        // Act
+        Action changeName = () => _product.ChangeName(ProductName.From(productName));
+
+        // Assert
+        changeName.Should().Throw<ValidationException>();
+    }
+
     public static TheoryData<string> InvalidProductNames =>
     [
         "a",
