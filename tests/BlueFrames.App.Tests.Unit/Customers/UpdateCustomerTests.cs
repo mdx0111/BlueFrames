@@ -80,4 +80,38 @@ public class UpdateCustomerTests
         updateResult.IsSuccess.Should().BeFalse();
         updateResult.Value.Should().BeEmpty();
     }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldFail_WhenCustomerNotFound()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        
+        var customer = Customer.Create(
+            FirstName.From("John"),
+            LastName.From("Doe"),
+            PhoneNumber.From("07563385651"),
+            Email.From("john@doe.com"));
+        
+        var repository = Substitute.For<ICustomerRepository>();
+        repository.GetByIdAsync(customer.Id.Value, cancellationToken).Returns(customer);
+        
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.SaveChangesAsync(cancellationToken).Returns(1);
+        
+        var updateCustomer = new UpdateCustomerCommand(
+            Guid.NewGuid(),
+            "Jane",
+            "Doee",
+            "07512345671",
+            "jan@doee.com");
+        var updateHandler = new UpdateCustomerCommandHandler(repository, unitOfWork);
+        
+        // Act
+        var updateResult = await updateHandler.Handle(updateCustomer, cancellationToken);
+        
+        // Assert
+        updateResult.IsSuccess.Should().BeFalse();
+        updateResult.Value.Should().BeEmpty();
+    }
 }
