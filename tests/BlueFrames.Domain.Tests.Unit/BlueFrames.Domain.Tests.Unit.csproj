@@ -27,6 +27,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\BlueFrames.Application\BlueFrames.Application.csproj" />
     <ProjectReference Include="..\..\src\BlueFrames.Domain\BlueFrames.Domain.csproj" />
   </ItemGroup>
 

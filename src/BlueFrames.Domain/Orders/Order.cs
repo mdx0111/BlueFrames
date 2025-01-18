@@ -9,7 +9,7 @@ public class Order
     public DateTime CreatedDate { get; private set; }
     public DateTime UpdatedDate { get; private set; }
 
-    public Order(Guid productId, Guid customerId, DateTime createdDate)
+    public Order(Guid productId, Guid customerId, DateTime createdDate, DateTime now)
     {
         if (productId == Guid.Empty)
         {
@@ -19,6 +19,11 @@ public class Order
         if (customerId == Guid.Empty)
         {
             throw new ValidationException("Invalid Customer ID");
+        }
+        
+        if (createdDate < now)
+        {
+            throw new ValidationException("Invalid Created Date");
         }
         
         ProductId = productId;
