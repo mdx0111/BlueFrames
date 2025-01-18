@@ -33,4 +33,32 @@ public class DeleteCustomerTests
         // Assert
         deleteResult.IsSuccess.Should().BeTrue();
     }
+    
+    [Fact]
+    public async Task DeleteCustomer_ShouldFail_WhenCustomerNotFound()
+    {
+        // Arrange
+        var cancellationToken = CancellationToken.None;
+        
+        var customer = Customer.Create(
+            FirstName.From("John"),
+            LastName.From("Doe"),
+            PhoneNumber.From("07563385651"),
+            Email.From("john@doe.com"));
+        
+        var repository = Substitute.For<ICustomerRepository>();
+        repository.GetByIdAsync(customer.Id.Value, cancellationToken).Returns(customer);
+        
+        var unitOfWork = Substitute.For<IUnitOfWork>();
+        unitOfWork.SaveChangesAsync(cancellationToken).Returns(1);
+        
+        var deleteCustomer = new DeleteCustomerCommand(Guid.NewGuid());
+        var deleteHandler = new DeleteCustomerCommandHandler(repository, unitOfWork);
+        
+        // Act
+        var updateResult = await deleteHandler.Handle(deleteCustomer, cancellationToken);
+        
+        // Assert
+        updateResult.IsSuccess.Should().BeFalse();
+    }
 }
