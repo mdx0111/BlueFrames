@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using BlueFrames.Persistence.DataContext;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
@@ -9,6 +10,20 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        var apiVersioningBuilder = services.AddApiVersioning(options =>
+        {
+            options.AssumeDefaultVersionWhenUnspecified = true;
+            options.DefaultApiVersion = new ApiVersion(1, 0);
+            options.ReportApiVersions = true;
+        });
+        
+        apiVersioningBuilder.AddApiExplorer(
+            options =>
+            {
+                options.GroupNameFormat = "'v'VVV";
+                options.SubstituteApiVersionInUrl = true;
+            });
+        
         services.AddSerilog(config =>
         {
             config
