@@ -10,4 +10,11 @@ public class Product
     protected Product()
     {
     }
+
+    public Product(string name, string description, string sku)
+    {
+        Name = name;
+        Description = description;
+        SKU = sku;
+    }
 }
