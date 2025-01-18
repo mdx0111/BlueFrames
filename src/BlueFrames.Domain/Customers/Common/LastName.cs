@@ -9,7 +9,10 @@ public partial class LastName : ValueOf<string, LastName>
 
     protected override void Validate()
     {
-        if (!string.IsNullOrWhiteSpace(Value) && LastNameRegex.IsMatch(Value))
+        var isValid = !string.IsNullOrWhiteSpace(Value)
+                      && Value.Length >= 2
+                      && LastNameRegex.IsMatch(Value); 
+        if (isValid)
         {
             return;
         }

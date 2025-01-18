@@ -27,4 +27,24 @@ public class Customer
         Phone = phone ?? throw new ValidationException("Phone number is required");
         Email = email ?? throw new ValidationException("Email is required");
     }
+    
+    public void ChangeFirstName(FirstName firstName)
+    {
+        FirstName = firstName ?? throw new ValidationException("First name is required");
+    }
+    
+    public void ChangeLastName(LastName lastName)
+    {
+        LastName = lastName ?? throw new ValidationException("Last name is required");
+    }
+    
+    public void ChangePhone(PhoneNumber phone)
+    {
+        Phone = phone ?? throw new ValidationException("Phone number is required");
+    }
+    
+    public void ChangeEmail(Email email)
+    {
+        Email = email ?? throw new ValidationException("Email is required");
+    }
 }
