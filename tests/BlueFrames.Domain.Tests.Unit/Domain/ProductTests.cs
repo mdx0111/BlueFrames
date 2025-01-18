@@ -38,30 +38,12 @@ public class ProductTests
         _product.Id.Value.Should().NotBeEmpty();
     }
     
-    [Fact]
-    public void Create_ShouldThrowException_WhenNameIsNull()
-    {
-        // Act
-        Action act = () => _ = new Product(null, _productDetails.Description, _productDetails.SKU);
-
-        // Assert
-        act.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void Create_ShouldThrowException_WhenNameIsEmpty()
-    {
-        // Act
-        Action act = () => _ = new Product(ProductName.From(string.Empty), _productDetails.Description, _productDetails.SKU);
-
-        // Assert
-        act.Should().Throw<ValidationException>();
-    }
-    
     [Theory]
     [InlineData("a")]
     [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
     [InlineData("aaa$")]
+    [InlineData("")]
+    [InlineData(null)]
     public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act

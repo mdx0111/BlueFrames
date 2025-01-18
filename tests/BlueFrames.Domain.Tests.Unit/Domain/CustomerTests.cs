@@ -36,52 +36,12 @@ public class CustomerTests
         _customer.Id.Value.Should().NotBeEmpty();
     }
     
-    [Fact]
-    public void Create_ShouldThrowException_WhenFirstNameIsNull()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(null, _customer.LastName, _customer.Phone, _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void Create_ShouldThrowException_WhenFirstNameIsEmpty()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(FirstName.From(string.Empty), _customer.LastName, _customer.Phone, _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-
     [Theory]
     [MemberData(nameof(InvalidFirstNames))]
     public void Create_ShouldThrowException_WhenFirstNameIsInvalid(string firstName)
     {
         // Act
         Action createCustomer = () => _ = Customer.Create(FirstName.From(firstName), _customer.LastName, _customer.Phone, _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-
-    [Fact]
-    public void Create_ShouldThrowException_WhenLastNameIsNull()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, null, _customer.Phone, _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void Create_ShouldThrowException_WhenLastNameIsEmpty()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, LastName.From(string.Empty), _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -98,26 +58,6 @@ public class CustomerTests
         createCustomer.Should().Throw<ValidationException>();
     }
     
-    [Fact]
-    public void Create_ShouldThrowException_WhenPhoneNumberIsNull()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, null, _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void Create_ShouldThrowException_WhenPhoneNumberIsEmpty()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, PhoneNumber.From(string.Empty), _customer.Email);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-
     [Theory]
     [MemberData(nameof(InvalidPhoneNumbers))]
     public void Create_ShouldThrowException_WhenPhoneNumberIsInvalid(string phoneNumber)
@@ -129,26 +69,6 @@ public class CustomerTests
         createCustomer.Should().Throw<ValidationException>();
     }
     
-    [Fact]
-    public void Create_ShouldThrowException_WhenEmailIsNull()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, _customer.Phone, null);
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void Create_ShouldThrowException_WhenEmailIsEmpty()
-    {
-        // Act
-        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, _customer.Phone, Email.From(string.Empty));
-
-        //Assert
-        createCustomer.Should().Throw<ValidationException>();
-    }
-
     [Theory]
     [MemberData(nameof(InvalidEmailAddresses))]
     public void Create_ShouldThrowException_WhenEmailIsInvalid(string email)
@@ -171,26 +91,6 @@ public class CustomerTests
 
         //Assert
         _customer.FirstName.Value.Should().Be(newFirstName.Value);
-    }
-    
-    [Fact]
-    public void ChangeFirstName_ShouldThrowException_WhenFirstNameIsNull()
-    {
-        // Act
-        Action changeFirstName = () => _customer.ChangeFirstName(null);
-
-        //Assert
-        changeFirstName.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void ChangeFirstName_ShouldThrowException_WhenFirstNameIsEmpty()
-    {
-        // Act
-        Action changeFirstName = () => _customer.ChangeFirstName(FirstName.From(string.Empty));
-
-        //Assert
-        changeFirstName.Should().Throw<ValidationException>();
     }
     
     [Theory]
@@ -216,26 +116,6 @@ public class CustomerTests
         //Assert
         _customer.LastName.Value.Should().Be(newLastName.Value);
     }
-
-    [Fact]
-    public void ChangeLastName_ShouldThrowException_WhenLastNameIsNull()
-    {
-        // Act
-        Action changeLastName = () => _customer.ChangeLastName(null);
-
-        //Assert
-        changeLastName.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void ChangeLastName_ShouldThrowException_WhenLastNameIsEmpty()
-    {
-        // Act
-        Action changeLastName = () => _customer.ChangeLastName(LastName.From(string.Empty));
-
-        //Assert
-        changeLastName.Should().Throw<ValidationException>();
-    }
     
     [Theory]
     [MemberData(nameof(InvalidLastNames))]
@@ -259,26 +139,6 @@ public class CustomerTests
 
         //Assert
         _customer.Phone.Value.Should().Be(newPhone.Value);
-    }
-    
-    [Fact]
-    public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsNull()
-    {
-        // Act
-        Action changePhone = () => _customer.ChangePhone(null);
-
-        //Assert
-        changePhone.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void ChangePhone_ShouldThrowException_WhenPhoneNumberIsEmpty()
-    {
-        // Act
-        Action changePhone = () => _customer.ChangePhone(PhoneNumber.From(string.Empty));
-
-        //Assert
-        changePhone.Should().Throw<ValidationException>();
     }
     
     [Theory]
@@ -306,26 +166,6 @@ public class CustomerTests
         _customer.Email.Value.Should().Be(newEmail.Value);
     }
     
-    [Fact]
-    public void ChangeEmail_ShouldThrowException_WhenEmailIsNull()
-    {
-        // Act
-        Action changeEmail = () => _customer.ChangeEmail(null);
-
-        //Assert
-        changeEmail.Should().Throw<ValidationException>();
-    }
-    
-    [Fact]
-    public void ChangeEmail_ShouldThrowException_WhenEmailIsEmpty()
-    {
-        // Act
-        Action changeEmail = () => _customer.ChangeEmail(Email.From(string.Empty));
-
-        //Assert
-        changeEmail.Should().Throw<ValidationException>();
-    }
-    
     [Theory]
     [MemberData(nameof(InvalidEmailAddresses))]
     public void ChangeEmail_ShouldThrowException_WhenEmailIsInvalid(string email)
@@ -342,7 +182,9 @@ public class CustomerTests
         "A",
         "$",
         "John123",
-        "John@Doe"
+        "John@Doe",
+        string.Empty,
+        null
     ];
     
     public static TheoryData<string> InvalidLastNames =>
@@ -350,7 +192,9 @@ public class CustomerTests
         "A",
         "$",
         "Doe123",
-        "@Doe"
+        "@Doe",
+        string.Empty,
+        null
     ];
     
     public static TheoryData<string> InvalidPhoneNumbers =>
@@ -359,7 +203,9 @@ public class CustomerTests
         "0A7563385651",
         "07563-385651",
         "0756338565",
-        "+44956338565"
+        "+44956338565",
+        string.Empty,
+        null
     ];
     
     public static TheoryData<string> InvalidEmailAddresses =>
@@ -369,6 +215,8 @@ public class CustomerTests
         "name@domain",
         "@domain",
         "@domain.com",
-        "domain.com"
+        "domain.com",
+        string.Empty,
+        null
     ];
 }
