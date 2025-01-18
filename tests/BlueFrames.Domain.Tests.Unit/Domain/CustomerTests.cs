@@ -1,6 +1,5 @@
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
-using FluentValidation;
 
 namespace BlueFrames.Domain.Tests.Unit.Domain;
 
