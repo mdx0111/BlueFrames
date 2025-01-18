@@ -21,7 +21,7 @@ public class OrderTests
     public void CreateOrder_ShouldSucceed_WithValidData()
     {
         // Act
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
 
         // Assert
         order.Should().NotBeNull();
@@ -35,7 +35,7 @@ public class OrderTests
     public void CreateOrder_ShouldCreateOrder_WithValidId()
     {
         // Act
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         order.Id.Value.Should().NotBeEmpty();
@@ -45,7 +45,7 @@ public class OrderTests
     public void CreateOrder_ShouldSuccess_WithPendingStatus()
     {
         // Act
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         order.Status.Should().Be(Status.Pending);
@@ -55,7 +55,7 @@ public class OrderTests
     public void CreateOrder_ShouldFail_WhenProductIdIsInvalid()
     {
         // Act
-        Action createOrder = () => _ =new Order(ProductId.From(Guid.Empty), _customerId, _createdDate, _dateTimeService.UtcNow);
+        Action createOrder = () => _ =Order.Create(ProductId.From(Guid.Empty), _customerId, _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();
@@ -65,7 +65,7 @@ public class OrderTests
     public void CreateOrder_ShouldFail_WhenCustomerIdIsInvalid()
     {
         // Act
-        Action createOrder = () => _ =new Order(_productId, CustomerId.From(Guid.Empty), _createdDate, _dateTimeService.UtcNow);
+        Action createOrder = () => _ =Order.Create(_productId, CustomerId.From(Guid.Empty), _createdDate, _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();
@@ -78,7 +78,7 @@ public class OrderTests
         var invalidCreatedDate = new DateTime(2020, 01, 18, 14, 45, 0);
         
         // Act
-        Action createOrder = () => _ =new Order(_productId, _customerId, OrderDate.From(invalidCreatedDate), _dateTimeService.UtcNow);
+        Action createOrder = () => _ =Order.Create(_productId, _customerId, OrderDate.From(invalidCreatedDate), _dateTimeService.UtcNow);
         
         // Assert
         createOrder.Should().Throw<ValidationException>();
@@ -88,7 +88,7 @@ public class OrderTests
     public void Cancel_ShouldSuccess_WhenOrderIsNotCancelled()
     {
         // Arrange
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         var updatedDate = new DateTime(2025, 01, 18, 15, 45, 0);
         _dateTimeService.UtcNow.Returns(updatedDate);
         
@@ -104,7 +104,7 @@ public class OrderTests
     public void Cancel_ShouldFail_WhenOrderIsAlreadyCancelled()
     {
         // Arrange
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         order.Cancel(_dateTimeService.UtcNow);
         
         // Act
@@ -118,7 +118,7 @@ public class OrderTests
     public void Complete_ShouldSuccess_WhenOrderIsNotCompleted()
     {
         // Arrange
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         var updatedDate = new DateTime(2025, 01, 18, 15, 45, 0);
         _dateTimeService.UtcNow.Returns(updatedDate);
         
@@ -134,7 +134,7 @@ public class OrderTests
     public void Complete_ShouldFail_WhenOrderIsAlreadyCompleted()
     {
         // Arrange
-        var order = new Order(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
+        var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
         order.Complete(_dateTimeService.UtcNow);
         
         // Act

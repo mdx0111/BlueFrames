@@ -12,8 +12,17 @@ public class Order
     public Status Status { get; private set; }
     public OrderDate CreatedDate { get; private set; }
     public OrderDate UpdatedDate { get; private set; }
+    
+    public static Order Create(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
+    {
+        return new Order(productId, customerId, createdDate, now);
+    }
 
-    public Order(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
+    protected Order()
+    {
+    }
+
+    private Order(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
     {
         if (createdDate.Value < now)
         {
