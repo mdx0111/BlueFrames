@@ -7,14 +7,14 @@ internal class UnixDateTimeStrategy
     private const int FixedNumDateBytes = 6;
     private const int RemainingBytesFromInt64 = 8 - FixedNumDateBytes;
 
-    private int NumDateBytes => FixedNumDateBytes;
+    private static int NumDateBytes => FixedNumDateBytes;
 
-    public DateTime MinDateTimeValue { get; } = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+    private DateTime MinDateTimeValue { get; } = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
 
-    public DateTime MaxDateTimeValue => MinDateTimeValue.AddMilliseconds(2 ^ (8 * NumDateBytes));
+    private DateTime MaxDateTimeValue => MinDateTimeValue.AddMilliseconds(2 ^ (8 * NumDateBytes));
 
-    public long ToUnixTimeMilliseconds(DateTime timestamp) => (long)(timestamp.ToUniversalTime() - MinDateTimeValue).TotalMilliseconds;
-    public DateTime FromUnixTimeMilliseconds(long ms) => MinDateTimeValue.AddMilliseconds(ms);
+    private long ToUnixTimeMilliseconds(DateTime timestamp) => (long)(timestamp.ToUniversalTime() - MinDateTimeValue).TotalMilliseconds;
+    private DateTime FromUnixTimeMilliseconds(long ms) => MinDateTimeValue.AddMilliseconds(ms);
 
     public void WriteDateTime(Span<byte> destination, DateTime timestamp)
     {
