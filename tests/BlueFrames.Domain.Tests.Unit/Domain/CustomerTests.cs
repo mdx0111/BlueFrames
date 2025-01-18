@@ -275,7 +275,7 @@ public class CustomerTests
     public void ChangePhone_ShouldUpdatePhone()
     {
         // Arrange
-        var newPhone = PhoneNumber.From("07563385652");
+        var newPhone = PhoneNumber.From(ValidPhoneNumber);
 
         // Act
         _customer.ChangePhone(newPhone);
