@@ -1,4 +1,5 @@
 using BlueFrames.Domain.Products;
+using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Domain.Tests.Unit.Domain;
 
@@ -13,7 +14,7 @@ public class ProductTests
         var commerce = new Bogus.DataSets.Commerce(locale: "en_GB");
 
         _productDetails = new ProductDetails(
-            Name: commerce.ProductName(),
+            Name: ProductName.From(commerce.ProductName()),
             Description: commerce.ProductDescription(),
             SKU: commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()
         );
@@ -41,7 +42,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsNull()
     {
         // Act
-        Action act = () => new Product(null, _productDetails.Description, _productDetails.SKU);
+        Action act = () => _ = new Product(null, _productDetails.Description, _productDetails.SKU);
 
         // Assert
         act.Should().Throw<ValidationException>();
@@ -51,22 +52,24 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenNameIsEmpty()
     {
         // Act
-        Action act = () => new Product(string.Empty, _productDetails.Description, _productDetails.SKU);
+        Action act = () => new Product(ProductName.From(string.Empty), _productDetails.Description, _productDetails.SKU);
 
         // Assert
         act.Should().Throw<ValidationException>();
     }
     
-    [Fact]
-    public void Create_ShouldThrowException_WhenNameIsInvalid()
+    [Theory]
+    [InlineData("a")]
+    [InlineData("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")]
+    [InlineData("aaa$")]
+    public void Create_ShouldThrowException_WhenNameIsInvalid(string productName)
     {
         // Act
-        Action act = () => new Product(" ", _productDetails.Description, _productDetails.SKU);
+        Action act = () => new Product(ProductName.From(productName), _productDetails.Description, _productDetails.SKU);
 
         // Assert
         act.Should().Throw<ValidationException>();
     }
-    
 }
 
-internal record ProductDetails(string Name, string Description, string SKU);
+internal record ProductDetails(ProductName Name, string Description, string SKU);
