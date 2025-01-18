@@ -10,7 +10,16 @@ public class Customer
     public PhoneNumber Phone { get; private set; }
     public Email Email { get; private set; }
 
-    public Customer(FirstName firstName, LastName lastName, PhoneNumber phone, Email email)
+    public static Customer Create(FirstName firstName, LastName lastName, PhoneNumber phone, Email email)
+    {
+        return new Customer(firstName, lastName, phone, email);
+    }
+    
+    protected Customer()
+    {
+    }
+    
+    private Customer(FirstName firstName, LastName lastName, PhoneNumber phone, Email email)
     {
         Id = CustomerId.From(GuidProvider.Create());
         FirstName = firstName ?? throw new ValidationException("First name is required");

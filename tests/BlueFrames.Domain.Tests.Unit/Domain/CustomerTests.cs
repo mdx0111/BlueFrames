@@ -13,7 +13,7 @@ public class CustomerTests
     public CustomerTests()
     {
         _person = new Bogus.Person(locale: "en_GB");
-        _customer = new Customer(
+        _customer = Customer.Create(
             FirstName.From(_person.FirstName),
             LastName.From(_person.LastName),
             PhoneNumber.From(ValidPhoneNumber),
@@ -41,7 +41,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenFirstNameIsNull()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(null, _customer.LastName, _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(null, _customer.LastName, _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -51,7 +51,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenFirstNameIsEmpty()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(FirstName.From(string.Empty), _customer.LastName, _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(FirstName.From(string.Empty), _customer.LastName, _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -61,7 +61,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenFirstNameIsInvalid()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(FirstName.From("$"), _customer.LastName, _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(FirstName.From("$"), _customer.LastName, _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -71,7 +71,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenLastNameIsNull()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, null, _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, null, _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -81,7 +81,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenLastNameIsEmpty()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, LastName.From(string.Empty), _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, LastName.From(string.Empty), _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -91,7 +91,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenLastNameIsInvalid()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, LastName.From("#"), _customer.Phone, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, LastName.From("#"), _customer.Phone, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -101,7 +101,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenPhoneNumberIsNull()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, null, _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, null, _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -111,7 +111,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenPhoneNumberIsEmpty()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, PhoneNumber.From(string.Empty), _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, PhoneNumber.From(string.Empty), _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -120,7 +120,7 @@ public class CustomerTests
     [Fact] public void Create_ShouldThrowException_WhenPhoneNumberIsInvalid()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, PhoneNumber.From("075633856515"), _customer.Email);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, PhoneNumber.From("075633856515"), _customer.Email);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -130,7 +130,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenEmailIsNull()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, _customer.Phone, null);
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, _customer.Phone, null);
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -140,7 +140,7 @@ public class CustomerTests
     public void Create_ShouldThrowException_WhenEmailIsEmpty()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, _customer.Phone, Email.From(string.Empty));
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, _customer.Phone, Email.From(string.Empty));
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
@@ -149,7 +149,7 @@ public class CustomerTests
     [Fact] public void Create_ShouldThrowException_WhenEmailIsInvalid()
     {
         // Act
-        Action createCustomer = () => _ = new Customer(_customer.FirstName, _customer.LastName, _customer.Phone, Email.From("test.com"));
+        Action createCustomer = () => _ = Customer.Create(_customer.FirstName, _customer.LastName, _customer.Phone, Email.From("test.com"));
 
         //Assert
         createCustomer.Should().Throw<ValidationException>();
