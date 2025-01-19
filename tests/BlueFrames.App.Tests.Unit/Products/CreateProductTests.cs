@@ -6,11 +6,12 @@ namespace BlueFrames.App.Tests.Unit.Products;
 
 public class CreateProductTests
 { 
-    private readonly Product _product;
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly IProductRepository _repository = Substitute.For<IProductRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<CreateProductCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateProductCommandHandler>>();
+ 
+    private readonly Product _product;
     private const int ProductSKUCharacterCount = 5;
 
     public CreateProductTests()

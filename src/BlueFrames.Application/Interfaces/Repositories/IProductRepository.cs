@@ -5,4 +5,7 @@ namespace BlueFrames.Application.Interfaces.Repositories;
 
 public interface IProductRepository : IRepository<Product>
 {
+    Task<Product> GetByIdAsync(
+        Guid id,
+        CancellationToken cancellationToken);
 }
