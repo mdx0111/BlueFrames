@@ -1,6 +1,6 @@
 ﻿namespace BlueFrames.Application.Common.Logging;
 
-public interface ILoggerAdapter<TType>
+public interface ILoggerAdapter<T>
 {
     void LogInformation(string message, params object[] args);
 

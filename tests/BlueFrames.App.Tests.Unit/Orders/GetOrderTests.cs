@@ -23,7 +23,6 @@ public class GetOrderTests
     private readonly Customer _customer;
 
     private const int ProductSKUCharacterCount = 5;
-    private const string ValidPhoneNumber = "07563385651";
 
     public GetOrderTests()
     {
@@ -34,11 +33,12 @@ public class GetOrderTests
             ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         _productRepository.GetByIdAsync(product.Id.Value, _cancellationToken).Returns(product);
 
+        var faker = new Bogus.Faker("en_GB");
         var person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
             FirstName.From(person.FirstName),
             LastName.From(person.LastName),
-            PhoneNumber.From(ValidPhoneNumber),
+            PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
             Email.From(person.Email));
         _customerRepository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
         

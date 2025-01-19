@@ -12,11 +12,12 @@ public class GetCustomerTests
 {
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
-    private const string ValidPhoneNumber = "07563385651";
     private readonly List<Customer> _listOfCustomers;
 
     public GetCustomerTests()
     {
+        var faker = new Bogus.Faker("en_GB");
+
         _listOfCustomers = [];
         
         for (var index = 0; index < 10; index++)
@@ -25,7 +26,7 @@ public class GetCustomerTests
             var customer = Customer.Create(
                 FirstName.From(person.FirstName),
                 LastName.From(person.LastName),
-                PhoneNumber.From(ValidPhoneNumber),
+                PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
                 Email.From(person.Email));
             _listOfCustomers.Add(customer);
         }

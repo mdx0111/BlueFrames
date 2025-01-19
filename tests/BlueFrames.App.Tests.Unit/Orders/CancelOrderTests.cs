@@ -20,7 +20,6 @@ public class CancelOrderTests
     private readonly Customer _customer;
 
     private const int ProductSKUCharacterCount = 5;
-    private const string ValidPhoneNumber = "07563385651";
 
     public CancelOrderTests()
     {
@@ -32,11 +31,12 @@ public class CancelOrderTests
             ProductDescription.From(commerce.ProductDescription()),
             ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         
+        var faker = new Bogus.Faker("en_GB");
         var person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
             FirstName.From(person.FirstName),
             LastName.From(person.LastName),
-            PhoneNumber.From(ValidPhoneNumber),
+            PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
             Email.From(person.Email));
         _customerRepository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
         

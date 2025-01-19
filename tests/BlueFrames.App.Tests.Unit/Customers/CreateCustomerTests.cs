@@ -11,8 +11,7 @@ public class CreateCustomerTests
     private readonly ILoggerAdapter<CreateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateCustomerCommandHandler>>();
 
     private readonly Bogus.Person _person;
-    private const string ValidPhoneNumber = "07563385651";
-
+    private readonly Bogus.Faker _faker = new("en_GB");
     public CreateCustomerTests()
     {
         _person = new Bogus.Person(locale: "en_GB");
@@ -27,7 +26,7 @@ public class CreateCustomerTests
         var createCustomer = new CreateCustomerCommand(
             FirstName.From(_person.FirstName),
             LastName.From(_person.LastName),
-            PhoneNumber.From(ValidPhoneNumber),
+            PhoneNumber.From(_faker.Phone.PhoneNumberFormat(1)),
             Email.From(_person.Email));
 
         var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);

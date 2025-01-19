@@ -10,15 +10,15 @@ public class CustomerTests
 {
     private readonly Customer _customer;
     private readonly Bogus.Person _person;
-    private const string ValidPhoneNumber = "07563385651";
-    
+    private readonly Bogus.Faker _faker = new("en_GB");
+
     public CustomerTests()
     {
         _person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
             FirstName.From(_person.FirstName),
             LastName.From(_person.LastName),
-            PhoneNumber.From(ValidPhoneNumber),
+            PhoneNumber.From(_faker.Phone.PhoneNumberFormat(1)),
             Email.From(_person.Email));
     }
 
@@ -28,7 +28,7 @@ public class CustomerTests
         //Assert
         _customer.FirstName.Value.Should().Be(_person.FirstName);
         _customer.LastName.Value.Should().Be(_person.LastName);
-        _customer.Phone.Value.Should().Be(ValidPhoneNumber);
+        _customer.Phone.Value.Should().Be(_person.Phone);
         _customer.Email.Value.Should().Be(_person.Email);
     }
     
@@ -135,7 +135,7 @@ public class CustomerTests
     public void ChangePhone_ShouldUpdatePhone()
     {
         // Arrange
-        var newPhone = PhoneNumber.From(ValidPhoneNumber);
+        var newPhone = PhoneNumber.From(_person.Phone);
 
         // Act
         _customer.ChangePhone(newPhone);
