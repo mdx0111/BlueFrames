@@ -1,6 +1,7 @@
 using BlueFrames.Application.Common.Results;
 using BlueFrames.Application.Orders.Queries.Common;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrder;
+using BlueFrames.Application.Orders.Queries.GetCustomerOrderDetails;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
@@ -18,7 +19,6 @@ public class GetOrderTests
     private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
     private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
 
-    private readonly Product _product;
     private readonly Order _order;
     private readonly Customer _customer;
 
@@ -28,11 +28,11 @@ public class GetOrderTests
     public GetOrderTests()
     {
         var commerce = new Bogus.DataSets.Commerce();
-        _product = Product.Create(
+        var product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
             ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
-        _productRepository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
+        _productRepository.GetByIdAsync(product.Id.Value, _cancellationToken).Returns(product);
 
         var person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
@@ -42,7 +42,7 @@ public class GetOrderTests
             Email.From(person.Email));
         _customerRepository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
         
-        _order = Order.Create(_product.Id, _customer.Id, OrderDate.From(_dateTimeService.UtcNow), _dateTimeService.UtcNow);
+        _order = Order.Create(product.Id, _customer.Id, OrderDate.From(_dateTimeService.UtcNow), _dateTimeService.UtcNow);
         _customer.PlaceOrder(_order);
 
         _dateTimeService.UtcNow.Returns(new DateTime(2025, 1, 1, 10, 25, 0));
@@ -154,5 +154,27 @@ public class GetOrderTests
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<List<OrderDto>>>();
         result.IsFailure.Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task GetCustomerOrderDetails_ShouldReturnOrderDetails_WhenOrderExists()
+    {
+        // Arrange
+        var getOrder = new GetCustomerOrderDetailsQuery(
+            _order.Id,
+            _customer.Id);
+
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerOrderDetailsQueryHandler>>();
+        var handler = new GetCustomerOrderDetailsQueryHandler(
+            _customerRepository,
+            logger);
+        
+        // Act
+        var result = await handler.Handle(getOrder, _cancellationToken);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<OrderDetailsDto>>();
+        result.Value.Should().Be(OrderDetailsDto.From(_order));
     }
 }

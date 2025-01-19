@@ -1,6 +1,5 @@
 using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Products;
-using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Application.Products.Commands.CreateProduct;
 

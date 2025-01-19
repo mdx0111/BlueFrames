@@ -1,5 +1,4 @@
 using BlueFrames.Application.Interfaces.Repositories;
-using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Application.Customers.Commands.UpdateCustomer;
 

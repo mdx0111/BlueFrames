@@ -1,6 +1,5 @@
 using BlueFrames.Application.Orders.Queries.Common;
 using BlueFrames.Domain.Customers.Common;
-using BlueFrames.Domain.Orders.Common;
 
 namespace BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 
