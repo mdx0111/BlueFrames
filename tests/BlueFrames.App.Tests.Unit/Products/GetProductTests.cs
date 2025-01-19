@@ -1,6 +1,7 @@
 using BlueFrames.Application.Common.Results;
 using BlueFrames.Application.Products.Queries.Common;
 using BlueFrames.Application.Products.Queries.GetAllProducts;
+using BlueFrames.Application.Products.Queries.GetProductById;
 using BlueFrames.Domain.Products;
 using BlueFrames.Domain.Products.Common;
 
@@ -70,5 +71,32 @@ public class GetProductTests
         result.Should().BeOfType<Result<List<ProductDto>>>();
         result.IsFailure.Should().BeTrue();
         result.Value.Should().BeNull();
+    }
+    
+    [Fact]
+    public async Task GetProduct_ShouldReturnProduct_WhenFound()
+    {
+        // Arrange
+        var firstProduct = _listOfProducts.First();
+        _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).Returns(firstProduct);
+        
+         var query = new GetProductByIdQuery(firstProduct.Id.Value);
+         var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
+         var handler = new GetProductByIdQueryHandler(_repository, logger);
+
+         // Act
+         var result = await handler.Handle(query, _cancellationToken);
+
+         // Assert
+         result.Should().NotBeNull();
+         result.Should().BeOfType<Result<ProductDto>>();
+         result.IsSuccess.Should().BeTrue();
+         result.Value.Should().BeEquivalentTo(new ProductDto
+        {
+            Id = firstProduct.Id.Value,
+            Name = firstProduct.Name.ToString(),
+            Description = firstProduct.Description.ToString(),
+            SKU = firstProduct.SKU.ToString()
+        });
     }
 }
