@@ -24,7 +24,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
         try
         {
             var product = await _repository.GetByIdAsync(request.Id, cancellationToken);
-            if (product == null)
+            if (product is null)
             {
                 return Result.Failure<Guid>($"Customer with Id {request.Id} not found.");
             }

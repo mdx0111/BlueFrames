@@ -30,7 +30,7 @@ public class AuditableEntitySaveChangesInterceptor : SaveChangesInterceptor
 
     private void UpdateEntities(DbContext context)
     {
-        if (context == null)
+        if (context is null)
         {
             return;
         }

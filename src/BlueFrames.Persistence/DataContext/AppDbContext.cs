@@ -29,6 +29,7 @@ public class AppDbContext : DbContext
         builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
         builder.Entity<Customer>().HasQueryFilter(customer => customer.IsDeleted == false);
+        builder.Entity<Product>().HasQueryFilter(product => product.IsDeleted == false);
 
         base.OnModelCreating(builder);
     }

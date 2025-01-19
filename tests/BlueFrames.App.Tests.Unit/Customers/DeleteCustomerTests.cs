@@ -26,7 +26,7 @@ public class DeleteCustomerTests
     }
     
     [Fact]
-    public async Task DeleteCustomer_ShouldSuccess_WhenUserExists()
+    public async Task DeleteCustomer_ShouldSuccess_WhenCustomerExists()
     {
         // Arrange        
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);

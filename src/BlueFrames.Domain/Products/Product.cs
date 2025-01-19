@@ -9,6 +9,7 @@ public class Product : Entity, IAggregateRoot
     public ProductName Name { get; private set; }
     public ProductDescription Description { get; private set; }
     public ProductSku SKU { get; private set; }
+    public bool IsDeleted { get; private set; }
     
     private readonly List<Order> _orders = [];
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
@@ -43,5 +44,10 @@ public class Product : Entity, IAggregateRoot
     public void ChangeSKU(ProductSku sku)
     {
         SKU = sku ?? throw new ValidationException("SKU is required");
+    }
+
+    public void Deactivate()
+    {
+        IsDeleted = true;
     }
 }
