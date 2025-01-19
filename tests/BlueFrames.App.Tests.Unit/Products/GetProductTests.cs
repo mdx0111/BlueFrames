@@ -4,6 +4,7 @@ using BlueFrames.Application.Products.Queries.GetAllProducts;
 using BlueFrames.Application.Products.Queries.GetProductById;
 using BlueFrames.Domain.Products;
 using BlueFrames.Domain.Products.Common;
+using NSubstitute.ReturnsExtensions;
 
 namespace BlueFrames.App.Tests.Unit.Products;
 
@@ -98,5 +99,26 @@ public class GetProductTests
             Description = firstProduct.Description.ToString(),
             SKU = firstProduct.SKU.ToString()
         });
+    }
+    
+    [Fact]
+    public async Task GetProduct_ShouldReturnFailure_WhenNotFound()
+    {
+        // Arrange
+        var firstProduct = _listOfProducts.First();
+        _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).ReturnsNull();
+        
+        var query = new GetProductByIdQuery(firstProduct.Id.Value);
+        var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
+        var handler = new GetProductByIdQueryHandler(_repository, logger);
+
+        // Act
+        var result = await handler.Handle(query, _cancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<ProductDto>>();
+        result.IsFailure.Should().BeTrue();
+        result.Value.Should().BeNull();
     }
 }
