@@ -4,6 +4,7 @@ using BlueFrames.Api.Contracts.Customers.Responses;
 
 namespace BlueFrames.Api.Tests.Integration.CustomerController;
 
+[TestCaseOrderer("BlueFrames.Api.Tests.Integration.Helpers.PriorityOrderer", "BlueFrames.Api.Tests.Integration")]
 public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 {
     private readonly HttpClient _httpClient;
@@ -19,7 +20,7 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         _httpClient = factory.CreateClient();
     }
 
-    [Fact]
+    [Fact, TestPriority(4)]
     public async Task Get_ShouldReturnCustomer_WhenCustomerExist()
     {
         // Arrange
@@ -44,7 +45,7 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         });
     }
     
-    [Fact]
+    [Fact, TestPriority(3)]
     public async Task Get_ShouldReturnNotFound_WhenCustomerDoesNotExist()
     {
         // Act
@@ -56,7 +57,19 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         validationError.Errors["error"][0].Should().Contain("Customer not found");
     }
     
-    [Fact]
+    [Fact, TestPriority(1)]
+    public async Task GetAll_ShouldNotReturnCustomers_WhenCustomerDoesNotExist()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Customer?offset=0&limit=10");
+    
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var customersResponse = await response.Content.ReadFromJsonAsync<Envelope<List<CustomerResponse>>>();
+        customersResponse.Result.Should().BeEmpty();
+    }
+    
+    [Fact, TestPriority(2)]
     public async Task GetAll_ShouldReturnCustomers_WhenCustomersExist()
     {
         // Arrange
@@ -80,17 +93,5 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
             Phone = customer.Phone,
             Email = customer.Email
         });
-    }
-    
-    [Fact]
-    public async Task GetAll_ShouldNotReturnCustomers_WhenCustomerDoesNotExist()
-    {
-        // Act
-        var response = await _httpClient.GetAsync("/api/v1/Customer?offset=0&limit=10");
-
-        // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
-        var customersResponse = await response.Content.ReadFromJsonAsync<Envelope<List<CustomerResponse>>>();
-        customersResponse.Result.Should().BeEmpty();
     }
 }
