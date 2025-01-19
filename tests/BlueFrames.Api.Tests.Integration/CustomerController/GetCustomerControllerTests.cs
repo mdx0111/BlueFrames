@@ -55,4 +55,30 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
         validationError.Errors["error"][0].Should().Contain("Customer not found");
     }
+    
+    [Fact]
+    public async Task GetAll_ShouldReturnCustomers_WhenCustomersExist()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var customerResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = customerResponse.Result;
+
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Customer?offset=0&limit=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getCustomerResponse = await response.Content.ReadFromJsonAsync<Envelope<List<CustomerResponse>>>();
+        getCustomerResponse.Result.Should().NotBeEmpty();
+        getCustomerResponse.Result.Single().Should().BeEquivalentTo(new CustomerResponse
+        {
+            Id = Guid.Parse(customerId),
+            FirstName = customer.FirstName,
+            LastName = customer.LastName,
+            Phone = customer.Phone,
+            Email = customer.Email
+        });
+    }
 }

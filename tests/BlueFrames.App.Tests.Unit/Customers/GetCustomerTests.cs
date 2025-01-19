@@ -55,7 +55,7 @@ public class GetCustomerTests
     }
     
     [Fact]
-    public async Task GetAllCustomers_ShouldReturnFailure_WhenPageIsEmpty()
+    public async Task GetAllCustomers_ShouldReturnEmpty_WhenPageIsEmpty()
     {
         // Arrange
         _repository.GetAllAsync(10, 10, _cancellationToken).Returns([]);
@@ -70,8 +70,7 @@ public class GetCustomerTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<List<CustomerDto>>>();
-        result.IsFailure.Should().BeTrue();
-        result.Value.Should().BeNull();
+        result.Value.Should().BeEmpty();
     }
     
     [Fact]

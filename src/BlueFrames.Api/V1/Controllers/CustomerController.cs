@@ -3,6 +3,7 @@ using BlueFrames.Api.Contracts.Customers.Requests;
 using BlueFrames.Api.Contracts.Customers.Responses;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
 using BlueFrames.Application.Customers.Commands.UpdateCustomer;
+using BlueFrames.Application.Customers.Queries.GetAllCustomers;
 using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers.Common;
 
@@ -131,6 +132,54 @@ public class CustomerController : ApiController
         {
             _logger.LogError(ex, "Error occurred while returning customer");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customer"));
+        }
+    }
+    
+    [EndpointSummary("Gets all the customers by the provided limit and offset")]
+    [ProducesResponseType(typeof(Envelope<List<CustomerResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromQuery] int limit,
+        [FromQuery] int offset,
+        CancellationToken cancellationToken)
+    {
+        switch (limit)
+        {
+            case < 0:
+                return BadRequest(Envelope.Error("limit", "Limit must be greater than 0"));
+            case > 100:
+                return BadRequest(Envelope.Error("limit", "Limit must be less than or equal to 100"));
+        }
+
+        if (offset < 0)
+        {
+            return BadRequest(Envelope.Error("offset", "Offset must be greater than 0"));
+        }
+        
+        try
+        {
+            var query = new GetAllCustomersQuery(limit, offset);
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error occurred while returning customers - {Error}", result.Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning custcustomersomerd"));
+            }
+            
+            var customers = result.Value;
+            if (customers is null)
+            {
+                return NotFound(Envelope.Error("Customers not found"));
+            }
+            
+            return Ok(Envelope.Ok(result.Value));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while returning customers");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customers"));
         }
     }
 }

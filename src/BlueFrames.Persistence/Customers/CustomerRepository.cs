@@ -31,8 +31,12 @@ public class CustomerRepository : ICustomerRepository
             .FindAsync([id] , cancellationToken); 
     }
 
-    public Task<List<Customer>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
+    public async Task<List<Customer>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _appDbContext
+            .Customers
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
     }
 }

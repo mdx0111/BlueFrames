@@ -25,14 +25,9 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
                 request.Offset,
                 cancellationToken);
             
-            if (customers is null)
+            if (customers is null || customers.Count == 0)
             {
-                return Result.Failure<List<CustomerDto>>("Error retrieving customers");
-            }
-            
-            if (customers.Count == 0)
-            {
-                return Result.Failure<List<CustomerDto>>("No customers found");
+                return Result.Success<List<CustomerDto>>([]);
             }
             
             var result = customers
