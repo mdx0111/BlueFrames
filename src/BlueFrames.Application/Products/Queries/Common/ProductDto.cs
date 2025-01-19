@@ -1,9 +1,22 @@
+using BlueFrames.Domain.Products;
+
 namespace BlueFrames.Application.Products.Queries.Common;
 
 public record ProductDto
 {
-    public Guid Id { get; init; }
-    public string Name { get; init; }
-    public string Description { get; init; }
-    public string SKU { get; init; }
+    public Guid Id { get; private set; }
+    public string Name { get; private set; }
+    public string Description { get; private set; }
+    public string SKU { get; private set; }
+    
+    public static ProductDto From(Product product)
+    {
+        return new ProductDto
+        {
+            Id = product.Id.Value,
+            Name = product.Name.ToString(),
+            Description = product.Description.ToString(),
+            SKU = product.SKU.ToString()
+        };
+    }
 }

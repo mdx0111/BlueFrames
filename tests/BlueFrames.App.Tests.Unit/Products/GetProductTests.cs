@@ -91,13 +91,7 @@ public class GetProductTests
          result.Should().NotBeNull();
          result.Should().BeOfType<Result<ProductDto>>();
          result.IsSuccess.Should().BeTrue();
-         result.Value.Should().BeEquivalentTo(new ProductDto
-        {
-            Id = firstProduct.Id.Value,
-            Name = firstProduct.Name.ToString(),
-            Description = firstProduct.Description.ToString(),
-            SKU = firstProduct.SKU.ToString()
-        });
+         result.Value.Should().BeEquivalentTo(ProductDto.From(firstProduct));
     }
     
     [Fact]

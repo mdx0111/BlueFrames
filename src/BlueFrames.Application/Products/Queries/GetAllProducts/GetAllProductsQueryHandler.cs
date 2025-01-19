@@ -35,13 +35,9 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, R
                 return Result.Failure<List<ProductDto>>("No products found");
             }
             
-            var result = products.Select(product => new ProductDto
-            {
-                Id = product.Id.Value,
-                Name = product.Name.ToString(),
-                Description = product.Description.ToString(),
-                SKU = product.SKU.ToString()
-            }).ToList();
+            var result = products
+                .Select(ProductDto.From)
+                .ToList();
             return Result.Success(result);
         }
         catch (Exception ex)

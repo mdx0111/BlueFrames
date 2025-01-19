@@ -28,14 +28,8 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
             {
                 return Result.Failure<ProductDto>("Error retrieving product");
             }
-            
-            var result = new ProductDto
-            {
-                Id = product.Id.Value,
-                Name = product.Name.ToString(),
-                Description = product.Description.ToString(),
-                SKU = product.SKU.ToString()
-            };
+
+            var result = ProductDto.From(product);
             return Result.Success(result);
         }
         catch (Exception ex)
