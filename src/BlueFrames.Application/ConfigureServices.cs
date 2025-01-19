@@ -1,6 +1,5 @@
 using System.Reflection;
 using BlueFrames.Application.Common.Behaviours;
-using BlueFrames.Application.Common.Logging;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlueFrames.Application;

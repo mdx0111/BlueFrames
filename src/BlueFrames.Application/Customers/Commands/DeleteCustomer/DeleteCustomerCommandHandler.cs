@@ -1,4 +1,3 @@
-using BlueFrames.Application.Interfaces.Common;
 using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Customers.Commands.DeleteCustomer;
