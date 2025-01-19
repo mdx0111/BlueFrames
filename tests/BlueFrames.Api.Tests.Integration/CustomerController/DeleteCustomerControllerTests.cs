@@ -32,4 +32,16 @@ public class DeleteCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+    
+    [Fact]
+    public async Task Delete_ShouldReturnNotFound_WhenCustomerDoesNotExist()
+    {
+        // Act
+        var response = await _httpClient.DeleteAsync($"/api/v1/Customer/{Guid.NewGuid()}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("Customer not found");
+    }
 }
