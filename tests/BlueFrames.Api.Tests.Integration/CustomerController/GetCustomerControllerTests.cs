@@ -81,4 +81,16 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
             Email = customer.Email
         });
     }
+    
+    [Fact]
+    public async Task GetAll_ShouldNotReturnCustomers_WhenCustomerDoesNotExist()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Customer?offset=0&limit=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var customersResponse = await response.Content.ReadFromJsonAsync<Envelope<List<CustomerResponse>>>();
+        customersResponse.Result.Should().BeEmpty();
+    }
 }
