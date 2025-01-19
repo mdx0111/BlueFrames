@@ -50,4 +50,25 @@ public class UpdateProductTests
         _product.Description.Value.Should().Be(updateProduct.ProductDescription);
         _product.SKU.Value.Should().Be(updateProduct.ProductSKU);
     }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldFail_WhenGivenInvalidData()
+    {
+        // Arrange
+        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
+        
+        var updateProduct = new UpdateProductCommand(
+            _product.Id.Value,
+            _commerce.ProductName(),
+            _commerce.ProductDescription(),
+            "");
+        var updateHandler = new UpdateProductCommandHandler(_repository, _unitOfWork, _logger);
+        
+        // Act
+        var updateResult = await updateHandler.Handle(updateProduct, _cancellationToken);
+        
+        // Assert
+        updateResult.IsFailure.Should().BeTrue();
+        updateResult.Value.Should().BeEmpty();
+    }
 }
