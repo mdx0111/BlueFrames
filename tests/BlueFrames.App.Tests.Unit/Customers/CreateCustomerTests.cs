@@ -1,6 +1,4 @@
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
-using BlueFrames.Domain.Customers;
-using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.App.Tests.Unit.Customers;
 

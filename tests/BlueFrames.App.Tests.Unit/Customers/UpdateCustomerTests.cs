@@ -11,14 +11,18 @@ public class UpdateCustomerTests
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<UpdateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<UpdateCustomerCommandHandler>>();
 
-    private readonly Customer _customer = Customer.Create(
-        FirstName.From("John"),
-        LastName.From("Doe"),
-        PhoneNumber.From("07563385651"),
-        Email.From("john@doe.com"));
+    private const string ValidPhoneNumber = "07563385651";
+    private readonly Customer _customer;
     
     public UpdateCustomerTests()
     {
+        var person = new Bogus.Person(locale: "en_GB");
+        _customer = Customer.Create(
+            FirstName.From(person.FirstName),
+            LastName.From(person.LastName),
+            PhoneNumber.From(ValidPhoneNumber),
+            Email.From(person.Email));
+
         _repository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
     }
     
@@ -28,12 +32,13 @@ public class UpdateCustomerTests
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
+        var person = new Bogus.Person(locale: "en_GB");
         var updateCustomer = new UpdateCustomerCommand(
             _customer.Id.Value,
-            "Jane",
-            "Doee",
+            person.FirstName,
+            person.LastName,
             "07512345671",
-            "jan@doee.com");
+            person.Email);
         var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
@@ -56,10 +61,11 @@ public class UpdateCustomerTests
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
+        var person = new Bogus.Person(locale: "en_GB");
         var updateCustomer = new UpdateCustomerCommand(
             _customer.Id.Value,
-            "Jane",
-            "Doee",
+            person.FirstName,
+            person.LastName,
             "07512345671",
             "");
         var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
@@ -78,12 +84,13 @@ public class UpdateCustomerTests
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
+        var person = new Bogus.Person(locale: "en_GB");
         var updateCustomer = new UpdateCustomerCommand(
             Guid.NewGuid(),
-            "Jane",
-            "Doee",
+            person.FirstName,
+            person.LastName,
             "07512345671",
-            "jan@doee.com");
+            person.Email);
         var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act

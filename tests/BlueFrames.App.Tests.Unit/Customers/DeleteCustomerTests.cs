@@ -11,14 +11,17 @@ public class DeleteCustomerTests
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<DeleteCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<DeleteCustomerCommandHandler>>();
 
-    private readonly Customer _customer = Customer.Create(
-        FirstName.From("John"),
-        LastName.From("Doe"),
-        PhoneNumber.From("07563385651"),
-        Email.From("john@doe.com"));
+    private const string ValidPhoneNumber = "07563385651";
+    private readonly Customer _customer;
 
     public DeleteCustomerTests()
     {
+        var person = new Bogus.Person(locale: "en_GB");
+        _customer = Customer.Create(
+            FirstName.From(person.FirstName),
+            LastName.From(person.LastName),
+            PhoneNumber.From(ValidPhoneNumber),
+            Email.From(person.Email));
         _repository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
     }
     
