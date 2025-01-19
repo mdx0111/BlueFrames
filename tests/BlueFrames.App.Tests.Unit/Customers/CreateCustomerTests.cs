@@ -1,4 +1,6 @@
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
+using BlueFrames.Domain.Customers;
+using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.App.Tests.Unit.Customers;
 
@@ -8,7 +10,14 @@ public class CreateCustomerTests
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<CreateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateCustomerCommandHandler>>();
- 
+    private readonly Bogus.Person _person;
+    private const string ValidPhoneNumber = "07563385651";
+
+    public CreateCustomerTests()
+    {
+        _person = new Bogus.Person(locale: "en_GB");
+    }
+
     [Fact]
     public async Task CreateCustomer_ShouldSuccess_WhenGivenValidData()
     {
@@ -16,10 +25,10 @@ public class CreateCustomerTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var createCustomer = new CreateCustomerCommand(
-            "John",
-            "Doe",
-            "07512345671",
-            "john@doe.com");
+            _person.FirstName,
+            _person.LastName,
+            ValidPhoneNumber,
+            _person.Email);
 
         var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
@@ -38,9 +47,9 @@ public class CreateCustomerTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
 
         var createCustomer = new CreateCustomerCommand(
-            "John",
-            "Doe",
-            "07512345671",
+            _person.FirstName,
+            _person.LastName,
+            ValidPhoneNumber,
             "");
         var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
 
