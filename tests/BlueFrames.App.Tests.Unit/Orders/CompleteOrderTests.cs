@@ -30,7 +30,7 @@ public class CompleteOrderTests
         var product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         
         var person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
@@ -51,8 +51,8 @@ public class CompleteOrderTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var completeOrder = new CompleteOrderCommand(
-            _order.Id.Value,
-            _customer.Id.Value);
+            _order.Id,
+            _customer.Id);
 
         var handler = new CompleteOrderCommandHandler(
             _customerRepository,
@@ -72,8 +72,8 @@ public class CompleteOrderTests
     {
         // Arrange
         var completeOrder = new CompleteOrderCommand(
-            Guid.NewGuid(),
-            _customer.Id.Value);
+            OrderId.From(Guid.NewGuid()),
+            _customer.Id);
 
         var handler = new CompleteOrderCommandHandler(
             _customerRepository,
@@ -93,8 +93,8 @@ public class CompleteOrderTests
     {
         // Arrange
         var completeOrder = new CompleteOrderCommand(
-            _order.Id.Value,
-            Guid.NewGuid());
+            _order.Id,
+            CustomerId.From(Guid.NewGuid()));
 
         var handler = new CompleteOrderCommandHandler(
             _customerRepository,

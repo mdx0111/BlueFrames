@@ -1,11 +1,14 @@
+using BlueFrames.Domain.Customers.Common;
+using BlueFrames.Domain.Orders.Common;
+
 namespace BlueFrames.Application.Orders.Commands.CompleteOrder;
 
 public record CompleteOrderCommand : IRequest<Result>
 {
-    public Guid OrderId { get; }
-    public Guid CustomerId { get; }
+    public OrderId OrderId { get; }
+    public CustomerId CustomerId { get; }
     
-    public CompleteOrderCommand(Guid orderId, Guid customerId)
+    public CompleteOrderCommand(OrderId orderId, CustomerId customerId)
     {
         OrderId = orderId;
         CustomerId = customerId;

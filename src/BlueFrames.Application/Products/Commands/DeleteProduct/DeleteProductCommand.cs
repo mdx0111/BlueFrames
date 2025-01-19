@@ -1,10 +1,12 @@
+using BlueFrames.Domain.Products.Common;
+
 namespace BlueFrames.Application.Products.Commands.DeleteProduct;
 
 public record DeleteProductCommand : IRequest<Result>
 {
-    public Guid Id { get; set; }
+    public ProductId Id { get; set; }
 
-    public DeleteProductCommand(Guid id)
+    public DeleteProductCommand(ProductId id)
     {
         Id = id;
     }

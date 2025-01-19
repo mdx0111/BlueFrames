@@ -21,7 +21,7 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
         try
         {
             var product = await _repository.GetByIdAsync(
-                request.Id,
+                request.Id.Value,
                 cancellationToken);
             
             if (product is null)

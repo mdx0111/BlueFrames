@@ -30,7 +30,7 @@ public class GetOrderTests
         _product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         _productRepository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
 
         var person = new Bogus.Person(locale: "en_GB");
@@ -52,8 +52,8 @@ public class GetOrderTests
     {
         // Arrange
         var getOrder = new GetCustomerOrderQuery(
-            _order.Id.Value,
-            _customer.Id.Value);
+            _order.Id,
+            _customer.Id);
 
         var logger = Substitute.For<ILoggerAdapter<GetCustomerOrderQueryHandler>>();
         var handler = new GetCustomerOrderQueryHandler(
@@ -74,8 +74,8 @@ public class GetOrderTests
     {
         // Arrange
         var getOrder = new GetCustomerOrderQuery(
-            Guid.NewGuid(),
-            _customer.Id.Value);
+            OrderId.From(Guid.NewGuid()),
+            _customer.Id);
 
         var logger = Substitute.For<ILoggerAdapter<GetCustomerOrderQueryHandler>>();
         var handler = new GetCustomerOrderQueryHandler(
@@ -96,8 +96,8 @@ public class GetOrderTests
     {
         // Arrange
         var getOrder = new GetCustomerOrderQuery(
-            _order.Id.Value,
-            Guid.NewGuid());
+            _order.Id,
+            CustomerId.From(Guid.NewGuid()));
 
         var logger = Substitute.For<ILoggerAdapter<GetCustomerOrderQueryHandler>>();
         var handler = new GetCustomerOrderQueryHandler(

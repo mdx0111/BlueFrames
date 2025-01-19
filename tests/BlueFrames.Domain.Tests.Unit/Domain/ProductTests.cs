@@ -16,7 +16,7 @@ public class ProductTests
         _productDetails = new ProductDetails(
             Name: ProductName.From(commerce.ProductName()),
             Description: ProductDescription.From(commerce.ProductDescription()),
-            SKU: ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper())
+            SKU: ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper())
         );
 
         _product = Product.Create(_productDetails.Name, _productDetails.Description, _productDetails.SKU);
@@ -65,7 +65,7 @@ public class ProductTests
     public void Create_ShouldThrowException_WhenSkuIsInvalid(string sku)
     {
         // Act
-        Action createProduct = () => _ = Product.Create(_productDetails.Name, _productDetails.Description, ProductSku.From(sku));
+        Action createProduct = () => _ = Product.Create(_productDetails.Name, _productDetails.Description, ProductSKU.From(sku));
 
         // Assert
         createProduct.Should().Throw<ValidationException>();
@@ -123,7 +123,7 @@ public class ProductTests
     public void ChangeSKU_ShouldUpdateProductSKU()
     {
         // Arrange
-        var newProductSKU = ProductSku.From("NESKU");
+        var newProductSKU = ProductSKU.From("NESKU");
 
         // Act
         _product.ChangeSKU(newProductSKU);
@@ -137,7 +137,7 @@ public class ProductTests
     public void ChangeSKU_ShouldThrowException_WhenSkuIsInvalid(string sku)
     {
         // Act
-        Action changeSKU = () => _product.ChangeSKU(ProductSku.From(sku));
+        Action changeSKU = () => _product.ChangeSKU(ProductSKU.From(sku));
 
         // Assert
         changeSKU.Should().Throw<ValidationException>();
@@ -170,4 +170,4 @@ public class ProductTests
     ];
 }
 
-internal record ProductDetails(ProductName Name, ProductDescription Description, ProductSku SKU);
+internal record ProductDetails(ProductName Name, ProductDescription Description, ProductSKU SKU);

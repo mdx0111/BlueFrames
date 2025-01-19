@@ -26,7 +26,7 @@ public class GetProductTests
             var product = Product.Create(
                 ProductName.From(_commerce.ProductName()),
                 ProductDescription.From(_commerce.ProductDescription()),
-                ProductSku.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+                ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
             _listOfProducts.Add(product);
         }
     }
@@ -80,7 +80,7 @@ public class GetProductTests
         var firstProduct = _listOfProducts.First();
         _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).Returns(firstProduct);
         
-         var query = new GetProductByIdQuery(firstProduct.Id.Value);
+         var query = new GetProductByIdQuery(firstProduct.Id);
          var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
          var handler = new GetProductByIdQueryHandler(_repository, logger);
 
@@ -107,7 +107,7 @@ public class GetProductTests
         var firstProduct = _listOfProducts.First();
         _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).ReturnsNull();
         
-        var query = new GetProductByIdQuery(firstProduct.Id.Value);
+        var query = new GetProductByIdQuery(firstProduct.Id);
         var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
         var handler = new GetProductByIdQueryHandler(_repository, logger);
 

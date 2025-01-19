@@ -1,11 +1,14 @@
+using BlueFrames.Domain.Customers.Common;
+using BlueFrames.Domain.Products.Common;
+
 namespace BlueFrames.Application.Orders.Commands.PlaceOrder;
 
 public record PlaceOrderCommand : IRequest<Result<Guid>>
 {
-    public Guid CustomerId { get; }
-    public Guid ProductId { get; }
+    public CustomerId CustomerId { get; }
+    public ProductId ProductId { get; }
     
-    public PlaceOrderCommand(Guid customerId, Guid productId)
+    public PlaceOrderCommand(CustomerId customerId, ProductId productId)
     {
         CustomerId = customerId;
         ProductId = productId;

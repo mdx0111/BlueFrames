@@ -20,7 +20,7 @@ public class DeleteProductTests
         _product = Product.Create(
             ProductName.From(_commerce.ProductName()),
             ProductDescription.From(_commerce.ProductDescription()),
-            ProductSku.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
 
         _repository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
     }
@@ -31,7 +31,7 @@ public class DeleteProductTests
         // Arrange        
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
 
-        var deleteProduct = new DeleteProductCommand(_product.Id.Value);
+        var deleteProduct = new DeleteProductCommand(_product.Id);
         var deleteHandler = new DeleteProductCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
@@ -47,7 +47,7 @@ public class DeleteProductTests
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
-        var deleteProduct = new DeleteProductCommand(Guid.NewGuid());
+        var deleteProduct = new DeleteProductCommand(ProductId.From(Guid.NewGuid()));
         var deleteHandler = new DeleteProductCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act

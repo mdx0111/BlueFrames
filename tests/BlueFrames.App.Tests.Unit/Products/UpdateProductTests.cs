@@ -20,7 +20,7 @@ public class UpdateProductTests
         _product = Product.Create(
             ProductName.From(_commerce.ProductName()),
             ProductDescription.From(_commerce.ProductDescription()),
-            ProductSku.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
 
         _repository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
     }
@@ -32,10 +32,10 @@ public class UpdateProductTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var updateProduct = new UpdateProductCommand(
-            _product.Id.Value,
-            _commerce.ProductName(),
-            _commerce.ProductDescription(),
-            _commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper());
+            _product.Id,
+            ProductName.From(_commerce.ProductName()),
+            ProductDescription.From(_commerce.ProductDescription()),
+            ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         var updateHandler = new UpdateProductCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
@@ -46,30 +46,9 @@ public class UpdateProductTests
         updateResult.Value.Should().NotBeEmpty();
         updateResult.Value.Should().Be(_product.Id.Value);
         
-        _product.Name.Value.Should().Be(updateProduct.ProductName);
-        _product.Description.Value.Should().Be(updateProduct.ProductDescription);
-        _product.SKU.Value.Should().Be(updateProduct.ProductSKU);
-    }
-    
-    [Fact]
-    public async Task UpdateCustomer_ShouldReturnFailure_WhenGivenInvalidData()
-    {
-        // Arrange
-        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
-        
-        var updateProduct = new UpdateProductCommand(
-            _product.Id.Value,
-            _commerce.ProductName(),
-            _commerce.ProductDescription(),
-            "");
-        var updateHandler = new UpdateProductCommandHandler(_repository, _unitOfWork, _logger);
-        
-        // Act
-        var updateResult = await updateHandler.Handle(updateProduct, _cancellationToken);
-        
-        // Assert
-        updateResult.IsFailure.Should().BeTrue();
-        updateResult.Value.Should().BeEmpty();
+        _product.Name.Should().Be(updateProduct.ProductName);
+        _product.Description.Should().Be(updateProduct.ProductDescription);
+        _product.SKU.Should().Be(updateProduct.ProductSKU);
     }
     
     [Fact]
@@ -79,10 +58,10 @@ public class UpdateProductTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var updateProduct = new UpdateProductCommand(
-            Guid.NewGuid(),
-            _commerce.ProductName(),
-            _commerce.ProductDescription(),
-            _commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper());
+            ProductId.From(Guid.NewGuid()),
+            ProductName.From(_commerce.ProductName()),
+            ProductDescription.From(_commerce.ProductDescription()),
+            ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         var updateHandler = new UpdateProductCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act

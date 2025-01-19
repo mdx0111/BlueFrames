@@ -1,17 +1,19 @@
+using BlueFrames.Domain.Customers.Common;
+
 namespace BlueFrames.Application.Customers.Commands.CreateCustomer;
 
 public record CreateCustomerCommand : IRequest<Result<Guid>>
 {
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string Phone { get; }
-    public string Email { get; }
+    public FirstName FirstName { get; }
+    public LastName LastName { get; }
+    public PhoneNumber Phone { get; }
+    public Email Email { get; }
 
     public CreateCustomerCommand(
-        string firstName,
-        string lastName,
-        string phone,
-        string email)
+        FirstName firstName,
+        LastName lastName,
+        PhoneNumber phone,
+        Email email)
     {
         FirstName = firstName;
         LastName = lastName;

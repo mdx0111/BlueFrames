@@ -80,7 +80,7 @@ public class GetCustomerTests
         var firstCustomer = _listOfCustomers.First();
         _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).Returns(firstCustomer);
         
-        var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
+        var query = new GetCustomerByIdQuery(firstCustomer.Id);
         var logger = Substitute.For<ILoggerAdapter<GetCustomerByIdQueryHandler>>();
         var handler = new GetCustomerByIdQueryHandler(_repository, logger);
 
@@ -108,7 +108,7 @@ public class GetCustomerTests
         var firstCustomer = _listOfCustomers.First();
         _repository.GetByIdAsync(firstCustomer.Id.Value, _cancellationToken).ReturnsNull();
         
-        var query = new GetCustomerByIdQuery(firstCustomer.Id.Value);
+        var query = new GetCustomerByIdQuery(firstCustomer.Id);
         var logger = Substitute.For<ILoggerAdapter<GetCustomerByIdQueryHandler>>();
         var handler = new GetCustomerByIdQueryHandler(_repository, logger);
 

@@ -20,7 +20,7 @@ public class CreateProductTests
         _product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
     }
     
     [Fact]
@@ -30,9 +30,9 @@ public class CreateProductTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var createProduct = new CreateProductCommand(
-            _product.Name.Value,
-            _product.Description.Value,
-            _product.SKU.Value);
+            _product.Name,
+            _product.Description,
+            _product.SKU);
 
         var handler = new CreateProductCommandHandler(_repository, _unitOfWork, _logger);
         
@@ -42,26 +42,5 @@ public class CreateProductTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
-    }
-    
-    [Fact]
-    public async Task CreateProduct_ShouldReturnFailure_WhenGivenInvalidData()
-    {
-        // Arrange
-        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
-
-        var createProduct = new CreateProductCommand(
-            _product.Name.Value,
-            _product.Description.Value,
-            "");
-
-        var handler = new CreateProductCommandHandler(_repository, _unitOfWork, _logger);
-
-        // Act
-        var result = await handler.Handle(createProduct, _cancellationToken);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Value.Should().BeEmpty();
     }
 }

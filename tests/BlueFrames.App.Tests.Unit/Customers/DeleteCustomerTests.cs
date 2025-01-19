@@ -31,7 +31,7 @@ public class DeleteCustomerTests
         // Arrange        
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
 
-        var deleteCustomer = new DeleteCustomerCommand(_customer.Id.Value);
+        var deleteCustomer = new DeleteCustomerCommand(_customer.Id);
         var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
@@ -47,7 +47,7 @@ public class DeleteCustomerTests
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
-        var deleteCustomer = new DeleteCustomerCommand(Guid.NewGuid());
+        var deleteCustomer = new DeleteCustomerCommand(CustomerId.From(Guid.NewGuid()));
         var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act

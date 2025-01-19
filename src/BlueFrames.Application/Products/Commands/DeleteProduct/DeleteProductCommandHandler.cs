@@ -22,7 +22,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
     {
         try
         {
-            var product = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            var product = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
             if (product is null)
             {
                 return Result.Failure($"Product with Id {request.Id} not found.");
@@ -33,7 +33,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         
-            return Result.Success(product.Id.Value);
+            return Result.Success();
         }
         catch (ValidationException ex)
         {

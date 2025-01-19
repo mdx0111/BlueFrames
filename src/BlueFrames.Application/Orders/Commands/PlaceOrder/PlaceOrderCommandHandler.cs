@@ -30,13 +30,13 @@ public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Resul
     {
         try
         {
-            var customer = await _customerRepository.GetByIdAsync(request.CustomerId, cancellationToken);
+            var customer = await _customerRepository.GetByIdAsync(request.CustomerId.Value, cancellationToken);
             if (customer is null)
             {
                 return Result.Failure<Guid>("Customer not found");
             }
             
-            var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
+            var product = await _productRepository.GetByIdAsync(request.ProductId.Value, cancellationToken);
             if (product is null)
             {
                 return Result.Failure<Guid>("Product not found");

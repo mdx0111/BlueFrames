@@ -1,12 +1,13 @@
 using BlueFrames.Application.Products.Queries.Common;
+using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Application.Products.Queries.GetProductById;
 
 public record GetProductByIdQuery : IRequest<Result<ProductDto>>
 {
-    public Guid Id { get; }
+    public ProductId Id { get; }
     
-    public GetProductByIdQuery(Guid id)
+    public GetProductByIdQuery(ProductId id)
     {
         Id = id;
     }

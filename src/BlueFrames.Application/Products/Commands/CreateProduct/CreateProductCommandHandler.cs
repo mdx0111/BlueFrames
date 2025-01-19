@@ -25,9 +25,9 @@ public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand,
         try
         {
             var product = Product.Create(
-                ProductName.From(request.ProductName),
-                ProductDescription.From(request.ProductDescription),
-                ProductSku.From(request.ProductSKU));
+                request.ProductName,
+                request.ProductDescription,
+                request.ProductSKU);
         
             _repository.AddOrUpdate(product);
         

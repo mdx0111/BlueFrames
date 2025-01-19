@@ -23,16 +23,16 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
     {
         try
         {
-            var customer = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            var customer = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
             if (customer is null)
             {
                 return Result.Failure<Guid>($"Customer with Id {request.Id} not found.");
             }
             
-            customer.ChangeFirstName(FirstName.From(request.FirstName));
-            customer.ChangeLastName(LastName.From(request.LastName));
-            customer.ChangePhone(PhoneNumber.From(request.Phone));
-            customer.ChangeEmail(Email.From(request.Email));
+            customer.ChangeFirstName(request.FirstName);
+            customer.ChangeLastName(request.LastName);
+            customer.ChangePhone(request.Phone);
+            customer.ChangeEmail(request.Email);
         
             _repository.AddOrUpdate(customer);
         

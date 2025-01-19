@@ -1,12 +1,13 @@
 using BlueFrames.Application.Customers.Queries.Common;
+using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Application.Customers.Queries.GetCustomerById;
 
 public record GetCustomerByIdQuery : IRequest<Result<CustomerDto>>
 {
-    public Guid Id { get; }
+    public CustomerId Id { get; }
 
-    public GetCustomerByIdQuery(Guid id)
+    public GetCustomerByIdQuery(CustomerId id)
     {
         Id = id;
     }

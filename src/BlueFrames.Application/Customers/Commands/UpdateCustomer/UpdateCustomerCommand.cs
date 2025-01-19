@@ -1,19 +1,21 @@
+using BlueFrames.Domain.Customers.Common;
+
 namespace BlueFrames.Application.Customers.Commands.UpdateCustomer;
 
 public record UpdateCustomerCommand : IRequest<Result<Guid>>
 {
-    public Guid Id { get; set; }
-    public string FirstName { get; }
-    public string LastName { get; }
-    public string Phone { get; }
-    public string Email { get; }
+    public CustomerId Id { get; set; }
+    public FirstName FirstName { get; }
+    public LastName LastName { get; }
+    public PhoneNumber Phone { get; }
+    public Email Email { get; }
 
     public UpdateCustomerCommand(
-        Guid id,
-        string firstName,
-        string lastName,
-        string phone,
-        string email)
+        CustomerId id,
+        FirstName firstName,
+        LastName lastName,
+        PhoneNumber phone,
+        Email email)
     {
         Id = id;
         FirstName = firstName;

@@ -1,5 +1,4 @@
 using BlueFrames.Application.Interfaces.Repositories;
-using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.Application.Products.Commands.UpdateProduct;
 
@@ -23,15 +22,15 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
     {
         try
         {
-            var product = await _repository.GetByIdAsync(request.Id, cancellationToken);
+            var product = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
             if (product is null)
             {
                 return Result.Failure<Guid>($"Customer with Id {request.Id} not found.");
             }
             
-            product.ChangeName(ProductName.From(request.ProductName));
-            product.ChangeDescription(ProductDescription.From(request.ProductDescription));
-            product.ChangeSKU(ProductSku.From(request.ProductSKU));
+            product.ChangeName(request.ProductName);
+            product.ChangeDescription(request.ProductDescription);
+            product.ChangeSKU(request.ProductSKU);
         
             _repository.AddOrUpdate(product);
         

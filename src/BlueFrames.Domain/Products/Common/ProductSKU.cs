@@ -1,6 +1,6 @@
 namespace BlueFrames.Domain.Products.Common;
 
-public partial class ProductSku : ValueOf<string, ProductSku>
+public partial class ProductSKU : ValueOf<string, ProductSKU>
 {
     [GeneratedRegex("^[a-zA-Z0-9]{5}$", RegexOptions.IgnoreCase | RegexOptions.Compiled, "en-GB")]
     private static partial Regex CompiledProductSkuRegex();

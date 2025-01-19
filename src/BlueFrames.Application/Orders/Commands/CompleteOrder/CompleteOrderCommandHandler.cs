@@ -25,13 +25,13 @@ public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommand,
     {
         try
         {
-            var customer = await _customerRepository.GetByIdAsync(request.CustomerId, cancellationToken);
+            var customer = await _customerRepository.GetByIdAsync(request.CustomerId.Value, cancellationToken);
             if (customer is null)
             {
                 return Result.Failure<Guid>("Customer not found");
             }
             
-            var order = customer.FindOrderById(request.OrderId);
+            var order = customer.FindOrderById(request.OrderId.Value);
             if (order is null)
             {
                 return Result.Failure<Guid>("Order not found");

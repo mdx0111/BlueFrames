@@ -1,6 +1,5 @@
 using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Customers;
-using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Application.Customers.Commands.CreateCustomer;
 
@@ -25,10 +24,10 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
         try
         {
             var customer = Customer.Create(
-                FirstName.From(request.FirstName),
-                LastName.From(request.LastName),
-                PhoneNumber.From(request.Phone),
-                Email.From(request.Email));
+                request.FirstName,
+                request.LastName,
+                request.Phone,
+                request.Email);
         
             _repository.AddOrUpdate(customer);
         

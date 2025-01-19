@@ -27,7 +27,7 @@ public class PlaceOrderTests
         _product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         _productRepository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
 
         var person = new Bogus.Person(locale: "en_GB");
@@ -48,8 +48,8 @@ public class PlaceOrderTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var placeOrder = new PlaceOrderCommand(
-            _customer.Id.Value,
-            _product.Id.Value);
+            _customer.Id,
+            _product.Id);
 
         var handler = new PlaceOrderCommandHandler(
             _customerRepository,
@@ -76,8 +76,8 @@ public class PlaceOrderTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
 
         var placeOrder = new PlaceOrderCommand(
-            Guid.Empty, 
-            _product.Id.Value);
+            CustomerId.From(Guid.NewGuid()),
+            _product.Id);
 
         var handler = new PlaceOrderCommandHandler(
             _customerRepository,
@@ -101,8 +101,8 @@ public class PlaceOrderTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
 
         var placeOrder = new PlaceOrderCommand(
-            _customer.Id.Value, 
-            Guid.Empty);
+            _customer.Id, 
+            ProductId.From(Guid.NewGuid()));
 
         var handler = new PlaceOrderCommandHandler(
             _customerRepository,

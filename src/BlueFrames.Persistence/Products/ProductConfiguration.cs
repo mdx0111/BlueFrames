@@ -27,7 +27,7 @@ public class ProductConfiguration : IEntityTypeConfiguration<Product>
         builder
             .Property(product => product.SKU)
             .IsRequired()
-            .HasConversion(productSku => productSku.Value, value => ProductSku.From(value));
+            .HasConversion(productSku => productSku.Value, value => ProductSKU.From(value));
         
         builder
             .HasMany(product => product.Orders)

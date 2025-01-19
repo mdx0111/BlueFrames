@@ -34,11 +34,11 @@ public class UpdateCustomerTests
         
         var person = new Bogus.Person(locale: "en_GB");
         var updateCustomer = new UpdateCustomerCommand(
-            _customer.Id.Value,
-            person.FirstName,
-            person.LastName,
-            "07512345671",
-            person.Email);
+            _customer.Id,
+            FirstName.From(person.FirstName),
+            LastName.From(person.LastName),
+            PhoneNumber.From("07512345671"),
+            Email.From(person.Email));
         var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
@@ -49,35 +49,12 @@ public class UpdateCustomerTests
         updateResult.Value.Should().NotBeEmpty();
         updateResult.Value.Should().Be(_customer.Id.Value);
         
-        _customer.FirstName.Value.Should().Be(updateCustomer.FirstName);
-        _customer.LastName.Value.Should().Be(updateCustomer.LastName);
-        _customer.Phone.Value.Should().Be(updateCustomer.Phone);
-        _customer.Email.Value.Should().Be(updateCustomer.Email);
+        _customer.FirstName.Should().Be(updateCustomer.FirstName);
+        _customer.LastName.Should().Be(updateCustomer.LastName);
+        _customer.Phone.Should().Be(updateCustomer.Phone);
+        _customer.Email.Should().Be(updateCustomer.Email);
     }
-    
-    [Fact]
-    public async Task UpdateCustomer_ShouldReturnFailure_WhenGivenInvalidData()
-    {
-        // Arrange
-        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
-        
-        var person = new Bogus.Person(locale: "en_GB");
-        var updateCustomer = new UpdateCustomerCommand(
-            _customer.Id.Value,
-            person.FirstName,
-            person.LastName,
-            "07512345671",
-            "");
-        var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
-        
-        // Act
-        var updateResult = await updateHandler.Handle(updateCustomer, _cancellationToken);
-        
-        // Assert
-        updateResult.IsSuccess.Should().BeFalse();
-        updateResult.Value.Should().BeEmpty();
-    }
-    
+
     [Fact]
     public async Task UpdateCustomer_ShouldReturnFailure_WhenCustomerNotFound()
     {
@@ -86,11 +63,11 @@ public class UpdateCustomerTests
         
         var person = new Bogus.Person(locale: "en_GB");
         var updateCustomer = new UpdateCustomerCommand(
-            Guid.NewGuid(),
-            person.FirstName,
-            person.LastName,
-            "07512345671",
-            person.Email);
+            CustomerId.From(Guid.NewGuid()),
+            FirstName.From(person.FirstName),
+            LastName.From(person.LastName),
+            PhoneNumber.From("07512345671"),
+            Email.From(person.Email));
         var updateHandler = new UpdateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act

@@ -8,13 +8,13 @@ public class Product : Entity, IAggregateRoot
     public ProductId Id { get; private set; }
     public ProductName Name { get; private set; }
     public ProductDescription Description { get; private set; }
-    public ProductSku SKU { get; private set; }
+    public ProductSKU SKU { get; private set; }
     public bool IsDeleted { get; private set; }
     
     private readonly List<Order> _orders = [];
     public IReadOnlyCollection<Order> Orders => _orders.AsReadOnly();
     
-    public static Product Create(ProductName name, ProductDescription description, ProductSku sku)
+    public static Product Create(ProductName name, ProductDescription description, ProductSKU sku)
     {
         return new Product(name, description, sku);
     }
@@ -23,7 +23,7 @@ public class Product : Entity, IAggregateRoot
     {
     }
 
-    private Product(ProductName name, ProductDescription description, ProductSku sku)
+    private Product(ProductName name, ProductDescription description, ProductSKU sku)
     {
         Id = ProductId.From(GuidProvider.Create());
         Name = name ?? throw new ValidationException("Name is required");
@@ -41,7 +41,7 @@ public class Product : Entity, IAggregateRoot
         Description = description ?? throw new ValidationException("Description is required");
     }
     
-    public void ChangeSKU(ProductSku sku)
+    public void ChangeSKU(ProductSKU sku)
     {
         SKU = sku ?? throw new ValidationException("SKU is required");
     }

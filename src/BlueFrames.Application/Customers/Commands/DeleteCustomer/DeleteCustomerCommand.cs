@@ -1,10 +1,12 @@
+using BlueFrames.Domain.Customers.Common;
+
 namespace BlueFrames.Application.Customers.Commands.DeleteCustomer;
 
 public record DeleteCustomerCommand : IRequest<Result>
 {
-    public Guid Id { get; set; }
+    public CustomerId Id { get; }
 
-    public DeleteCustomerCommand(Guid id)
+    public DeleteCustomerCommand(CustomerId id)
     {
         Id = id;
     }

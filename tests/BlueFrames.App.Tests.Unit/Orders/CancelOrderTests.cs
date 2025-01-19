@@ -30,7 +30,7 @@ public class CancelOrderTests
         var product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
+            ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
         
         var person = new Bogus.Person(locale: "en_GB");
         _customer = Customer.Create(
@@ -51,8 +51,8 @@ public class CancelOrderTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var cancelOrder = new CancelOrderCommand(
-            _order.Id.Value,
-            _customer.Id.Value);
+            _order.Id,
+            _customer.Id);
 
         var handler = new CancelOrderCommandHandler(
             _customerRepository,
@@ -72,8 +72,8 @@ public class CancelOrderTests
     {
         // Arrange
         var cancelOrder = new CancelOrderCommand(
-            Guid.NewGuid(),
-            _customer.Id.Value);
+            OrderId.From(Guid.NewGuid()),
+            _customer.Id);
 
         var handler = new CancelOrderCommandHandler(
             _customerRepository,
@@ -93,8 +93,8 @@ public class CancelOrderTests
     {
         // Arrange
         var cancelOrder = new CancelOrderCommand(
-            _order.Id.Value,
-            Guid.NewGuid());
+            _order.Id,
+            CustomerId.From(Guid.NewGuid()));
 
         var handler = new CancelOrderCommandHandler(
             _customerRepository,

@@ -1,4 +1,5 @@
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
+using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.App.Tests.Unit.Customers;
 
@@ -24,10 +25,10 @@ public class CreateCustomerTests
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
         var createCustomer = new CreateCustomerCommand(
-            _person.FirstName,
-            _person.LastName,
-            ValidPhoneNumber,
-            _person.Email);
+            FirstName.From(_person.FirstName),
+            LastName.From(_person.LastName),
+            PhoneNumber.From(ValidPhoneNumber),
+            Email.From(_person.Email));
 
         var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
@@ -37,26 +38,5 @@ public class CreateCustomerTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
-    }
-
-    [Fact]
-    public async Task CreateCustomer_ShouldReturnFailure_WhenGivenInvalidData()
-    {
-        // Arrange
-        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
-
-        var createCustomer = new CreateCustomerCommand(
-            _person.FirstName,
-            _person.LastName,
-            ValidPhoneNumber,
-            "");
-        var handler = new CreateCustomerCommandHandler(_repository, _unitOfWork, _logger);
-
-        // Act
-        var result = await handler.Handle(createCustomer, _cancellationToken);
-
-        // Assert
-        result.IsSuccess.Should().BeFalse();
-        result.Value.Should().BeEmpty();
     }
 }
