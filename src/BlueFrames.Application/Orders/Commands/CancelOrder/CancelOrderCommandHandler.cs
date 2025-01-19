@@ -31,7 +31,7 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Res
                 return Result.Failure<Guid>("Customer not found");
             }
             
-            var order = customer.GetOrderById(request.OrderId);
+            var order = customer.FindOrderById(request.OrderId);
             if (order is null)
             {
                 return Result.Failure<Guid>("Order not found");
