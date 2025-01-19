@@ -1,5 +1,6 @@
 using BlueFrames.Api.Contracts;
 using BlueFrames.Api.Contracts.Customers.Requests;
+using BlueFrames.Api.Contracts.Customers.Responses;
 
 namespace BlueFrames.Api.Tests.Integration.CustomerController;
 
@@ -10,7 +11,7 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
     private readonly Faker<CustomerRequest> _customerFaker = new Faker<CustomerRequest>("en_GB")
         .RuleFor(dto => dto.FirstName, faker => faker.Person.FirstName)
         .RuleFor(dto => dto.LastName, faker => faker.Person.LastName)
-        .RuleFor(dto => dto.Phone, faker => faker.Phone.PhoneNumberFormat(1))
+        .RuleFor(dto => dto.Phone, faker => faker.Phone.PhoneNumberFormat(1).Replace(" ", string.Empty))
         .RuleFor(dto => dto.Email, faker => faker.Person.Email);
     
     public UpdateCustomerControllerTests(BlueFramesApiFactory factory)
@@ -30,9 +31,19 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         var updatedCustomer = _customerFaker.Generate();
 
         // Act
-        var response = await _httpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+        var getResponse = await _httpClient.GetAsync($"/api/v1/Customer/{customerId}");
+        var getCustomerResponse = await getResponse.Content.ReadFromJsonAsync<Envelope<CustomerResponse>>();
 
         // Assert
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        getCustomerResponse.Result.Should().BeEquivalentTo(new CustomerResponse
+        {
+            Id = Guid.Parse(customerId),
+            FirstName = updatedCustomer.FirstName,
+            LastName = updatedCustomer.LastName,
+            Phone = updatedCustomer.Phone,
+            Email = updatedCustomer.Email
+        });
     }
 }
