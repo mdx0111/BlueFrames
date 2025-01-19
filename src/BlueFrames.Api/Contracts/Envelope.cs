@@ -1,4 +1,4 @@
-﻿namespace BlueFrames.Api.Models;
+﻿namespace BlueFrames.Api.Contracts;
 
 public class Envelope<T>
 {

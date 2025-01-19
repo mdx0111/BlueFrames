@@ -1,4 +1,4 @@
-namespace BlueFrames.Api.Models.Customers;
+namespace BlueFrames.Api.Contracts.Customers.Requests;
 
 public class CustomerRequest
 {

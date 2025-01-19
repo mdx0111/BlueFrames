@@ -1,7 +1,10 @@
-using BlueFrames.Api.Models.Customers;
+using BlueFrames.Api.Contracts;
+using BlueFrames.Api.Contracts.Customers.Requests;
+using BlueFrames.Api.Contracts.Customers.Responses;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
 using BlueFrames.Application.Customers.Commands.UpdateCustomer;
 using BlueFrames.Application.Customers.Queries.Common;
+using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers.Common;
 
 namespace BlueFrames.Api.V1.Controllers;
@@ -46,7 +49,6 @@ public class CustomerController : ApiController
 
             _logger.LogError("Error occurred while creating customer - {Error}", result.Error);
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while creating customer"));
-
         }
         catch (ValidationException ex)
         {
@@ -86,7 +88,6 @@ public class CustomerController : ApiController
 
             _logger.LogError("Error occurred while updating customer - {Error}", result.Error);
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while updating customer"));
-
         }
         catch (ValidationException ex)
         {
@@ -101,14 +102,30 @@ public class CustomerController : ApiController
     }
     
     [EndpointSummary("Gets customer details by providing customer id")]
-    [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Envelope<CustomerResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpGet("{id:guid}")]
-    public Task<IActionResult> Get(
+    public async Task<IActionResult> Get(
         [FromRoute] Guid id,
         CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        try
+        {
+            var query = new GetCustomerByIdQuery(CustomerId.From(id));
+            var result = await _mediator.Send(query, cancellationToken);
+            if (!result.IsFailure)
+            {
+                return Ok(Envelope.Ok(result.Value));
+            }
+
+            _logger.LogError("Error occurred while returning customer - {Error}", result.Error);
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customer"));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while returning customer");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customer"));
+        }
     }
 }
