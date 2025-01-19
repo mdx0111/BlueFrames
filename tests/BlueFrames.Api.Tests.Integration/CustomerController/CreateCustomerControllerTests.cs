@@ -34,4 +34,19 @@ public class CreateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         createResponse.Result.Should().NotBeEmpty();
         createResponse.Result.Should().NotBe(Guid.Empty.ToString());
     }
+    
+    [Fact]
+    public async Task Create_ShouldReturnBadRequest_WhenCustomerIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Clone()
+            .RuleFor(dto => dto.FirstName, string.Empty)
+            .Generate();
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+    }
 }
