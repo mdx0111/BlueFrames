@@ -11,9 +11,14 @@ public partial class ProductDescription : ValueOf<string, ProductDescription>
     {
         var isNameValid = !string.IsNullOrWhiteSpace(Value)
                           && ProductDescriptionRegex.IsMatch(Value);
-        if (!isNameValid)
+        if (isNameValid)
         {
-            throw new ValidationException($"{Value} is not a valid product description");
+            return;
         }
+
+        var message = $"{Value} is not a valid product description";
+        throw new ValidationException($"{Value} is not a valid product description", [
+            new ValidationFailure(nameof(ProductDescription), message)
+        ]);
     }
 }

@@ -11,10 +11,14 @@ public partial class ProductSKU : ValueOf<string, ProductSKU>
     {
         var isNameValid = !string.IsNullOrWhiteSpace(Value)
                           && ProductSkuRegex.IsMatch(Value);
-        if (!isNameValid)
+        if (isNameValid)
         {
-            throw new ValidationException($"{Value} is not a valid product sku");
+            return;
         }
+
+        var message = $"{Value} is not a valid product sku";
+        throw new ValidationException($"{Value} is not a valid product sku", [
+            new ValidationFailure(nameof(ProductSKU), message)
+        ]);
     }
-    
 }
