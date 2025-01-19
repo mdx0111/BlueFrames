@@ -72,4 +72,9 @@ public class Customer : Entity, IAggregateRoot
     {
         IsDeleted = true;
     }
+
+    public bool HasOrder(Guid orderId)
+    {
+        return _orders?.Any(order => order.Id.Value == orderId) ?? false;
+    }
 }

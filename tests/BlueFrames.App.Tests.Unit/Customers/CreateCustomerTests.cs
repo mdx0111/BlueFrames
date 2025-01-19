@@ -8,6 +8,7 @@ public class CreateCustomerTests
     private readonly ICustomerRepository _repository = Substitute.For<ICustomerRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<CreateCustomerCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateCustomerCommandHandler>>();
+
     private readonly Bogus.Person _person;
     private const string ValidPhoneNumber = "07563385651";
 
