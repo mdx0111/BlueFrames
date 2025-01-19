@@ -71,4 +71,24 @@ public class UpdateProductTests
         updateResult.IsFailure.Should().BeTrue();
         updateResult.Value.Should().BeEmpty();
     }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldFail_WhenProductNotFound()
+    {
+        // Arrange
+        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
+        
+        var updateProduct = new UpdateProductCommand(
+            Guid.NewGuid(),
+            _commerce.ProductName(),
+            _commerce.ProductDescription(),
+            _commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper());
+        var updateHandler = new UpdateProductCommandHandler(_repository, _unitOfWork, _logger);
+        
+        // Act
+        var updateResult = await updateHandler.Handle(updateProduct, _cancellationToken);
+        
+        // Assert
+        updateResult.IsSuccess.Should().BeFalse();
+    }
 }
