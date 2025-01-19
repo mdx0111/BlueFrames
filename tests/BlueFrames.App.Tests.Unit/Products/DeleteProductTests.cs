@@ -41,7 +41,6 @@ public class DeleteProductTests
         deleteResult.IsSuccess.Should().BeTrue();
     }
     
-    
     [Fact]
     public async Task DeleteProduct_ShouldFail_WhenProductNotFound()
     {

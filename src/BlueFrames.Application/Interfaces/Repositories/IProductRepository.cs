@@ -8,4 +8,9 @@ public interface IProductRepository : IRepository<Product>
     Task<Product> GetByIdAsync(
         Guid id,
         CancellationToken cancellationToken);
+
+    Task<List<Product>> GetAllAsync(
+        int limit,
+        int offset,
+        CancellationToken cancellationToken);
 }
