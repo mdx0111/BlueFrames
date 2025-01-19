@@ -87,4 +87,25 @@ public class CompleteOrderTests
         // Assert
         result.IsFailure.Should().BeTrue();
     }
+    
+    [Fact]
+    public async Task CompleteOrder_ShouldReturnFailure_WhenCustomerNotFound()
+    {
+        // Arrange
+        var completeOrder = new CompleteOrderCommand(
+            _order.Id.Value,
+            Guid.NewGuid());
+
+        var handler = new CompleteOrderCommandHandler(
+            _customerRepository,
+            _dateTimeService,
+            _unitOfWork,
+            _logger);
+        
+        // Act
+        var result = await handler.Handle(completeOrder, _cancellationToken);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+    }
 }
