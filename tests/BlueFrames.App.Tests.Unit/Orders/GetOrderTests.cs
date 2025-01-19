@@ -118,10 +118,10 @@ public class GetOrderTests
     public async Task GetCustomerOrders_ShouldReturnOrders_WhenOrdersExist()
     {
         // Arrange
-        var logger = Substitute.For<ILoggerAdapter<GetCustomersOrderQueryHandler>>();
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerOrdersQueryHandler>>();
         
         var getOrders = new GetCustomerOrdersQuery(_customer.Id);
-        var handler = new GetCustomersOrderQueryHandler(
+        var handler = new GetCustomerOrdersQueryHandler(
             _customerRepository,
             logger);
         
@@ -135,5 +135,24 @@ public class GetOrderTests
         result.Value.Should().NotBeEmpty();
         result.Value.Should().HaveCount(1);
         result.Value.First().Should().Be(OrderDto.From(_order));
+    }
+    
+    [Fact]
+    public async Task GetCustomerOrders_ShouldReturnFailure_WhenCustomerDoesNotExist()
+    {
+        // Arrange
+        var getOrders = new GetCustomerOrdersQuery(CustomerId.From(Guid.NewGuid()));
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerOrdersQueryHandler>>();
+        var handler = new GetCustomerOrdersQueryHandler(
+            _customerRepository,
+            logger);
+        
+        // Act
+        var result = await handler.Handle(getOrders, _cancellationToken);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<List<OrderDto>>>();
+        result.IsFailure.Should().BeTrue();
     }
 }

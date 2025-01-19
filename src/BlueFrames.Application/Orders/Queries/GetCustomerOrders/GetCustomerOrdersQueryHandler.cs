@@ -3,14 +3,14 @@ using BlueFrames.Application.Orders.Queries.Common;
 
 namespace BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 
-public class GetCustomersOrderQueryHandler : IRequestHandler<GetCustomerOrdersQuery, Result<List<OrderDto>>>
+public class GetCustomerOrdersQueryHandler : IRequestHandler<GetCustomerOrdersQuery, Result<List<OrderDto>>>
 {
     private readonly ICustomerRepository _repository;
-    private readonly ILoggerAdapter<GetCustomersOrderQueryHandler> _logger;
+    private readonly ILoggerAdapter<GetCustomerOrdersQueryHandler> _logger;
 
-    public GetCustomersOrderQueryHandler(
+    public GetCustomerOrdersQueryHandler(
         ICustomerRepository repository,
-        ILoggerAdapter<GetCustomersOrderQueryHandler> logger)
+        ILoggerAdapter<GetCustomerOrdersQueryHandler> logger)
     {
         _repository = repository;
         _logger = logger;
