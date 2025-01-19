@@ -40,7 +40,7 @@ public class CreateCustomerTests
     }
 
     [Fact]
-    public async Task CreateCustomer_ShouldFail_WhenGivenInvalidData()
+    public async Task CreateCustomer_ShouldReturnFailure_WhenGivenInvalidData()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);

@@ -56,7 +56,7 @@ public class UpdateCustomerTests
     }
     
     [Fact]
-    public async Task UpdateCustomer_ShouldFail_WhenGivenInvalidData()
+    public async Task UpdateCustomer_ShouldReturnFailure_WhenGivenInvalidData()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
@@ -79,7 +79,7 @@ public class UpdateCustomerTests
     }
     
     [Fact]
-    public async Task UpdateCustomer_ShouldFail_WhenCustomerNotFound()
+    public async Task UpdateCustomer_ShouldReturnFailure_WhenCustomerNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);

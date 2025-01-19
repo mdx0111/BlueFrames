@@ -52,7 +52,7 @@ public class OrderTests
     }
     
     [Fact]
-    public void CreateOrder_ShouldFail_WhenProductIdIsInvalid()
+    public void CreateOrder_ShouldReturnFailure_WhenProductIdIsInvalid()
     {
         // Act
         Action createOrder = () => _ =Order.Create(ProductId.From(Guid.Empty), _customerId, _createdDate, _dateTimeService.UtcNow);
@@ -62,7 +62,7 @@ public class OrderTests
     }
     
     [Fact]
-    public void CreateOrder_ShouldFail_WhenCustomerIdIsInvalid()
+    public void CreateOrder_ShouldReturnFailure_WhenCustomerIdIsInvalid()
     {
         // Act
         Action createOrder = () => _ =Order.Create(_productId, CustomerId.From(Guid.Empty), _createdDate, _dateTimeService.UtcNow);
@@ -72,7 +72,7 @@ public class OrderTests
     }
     
     [Fact]
-    public void CreateOrder_ShouldFail_WhenCreatedDateIsInvalid()
+    public void CreateOrder_ShouldReturnFailure_WhenCreatedDateIsInvalid()
     {
         // Arrange
         var invalidCreatedDate = new DateTime(2020, 01, 18, 14, 45, 0);
@@ -101,7 +101,7 @@ public class OrderTests
     }
     
     [Fact]
-    public void Cancel_ShouldFail_WhenOrderIsAlreadyCancelled()
+    public void Cancel_ShouldReturnFailure_WhenOrderIsAlreadyCancelled()
     {
         // Arrange
         var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);
@@ -131,7 +131,7 @@ public class OrderTests
     }
     
     [Fact]
-    public void Complete_ShouldFail_WhenOrderIsAlreadyCompleted()
+    public void Complete_ShouldReturnFailure_WhenOrderIsAlreadyCompleted()
     {
         // Arrange
         var order = Order.Create(_productId, _customerId, _createdDate, _dateTimeService.UtcNow);

@@ -70,7 +70,7 @@ public class PlaceOrderTests
     }
     
     [Fact]
-    public async Task PlaceOrder_ShouldFail_WhenCustomerNotFound()
+    public async Task PlaceOrder_ShouldReturnFailure_WhenCustomerNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
@@ -95,7 +95,7 @@ public class PlaceOrderTests
     }
     
     [Fact]
-    public async Task PlaceOrder_ShouldFail_WhenProductNotFound()
+    public async Task PlaceOrder_ShouldReturnFailure_WhenProductNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);

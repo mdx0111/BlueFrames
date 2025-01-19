@@ -45,7 +45,7 @@ public class CreateProductTests
     }
     
     [Fact]
-    public async Task CreateProduct_ShouldFail_WhenGivenInvalidData()
+    public async Task CreateProduct_ShouldReturnFailure_WhenGivenInvalidData()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);

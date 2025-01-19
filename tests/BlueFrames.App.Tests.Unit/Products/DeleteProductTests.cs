@@ -42,7 +42,7 @@ public class DeleteProductTests
     }
     
     [Fact]
-    public async Task DeleteProduct_ShouldFail_WhenProductNotFound()
+    public async Task DeleteProduct_ShouldReturnFailure_WhenProductNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
