@@ -28,15 +28,8 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
             {
                 return Result.Failure<CustomerDto>("Error retrieving customer");
             }
-            
-            var result = new CustomerDto
-            {
-                Id = customer.Id.Value,
-                FirstName = customer.FirstName.ToString(),
-                LastName = customer.LastName.ToString(),
-                Phone = customer.Phone.ToString(),
-                Email = customer.Email.ToString()
-            };
+
+            var result = CustomerDto.From(customer);
             return Result.Success(result);
         }
         catch (Exception ex)

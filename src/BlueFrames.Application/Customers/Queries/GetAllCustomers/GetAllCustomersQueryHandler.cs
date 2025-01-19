@@ -35,14 +35,9 @@ public class GetAllCustomersQueryHandler : IRequestHandler<GetAllCustomersQuery,
                 return Result.Failure<List<CustomerDto>>("No customers found");
             }
             
-            var result = customers.Select(customer => new CustomerDto
-            {
-                Id = customer.Id.Value,
-                FirstName = customer.FirstName.ToString(),
-                LastName = customer.LastName.ToString(),
-                Phone = customer.Phone.ToString(),
-                Email = customer.Email.ToString()
-            }).ToList();
+            var result = customers
+                .Select(CustomerDto.From)
+                .ToList();
             return Result.Success(result);
         }
         catch (Exception ex)

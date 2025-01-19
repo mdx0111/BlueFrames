@@ -91,14 +91,7 @@ public class GetCustomerTests
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<CustomerDto>>();
         result.IsSuccess.Should().BeTrue();
-        result.Value.Should().BeEquivalentTo(new CustomerDto
-        {
-            Id = firstCustomer.Id.Value,
-            FirstName = firstCustomer.FirstName.ToString(),
-            LastName = firstCustomer.LastName.ToString(),
-            Phone = firstCustomer.Phone.ToString(),
-            Email = firstCustomer.Email.ToString()
-        });
+        result.Value.Should().BeEquivalentTo(CustomerDto.From(firstCustomer));
     }
     
     [Fact]
