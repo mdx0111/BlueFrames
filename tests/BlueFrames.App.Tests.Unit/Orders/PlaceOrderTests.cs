@@ -1,4 +1,4 @@
-using BlueFrames.Application.Orders.Commands.CreateOrder;
+using BlueFrames.Application.Orders.Commands.PlaceOrder;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Products;
@@ -6,14 +6,14 @@ using BlueFrames.Domain.Products.Common;
 
 namespace BlueFrames.App.Tests.Unit.Orders;
 
-public class CreateOrderTests
+public class PlaceOrderTests
 {
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly IProductRepository _productRepository = Substitute.For<IProductRepository>();
     private readonly ICustomerRepository _customerRepository = Substitute.For<ICustomerRepository>();
     private readonly IDateTimeService _dateTimeService = Substitute.For<IDateTimeService>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
-    private readonly ILoggerAdapter<CreateOrderCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateOrderCommandHandler>>();
+    private readonly ILoggerAdapter<PlaceOrderCommandHandler> _logger = Substitute.For<ILoggerAdapter<PlaceOrderCommandHandler>>();
 
     private readonly Product _product;
     private readonly Customer _customer;
@@ -21,7 +21,7 @@ public class CreateOrderTests
     private const int ProductSKUCharacterCount = 5;
     private const string ValidPhoneNumber = "07563385651";
 
-    public CreateOrderTests()
+    public PlaceOrderTests()
     {
         var commerce = new Bogus.DataSets.Commerce();
         _product = Product.Create(
@@ -42,16 +42,16 @@ public class CreateOrderTests
     }
     
     [Fact]
-    public async Task CreateOrder_ShouldSuccess_WhenGivenValidData()
+    public async Task PlaceOrder_ShouldSuccess_WhenGivenValidData()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
         
-        var createOrder = new CreateOrderCommand(
+        var placeOrder = new PlaceOrderCommand(
             _customer.Id.Value,
             _product.Id.Value);
 
-        var handler = new CreateOrderCommandHandler(
+        var handler = new PlaceOrderCommandHandler(
             _customerRepository,
             _productRepository,
             _dateTimeService,
@@ -59,7 +59,7 @@ public class CreateOrderTests
             _logger);
         
         // Act
-        var result = await handler.Handle(createOrder, _cancellationToken);
+        var result = await handler.Handle(placeOrder, _cancellationToken);
 
         // Assert
         result.IsSuccess.Should().BeTrue();
@@ -70,16 +70,16 @@ public class CreateOrderTests
     }
     
     [Fact]
-    public async Task CreateOrder_ShouldFail_WhenCustomerNotFound()
+    public async Task PlaceOrder_ShouldFail_WhenCustomerNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
 
-        var createOrder = new CreateOrderCommand(
+        var placeOrder = new PlaceOrderCommand(
             Guid.Empty, 
             _product.Id.Value);
 
-        var handler = new CreateOrderCommandHandler(
+        var handler = new PlaceOrderCommandHandler(
             _customerRepository,
             _productRepository,
             _dateTimeService,
@@ -87,7 +87,7 @@ public class CreateOrderTests
             _logger);
 
         // Act
-        var result = await handler.Handle(createOrder, _cancellationToken);
+        var result = await handler.Handle(placeOrder, _cancellationToken);
 
         // Assert
         result.IsSuccess.Should().BeFalse();
@@ -95,16 +95,16 @@ public class CreateOrderTests
     }
     
     [Fact]
-    public async Task CreateOrder_ShouldFail_WhenProductNotFound()
+    public async Task PlaceOrder_ShouldFail_WhenProductNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
 
-        var createOrder = new CreateOrderCommand(
+        var placeOrder = new PlaceOrderCommand(
             _customer.Id.Value, 
             Guid.Empty);
 
-        var handler = new CreateOrderCommandHandler(
+        var handler = new PlaceOrderCommandHandler(
             _customerRepository,
             _productRepository,
             _dateTimeService,
@@ -112,7 +112,7 @@ public class CreateOrderTests
             _logger);
 
         // Act
-        var result = await handler.Handle(createOrder, _cancellationToken);
+        var result = await handler.Handle(placeOrder, _cancellationToken);
 
         // Assert
         result.IsSuccess.Should().BeFalse();

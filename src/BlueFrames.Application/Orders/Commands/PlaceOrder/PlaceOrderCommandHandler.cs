@@ -2,22 +2,22 @@ using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Orders;
 using BlueFrames.Domain.Orders.Common;
 
-namespace BlueFrames.Application.Orders.Commands.CreateOrder;
+namespace BlueFrames.Application.Orders.Commands.PlaceOrder;
 
-public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Result<Guid>>
+public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IProductRepository _productRepository;
     private readonly IDateTimeService _dateTimeService;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ILoggerAdapter<CreateOrderCommandHandler> _logger;
+    private readonly ILoggerAdapter<PlaceOrderCommandHandler> _logger;
 
-    public CreateOrderCommandHandler(
+    public PlaceOrderCommandHandler(
         ICustomerRepository customerRepository,
         IProductRepository productRepository,
         IDateTimeService dateTimeService,
         IUnitOfWork unitOfWork,
-        ILoggerAdapter<CreateOrderCommandHandler> logger)
+        ILoggerAdapter<PlaceOrderCommandHandler> logger)
     {
         _customerRepository = customerRepository;
         _productRepository = productRepository;
@@ -26,7 +26,7 @@ public class CreateOrderCommandHandler : IRequestHandler<CreateOrderCommand, Res
         _logger = logger;
     }
     
-    public async Task<Result<Guid>> Handle(CreateOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(PlaceOrderCommand request, CancellationToken cancellationToken)
     {
         try
         {
