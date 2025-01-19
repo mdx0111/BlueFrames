@@ -1,6 +1,7 @@
 using BlueFrames.Application.Common.Results;
 using BlueFrames.Application.Orders.Queries.Common;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrder;
+using BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 using BlueFrames.Domain.Customers;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders;
@@ -111,5 +112,28 @@ public class GetOrderTests
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<OrderDto>>();
         result.IsFailure.Should().BeTrue();
+    }
+    
+    [Fact]
+    public async Task GetCustomerOrders_ShouldReturnOrders_WhenOrdersExist()
+    {
+        // Arrange
+        var logger = Substitute.For<ILoggerAdapter<GetCustomersOrderQueryHandler>>();
+        
+        var getOrders = new GetCustomerOrdersQuery(_customer.Id);
+        var handler = new GetCustomersOrderQueryHandler(
+            _customerRepository,
+            logger);
+        
+        // Act
+        var result = await handler.Handle(getOrders, _cancellationToken);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<List<OrderDto>>>();
+        result.Value.Should().NotBeNull();
+        result.Value.Should().NotBeEmpty();
+        result.Value.Should().HaveCount(1);
+        result.Value.First().Should().Be(OrderDto.From(_order));
     }
 }
