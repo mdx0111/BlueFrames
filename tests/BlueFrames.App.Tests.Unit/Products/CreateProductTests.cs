@@ -11,6 +11,7 @@ public class CreateProductTests
     private readonly IProductRepository _repository = Substitute.For<IProductRepository>();
     private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
     private readonly ILoggerAdapter<CreateProductCommandHandler> _logger = Substitute.For<ILoggerAdapter<CreateProductCommandHandler>>();
+    private const int ProductSKUCharacterCount = 5;
 
     public CreateProductTests()
     {
@@ -18,7 +19,7 @@ public class CreateProductTests
         _product = Product.Create(
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
-            ProductSku.From(commerce.Product()));
+            ProductSku.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
     }
     
     [Fact]
@@ -40,5 +41,26 @@ public class CreateProductTests
         // Assert
         result.IsSuccess.Should().BeTrue();
         result.Value.Should().NotBeEmpty();
+    }
+    
+    [Fact]
+    public async Task CreateProduct_ShouldFail_WhenGivenInvalidData()
+    {
+        // Arrange
+        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
+
+        var createProduct = new CreateProductCommand(
+            _product.Name.Value,
+            _product.Description.Value,
+            "");
+
+        var handler = new CreateProductCommandHandler(_repository, _unitOfWork, _logger);
+
+        // Act
+        var result = await handler.Handle(createProduct, _cancellationToken);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Value.Should().BeEmpty();
     }
 }
