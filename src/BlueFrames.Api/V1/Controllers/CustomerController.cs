@@ -2,6 +2,7 @@ using BlueFrames.Api.Contracts;
 using BlueFrames.Api.Contracts.Customers.Requests;
 using BlueFrames.Api.Contracts.Customers.Responses;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
+using BlueFrames.Application.Customers.Commands.DeleteCustomer;
 using BlueFrames.Application.Customers.Commands.UpdateCustomer;
 using BlueFrames.Application.Customers.Queries.GetAllCustomers;
 using BlueFrames.Application.Customers.Queries.GetCustomerById;
@@ -180,6 +181,39 @@ public class CustomerController : ApiController
         {
             _logger.LogError(ex, "Error occurred while returning customers");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customers"));
+        }
+    }
+    
+    [EndpointSummary("Deletes customer by providing customer id")]
+    [ProducesResponseType(typeof(Envelope), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new DeleteCustomerCommand(CustomerId.From(id));
+            var result = await _mediator.Send(command, cancellationToken);
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error occurred while deleting customer - {Error}", result.Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while deleting customer"));
+            }
+            
+            if (result.Value == Guid.Empty)
+            {
+                return NotFound(Envelope.Error("Customer not found"));
+            }
+            
+            return Ok(Envelope.Ok());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting customer");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while deleting customer"));
         }
     }
 }

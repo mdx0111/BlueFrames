@@ -2,7 +2,7 @@ using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Customers.Commands.DeleteCustomer;
 
-public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result>
+public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _repository;
     private readonly IUnitOfWork _unitOfWork;
@@ -18,14 +18,14 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
         _logger = logger;
     }
     
-    public async Task<Result> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(DeleteCustomerCommand request, CancellationToken cancellationToken)
     {
         try
         {
             var customer = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (customer is null)
             {
-                return Result.Failure($"Customer with Id {request.Id} not found.");
+                return Result.Success(Guid.Empty);
             }
 
             customer.Deactivate();

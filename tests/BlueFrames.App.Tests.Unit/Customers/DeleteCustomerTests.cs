@@ -42,7 +42,7 @@ public class DeleteCustomerTests
     }
     
     [Fact]
-    public async Task DeleteCustomer_ShouldReturnFailure_WhenCustomerNotFound()
+    public async Task DeleteCustomer_ShouldReturnEmpty_WhenCustomerNotFound()
     {
         // Arrange
         _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
@@ -54,6 +54,7 @@ public class DeleteCustomerTests
         var deleteResult = await deleteHandler.Handle(deleteCustomer, _cancellationToken);
         
         // Assert
-        deleteResult.IsSuccess.Should().BeFalse();
+        deleteResult.IsSuccess.Should().BeTrue();
+        deleteResult.Value.Should().BeEmpty();
     }
 }

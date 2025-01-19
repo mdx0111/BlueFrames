@@ -1,4 +1,3 @@
-using BlueFrames.Api.Contracts;
 using BlueFrames.Api.Contracts.Customers.Requests;
 
 namespace BlueFrames.Api.Tests.Integration.CustomerController;
