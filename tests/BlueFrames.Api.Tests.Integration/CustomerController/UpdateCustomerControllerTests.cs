@@ -46,4 +46,26 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
             Email = updatedCustomer.Email
         });
     }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldReturnBadRequest_WhenEmailIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createResponseContent.Result;
+
+        var updatedCustomer = _customerFaker.Clone()
+            .RuleFor(x => x.Email, "invalid-email")
+            .Generate();
+
+        // Act
+        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validationError = await updateResponse.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("is not a valid email address");
+    }
 }
