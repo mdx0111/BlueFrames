@@ -88,4 +88,24 @@ public class CancelOrderTests
         result.IsFailure.Should().BeTrue();
     }
     
+    [Fact]
+    public async Task CancelOrder_ShouldReturnFailure_WhenCustomerNotFound()
+    {
+        // Arrange
+        var cancelOrder = new CancelOrderCommand(
+            _order.Id.Value,
+            Guid.NewGuid());
+
+        var handler = new CancelOrderCommandHandler(
+            _customerRepository,
+            _dateTimeService,
+            _unitOfWork,
+            _logger);
+        
+        // Act
+        var result = await handler.Handle(cancelOrder, _cancellationToken);
+
+        // Assert
+        result.IsFailure.Should().BeTrue();
+    }
 }
