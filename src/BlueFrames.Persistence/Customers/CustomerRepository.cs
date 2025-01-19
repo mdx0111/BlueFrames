@@ -1,5 +1,6 @@
 using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Customers;
+using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Persistence.DataContext;
 
 namespace BlueFrames.Persistence.Customers;
@@ -20,12 +21,14 @@ public class CustomerRepository : ICustomerRepository
 
     public void Update(Customer entity)
     {
-        throw new NotImplementedException();
+        _appDbContext.Customers.Update(entity);
     }
 
-    public Task<Customer> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Customer> GetByIdAsync(CustomerId id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _appDbContext
+            .Customers
+            .FindAsync([id] , cancellationToken); 
     }
 
     public Task<List<Customer>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)

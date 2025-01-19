@@ -40,7 +40,7 @@ public class GetOrderTests
             LastName.From(person.LastName),
             PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
             Email.From(person.Email));
-        _customerRepository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
+        _customerRepository.GetByIdAsync(_customer.Id, _cancellationToken).Returns(_customer);
         
         _order = Order.Create(product.Id, _customer.Id, OrderDate.From(_dateTimeService.UtcNow), _dateTimeService.UtcNow);
         _customer.PlaceOrder(_order);

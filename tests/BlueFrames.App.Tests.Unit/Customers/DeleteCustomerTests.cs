@@ -22,7 +22,7 @@ public class DeleteCustomerTests
             LastName.From(person.LastName),
             PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
             Email.From(person.Email));
-        _repository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
+        _repository.GetByIdAsync(_customer.Id, _cancellationToken).Returns(_customer);
     }
     
     [Fact]

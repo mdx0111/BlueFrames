@@ -21,7 +21,7 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
         try
         {
             var customer = await _repository.GetByIdAsync(
-                request.Id.Value,
+                request.Id,
                 cancellationToken);
             
             if (customer is null)

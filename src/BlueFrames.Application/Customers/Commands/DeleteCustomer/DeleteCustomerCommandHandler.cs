@@ -22,7 +22,7 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
     {
         try
         {
-            var customer = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
+            var customer = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (customer is null)
             {
                 return Result.Failure($"Customer with Id {request.Id} not found.");

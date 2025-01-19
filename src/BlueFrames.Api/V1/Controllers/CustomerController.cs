@@ -1,5 +1,6 @@
 using BlueFrames.Api.Models.Customers;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
+using BlueFrames.Application.Customers.Commands.UpdateCustomer;
 using BlueFrames.Application.Customers.Queries.Common;
 using BlueFrames.Domain.Customers.Common;
 
@@ -21,21 +22,21 @@ public class CustomerController : ApiController
     }
 
     [EndpointSummary("Creates customer by providing customer details and returns the created customer details url")]
-    [ProducesResponseType(typeof(CustomerDto), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(Envelope<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [HttpPost]
     public async Task<IActionResult> Post(
-        [FromBody] CreateCustomerDto customer,
+        [FromBody] CustomerRequest request,
         CancellationToken cancellationToken)
     {
         try
         {
             var command = new CreateCustomerCommand(
-                FirstName.From(customer.FirstName),
-                LastName.From(customer.LastName),
-                PhoneNumber.From(customer.Phone),
-                Email.From(customer.Email));
+                FirstName.From(request.FirstName),
+                LastName.From(request.LastName),
+                PhoneNumber.From(request.Phone),
+                Email.From(request.Email));
         
             var result = await _mediator.Send(command, cancellationToken);
             if (!result.IsFailure)
@@ -56,6 +57,46 @@ public class CustomerController : ApiController
         {
             _logger.LogError(ex, "Error occurred while creating customer");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while creating customer"));
+        }
+    }
+
+    [EndpointSummary("Updates customer details by providing customer id and customer details")]
+    [ProducesResponseType(typeof(Envelope<Guid>), StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(
+        [FromMultiSource] UpdateCustomerRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new UpdateCustomerCommand(
+                CustomerId.From(request.Id),
+                FirstName.From(request.Customer.FirstName),
+                LastName.From(request.Customer.LastName),
+                PhoneNumber.From(request.Customer.Phone),
+                Email.From(request.Customer.Email));
+        
+            var result = await _mediator.Send(command, cancellationToken);
+            if (!result.IsFailure)
+            {
+                return Ok(Envelope.Ok(result.Value));
+            }
+
+            _logger.LogError("Error occurred while updating customer - {Error}", result.Error);
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while updating customer"));
+
+        }
+        catch (ValidationException ex)
+        {
+            _logger.LogError(ex, "Validation error occurred while updating customer");
+            return BadRequest(Envelope.Error(ex.Message));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while updating customer");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while updating customer"));
         }
     }
     

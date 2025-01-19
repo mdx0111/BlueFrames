@@ -22,7 +22,7 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
     {
         try
         {
-            var customer = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
+            var customer = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (customer is null)
             {
                 return Result.Failure<Guid>($"Customer with Id {request.Id} not found.");

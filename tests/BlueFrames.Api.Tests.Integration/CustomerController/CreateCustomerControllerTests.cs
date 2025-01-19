@@ -6,7 +6,7 @@ public class CreateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 {
     private readonly HttpClient _httpClient;
 
-    private readonly Faker<CreateCustomerDto> _customerFaker = new Faker<CreateCustomerDto>("en_GB")
+    private readonly Faker<CustomerRequest> _customerFaker = new Faker<CustomerRequest>("en_GB")
         .RuleFor(dto => dto.FirstName, faker => faker.Person.FirstName)
         .RuleFor(dto => dto.LastName, faker => faker.Person.LastName)
         .RuleFor(dto => dto.Phone, faker => faker.Phone.PhoneNumberFormat(1))

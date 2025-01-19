@@ -36,7 +36,7 @@ public class PlaceOrderTests
             LastName.From(person.LastName),
             PhoneNumber.From(faker.Phone.PhoneNumberFormat(1)),
             Email.From(person.Email));
-        _customerRepository.GetByIdAsync(_customer.Id.Value, _cancellationToken).Returns(_customer);
+        _customerRepository.GetByIdAsync(_customer.Id, _cancellationToken).Returns(_customer);
         
         _dateTimeService.UtcNow.Returns(new DateTime(2025, 1, 1, 10, 25, 0));
     }
