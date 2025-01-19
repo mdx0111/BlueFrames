@@ -29,7 +29,7 @@ public class DeleteProductCommandHandler : IRequestHandler<DeleteProductCommand,
             }
 
             product.Deactivate();
-            _repository.AddOrUpdate(product);
+            _repository.Update(product);
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         

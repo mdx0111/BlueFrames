@@ -29,7 +29,7 @@ public class DeleteCustomerCommandHandler : IRequestHandler<DeleteCustomerComman
             }
 
             customer.Deactivate();
-            _repository.AddOrUpdate(customer);
+            _repository.Update(customer);
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         

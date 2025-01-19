@@ -33,7 +33,7 @@ public class UpdateCustomerCommandHandler : IRequestHandler<UpdateCustomerComman
             customer.ChangePhone(request.Phone);
             customer.ChangeEmail(request.Email);
         
-            _repository.AddOrUpdate(customer);
+            _repository.Update(customer);
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         

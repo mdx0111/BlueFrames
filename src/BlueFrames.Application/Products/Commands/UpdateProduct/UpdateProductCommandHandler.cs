@@ -32,7 +32,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
             product.ChangeDescription(request.ProductDescription);
             product.ChangeSKU(request.ProductSKU);
         
-            _repository.AddOrUpdate(product);
+            _repository.Update(product);
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         

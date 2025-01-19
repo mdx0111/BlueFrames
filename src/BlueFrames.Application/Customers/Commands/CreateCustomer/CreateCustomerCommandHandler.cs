@@ -29,7 +29,7 @@ public class CreateCustomerCommandHandler : IRequestHandler<CreateCustomerComman
                 request.Phone,
                 request.Email);
         
-            _repository.AddOrUpdate(customer);
+            _repository.Add(customer);
         
             await _unitOfWork.SaveChangesAsync(cancellationToken);
         

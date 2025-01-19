@@ -18,9 +18,11 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         .WithWaitStrategy(Wait.ForUnixContainer().UntilMessageIsLogged("SQL Server is now ready for client connections."))
         .WithPassword("Password123!")
         .Build();
-    
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
+        builder.UseEnvironment("Test");
+
         builder.ConfigureLogging(logging =>
         {
             logging.ClearProviders();
@@ -29,9 +31,9 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<AppDbContext>();
-            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()),
-                ServiceLifetime.Scoped,
-                ServiceLifetime.Singleton);
+             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()),
+                 ServiceLifetime.Scoped,
+                 ServiceLifetime.Singleton);
         });
     }
 
