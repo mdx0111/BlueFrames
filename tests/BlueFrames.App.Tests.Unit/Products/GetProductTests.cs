@@ -12,7 +12,6 @@ public class GetProductTests
 {
     private readonly CancellationToken _cancellationToken = CancellationToken.None;
     private readonly IProductRepository _repository = Substitute.For<IProductRepository>();
-    private readonly IUnitOfWork _unitOfWork = Substitute.For<IUnitOfWork>();
 
     private readonly Bogus.DataSets.Commerce _commerce = new();
     private const int ProductSKUCharacterCount = 5;
