@@ -24,11 +24,6 @@ public class GetCustomerByIdQueryHandler : IRequestHandler<GetCustomerByIdQuery,
                 request.Id,
                 cancellationToken);
             
-            if (customer is null)
-            {
-                return Result.Failure<CustomerDto>("Error retrieving customer");
-            }
-
             var result = CustomerDto.From(customer);
             return Result.Success(result);
         }

@@ -96,7 +96,7 @@ public class GetCustomerTests
     }
     
     [Fact]
-    public async Task GetCustomer_ShouldReturnFailure_WhenNotFound()
+    public async Task GetCustomer_ShouldReturnEmpty_WhenNotFound()
     {
         // Arrange
         var firstCustomer = _listOfCustomers.First();
@@ -112,7 +112,6 @@ public class GetCustomerTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<CustomerDto>>();
-        result.IsFailure.Should().BeTrue();
         result.Value.Should().BeNull();
     }
 }

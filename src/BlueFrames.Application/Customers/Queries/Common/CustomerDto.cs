@@ -12,6 +12,11 @@ public record CustomerDto
     
     public static CustomerDto From(Customer customer)
     {
+        if (customer is null)
+        {
+            return null;
+        }
+
         return new CustomerDto
         {
             Id = customer.Id.Value,

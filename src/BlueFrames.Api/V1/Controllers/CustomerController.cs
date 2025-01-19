@@ -3,7 +3,6 @@ using BlueFrames.Api.Contracts.Customers.Requests;
 using BlueFrames.Api.Contracts.Customers.Responses;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
 using BlueFrames.Application.Customers.Commands.UpdateCustomer;
-using BlueFrames.Application.Customers.Queries.Common;
 using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers.Common;
 
@@ -114,13 +113,19 @@ public class CustomerController : ApiController
         {
             var query = new GetCustomerByIdQuery(CustomerId.From(id));
             var result = await _mediator.Send(query, cancellationToken);
-            if (!result.IsFailure)
+            if (result.IsFailure)
             {
-                return Ok(Envelope.Ok(result.Value));
+                _logger.LogError("Error occurred while returning customer - {Error}", result.Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customer"));
             }
-
-            _logger.LogError("Error occurred while returning customer - {Error}", result.Error);
-            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customer"));
+            
+            var customer = result.Value;
+            if (customer is null)
+            {
+                return NotFound(Envelope.Error("Customer not found"));
+            }
+            
+            return Ok(Envelope.Ok(result.Value));
         }
         catch (Exception ex)
         {

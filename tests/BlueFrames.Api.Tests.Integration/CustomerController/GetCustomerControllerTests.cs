@@ -43,4 +43,16 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
             Email = customer.Email
         });
     }
+    
+    [Fact]
+    public async Task Get_ShouldReturnNotFound_WhenCustomerDoesNotExist()
+    {
+        // Act
+        var response = await _httpClient.GetAsync($"/api/v1/Customer/{Guid.NewGuid()}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("Customer not found");
+    }
 }
