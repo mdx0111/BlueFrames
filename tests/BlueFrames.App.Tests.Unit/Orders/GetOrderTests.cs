@@ -68,4 +68,26 @@ public class GetOrderTests
         result.Should().BeOfType<Result<OrderDto>>();
         result.Value.Should().Be(OrderDto.From(_order));
     }
+    
+    [Fact]
+    public async Task GetCustomerOrder_ShouldReturnFailure_WhenOrderDoesNotExist()
+    {
+        // Arrange
+        var getOrder = new GetCustomerOrderQuery(
+            Guid.NewGuid(),
+            _customer.Id.Value);
+
+        var logger = Substitute.For<ILoggerAdapter<GetCustomerOrderQueryHandler>>();
+        var handler = new GetCustomerOrderQueryHandler(
+            _customerRepository,
+            logger);
+        
+        // Act
+        var result = await handler.Handle(getOrder, _cancellationToken);
+        
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<OrderDto>>();
+        result.IsFailure.Should().BeTrue();
+    }
 }
