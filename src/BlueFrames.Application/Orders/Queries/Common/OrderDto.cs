@@ -4,9 +4,9 @@ namespace BlueFrames.Application.Orders.Queries.Common;
 
 public record OrderDto
 {
-    public Guid Id { get; init; }
-    public Guid CustomerId { get; init; }
-    public Guid ProductId { get; init; }
+    public Guid Id { get; private set; }
+    public Guid CustomerId { get; private set; }
+    public Guid ProductId { get; private set; }
     
     public static OrderDto From(Order order)
     {
