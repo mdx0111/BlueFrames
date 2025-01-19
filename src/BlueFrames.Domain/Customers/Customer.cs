@@ -75,6 +75,11 @@ public class Customer : Entity, IAggregateRoot
 
     public bool HasOrder(Guid orderId)
     {
-        return _orders?.Any(order => order.Id.Value == orderId) ?? false;
+        return _orders.Any(order => order.Id.Value == orderId);
+    }
+
+    public Order GetOrderById(Guid orderId)
+    {
+        return _orders.FirstOrDefault(order => order.Id.Value == orderId);
     }
 }
