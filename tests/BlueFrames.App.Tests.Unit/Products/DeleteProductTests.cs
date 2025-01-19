@@ -40,4 +40,21 @@ public class DeleteProductTests
         // Assert
         deleteResult.IsSuccess.Should().BeTrue();
     }
+    
+    
+    [Fact]
+    public async Task DeleteProduct_ShouldFail_WhenProductNotFound()
+    {
+        // Arrange
+        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(1);
+        
+        var deleteProduct = new DeleteProductCommand(Guid.NewGuid());
+        var deleteHandler = new DeleteProductCommandHandler(_repository, _unitOfWork, _logger);
+        
+        // Act
+        var deleteResult = await deleteHandler.Handle(deleteProduct, _cancellationToken);
+        
+        // Assert
+        deleteResult.IsSuccess.Should().BeFalse();
+    }
 }

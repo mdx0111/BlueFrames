@@ -51,9 +51,9 @@ public class DeleteCustomerTests
         var deleteHandler = new DeleteCustomerCommandHandler(_repository, _unitOfWork, _logger);
         
         // Act
-        var updateResult = await deleteHandler.Handle(deleteCustomer, _cancellationToken);
+        var deleteResult = await deleteHandler.Handle(deleteCustomer, _cancellationToken);
         
         // Assert
-        updateResult.IsSuccess.Should().BeFalse();
+        deleteResult.IsSuccess.Should().BeFalse();
     }
 }
