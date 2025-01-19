@@ -51,4 +51,24 @@ public class GetProductTests
         result.Value.Should().BeOfType<List<ProductDto>>();
         result.Value.Count.Should().Be(_listOfProducts.Count);
     }
+
+    [Fact]
+    public async Task GetAllProducts_ShouldReturnFailure_WhenPageIsEmpty()
+    {
+        // Arrange
+        _repository.GetAllAsync(10, 10, _cancellationToken).Returns([]);
+        
+        var query = new GetAllProductsQuery(10, 0);
+        var logger = Substitute.For<ILoggerAdapter<GetAllProductsQueryHandler>>();
+        var handler = new GetAllProductsQueryHandler(_repository, logger);
+
+        // Act
+        var result = await handler.Handle(query, _cancellationToken);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Should().BeOfType<Result<List<ProductDto>>>();
+        result.IsFailure.Should().BeTrue();
+        result.Value.Should().BeNull();
+    }
 }
