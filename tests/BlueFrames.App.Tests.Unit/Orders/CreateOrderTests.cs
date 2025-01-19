@@ -68,4 +68,29 @@ public class CreateOrderTests
         var createdOrderId = result.Value;
         _customer.HasOrder(createdOrderId).Should().BeTrue();
     }
+    
+    [Fact]
+    public async Task CreateOrder_ShouldFail_WhenCustomerNotFound()
+    {
+        // Arrange
+        _unitOfWork.SaveChangesAsync(_cancellationToken).Returns(0);
+
+        var createOrder = new CreateOrderCommand(
+            Guid.Empty, 
+            _product.Id.Value);
+
+        var handler = new CreateOrderCommandHandler(
+            _customerRepository,
+            _productRepository,
+            _dateTimeService,
+            _unitOfWork,
+            _logger);
+
+        // Act
+        var result = await handler.Handle(createOrder, _cancellationToken);
+
+        // Assert
+        result.IsSuccess.Should().BeFalse();
+        result.Value.Should().BeEmpty();
+    }
 }
