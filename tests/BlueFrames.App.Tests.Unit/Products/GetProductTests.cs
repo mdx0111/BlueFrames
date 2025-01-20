@@ -54,7 +54,7 @@ public class GetProductTests
     }
 
     [Fact]
-    public async Task GetAllProducts_ShouldReturnFailure_WhenPageIsEmpty()
+    public async Task GetAllProducts_ShouldReturnEmpty_WhenPageIsEmpty()
     {
         // Arrange
         _repository.GetAllAsync(10, 10, _cancellationToken).Returns([]);
@@ -69,8 +69,7 @@ public class GetProductTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<List<ProductDto>>>();
-        result.IsFailure.Should().BeTrue();
-        result.Value.Should().BeNull();
+        result.Value.Should().BeEmpty();
     }
     
     [Fact]

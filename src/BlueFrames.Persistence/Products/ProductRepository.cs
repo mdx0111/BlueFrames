@@ -31,8 +31,12 @@ public class ProductRepository : IProductRepository
             .FindAsync([id], cancellationToken);
     }
 
-    public Task<List<Product>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
+    public async Task<List<Product>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _appDbContext
+            .Products
+            .Skip(offset)
+            .Take(limit)
+            .ToListAsync(cancellationToken);
     }
 }

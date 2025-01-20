@@ -53,4 +53,29 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
         var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
         validationError.Errors["error"][0].Should().Contain("Product not found");
     }
+    
+    [Fact]
+    public async Task GetAll_ShouldReturnProducts_WhenProductsExist()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = productResponse.Result;
+
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getProductResponse = await response.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
+        getProductResponse.Result.Should().NotBeEmpty();
+        getProductResponse.Result.Single().Should().BeEquivalentTo(new ProductResponse
+        {
+            Id = Guid.Parse(customerId),
+            Name = product.Name,
+            Description = product.Description,
+            SKU = product.SKU
+        });
+    }    
 }

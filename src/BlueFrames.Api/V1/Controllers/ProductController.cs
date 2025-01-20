@@ -2,6 +2,7 @@ using BlueFrames.Api.Contracts.Products.Requests;
 using BlueFrames.Api.Contracts.Products.Responses;
 using BlueFrames.Application.Products.Commands.CreateProduct;
 using BlueFrames.Application.Products.Commands.UpdateProduct;
+using BlueFrames.Application.Products.Queries.GetAllProducts;
 using BlueFrames.Application.Products.Queries.GetProductById;
 using BlueFrames.Domain.Products.Common;
 
@@ -128,6 +129,54 @@ public class ProductController : ApiController
         {
             _logger.LogError(ex, "Error occurred while returning product");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning product"));
+        }
+    }
+    
+    [EndpointSummary("Gets all the products by the provided limit and offset")]
+    [ProducesResponseType(typeof(Envelope<List<ProductResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpGet]
+    public async Task<IActionResult> Get(
+        [FromQuery] int limit,
+        [FromQuery] int offset,
+        CancellationToken cancellationToken)
+    {
+        switch (limit)
+        {
+            case < 0:
+                return BadRequest(Envelope.Error("limit", "Limit must be greater than 0"));
+            case > 100:
+                return BadRequest(Envelope.Error("limit", "Limit must be less than or equal to 100"));
+        }
+
+        if (offset < 0)
+        {
+            return BadRequest(Envelope.Error("offset", "Offset must be greater than 0"));
+        }
+        
+        try
+        {
+            var query = new GetAllProductsQuery(limit, offset);
+            var result = await _mediator.Send(query, cancellationToken);
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error occurred while returning products - {Error}", result.Error);
+                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning products"));
+            }
+            
+            var products = result.Value;
+            if (products is null)
+            {
+                return NotFound(Envelope.Error("Products not found"));
+            }
+            
+            return Ok(Envelope.Ok(result.Value));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while returning products");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning products"));
         }
     }
 }

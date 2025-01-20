@@ -25,9 +25,9 @@ public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, R
                 request.Offset,
                 cancellationToken);
             
-            if (products is null)
+            if (products is null || products.Count == 0)
             {
-                return Result.Failure<List<ProductDto>>("Error retrieving products");
+                return Result.Success<List<ProductDto>>([]);
             }
             
             if (products.Count == 0)

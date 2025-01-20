@@ -165,7 +165,7 @@ public class CustomerController : ApiController
             if (result.IsFailure)
             {
                 _logger.LogError("Error occurred while returning customers - {Error}", result.Error);
-                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning custcustomersomerd"));
+                return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning customers"));
             }
             
             var customers = result.Value;
