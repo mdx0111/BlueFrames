@@ -187,6 +187,12 @@ public class OrderController : ApiController
                 return BadRequest(Envelope.Error(result.Error));
             }
             
+            var orderDetails = result.Value;
+            if (orderDetails is null)
+            {
+                return NotFound(Envelope.Error("Order not found"));
+            }
+            
             return Ok(Envelope.Ok(result.Value));
         }
         catch (Exception ex)

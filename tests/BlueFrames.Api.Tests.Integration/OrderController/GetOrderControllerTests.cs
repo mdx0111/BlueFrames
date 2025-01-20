@@ -125,4 +125,22 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         getOrderDetailsResult.Result.ProductId.Should().Be(Guid.Parse(productId));
         getOrderDetailsResult.Result.Id.Should().Be(Guid.Parse(orderId));
     }
+    
+    [Fact]
+    public async Task GetOrderDetails_ShouldReturnNotFound_WhenOrderDetailsNotExist()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = customerResponse.Result;
+        
+        // Act
+        var getOrderDetailsResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{Guid.NewGuid()}/Details");
+        
+        // Assert
+        getOrderDetailsResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var getOrderDetailsResult = await getOrderDetailsResponse.Content.ReadFromJsonAsync<Envelope>();
+        getOrderDetailsResult.Errors["error"][0].Should().Contain("Order not found");
+    }
 }
