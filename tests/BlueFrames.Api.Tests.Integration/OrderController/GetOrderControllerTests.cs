@@ -79,4 +79,16 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         var getOrderResult = await getOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         getOrderResult.Errors["error"][0].Should().Contain("Order not found");
     }
+    
+    [Fact]
+    public async Task Get_ShouldReturnBadRequest_WhenCustomerIdIsInvalid()
+    {
+        // Act
+        var getOrderResponse = await _httpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/{Guid.NewGuid()}");
+        
+        // Assert
+        getOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var getOrderResult = await getOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        getOrderResult.Errors["error"][0].Should().Contain("Customer not found");
+    }
 }
