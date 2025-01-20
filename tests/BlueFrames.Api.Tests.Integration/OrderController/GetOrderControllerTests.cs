@@ -143,4 +143,38 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         var getOrderDetailsResult = await getOrderDetailsResponse.Content.ReadFromJsonAsync<Envelope>();
         getOrderDetailsResult.Errors["error"][0].Should().Contain("Order not found");
     }
+    
+    [Fact]
+    public async Task GetAllOrders_ShouldReturnOk_WhenOrdersExist()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var productResponse = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = productResponse.Result;
+        
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = customerResponse.Result;
+
+        var orderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.Parse(productId)
+        };
+        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
+        var orderResponse = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        var orderId = orderResponse.Result;
+        
+        // Act
+        var getAllOrdersResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/all");
+        
+        // Assert
+        getAllOrdersResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getAllOrdersResult = await getAllOrdersResponse.Content.ReadFromJsonAsync<Envelope<List<OrderResponse>>>();
+        getAllOrdersResult.Result.First().CustomerId.Should().Be(Guid.Parse(customerId));
+        getAllOrdersResult.Result.First().ProductId.Should().Be(Guid.Parse(productId));
+        getAllOrdersResult.Result.First().Id.Should().Be(Guid.Parse(orderId));
+    }
 }

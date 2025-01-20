@@ -5,6 +5,7 @@ using BlueFrames.Application.Orders.Commands.CompleteOrder;
 using BlueFrames.Application.Orders.Commands.PlaceOrder;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrder;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrderDetails;
+using BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders.Common;
 using BlueFrames.Domain.Products.Common;
@@ -199,6 +200,41 @@ public class OrderController : ApiController
         {
             _logger.LogError(ex, "Error occurred while getting order details");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while getting order details"));
+        }
+    }
+    
+    [EndpointSummary("Gets all the orders for a customer by providing customer id")]
+    [ProducesResponseType(typeof(Envelope<List<OrderResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpGet("{customerId:guid}/all")]
+    public async Task<IActionResult> GetAll(
+        [FromRoute] Guid customerId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var query = new GetCustomerOrdersQuery(CustomerId.From(customerId));
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            if (result.IsFailure)
+            {
+                return BadRequest(Envelope.Error(result.Error));
+            }
+            
+            var orders = result.Value;
+            if (orders is null)
+            {
+                return NotFound(Envelope.Error("Order not found"));
+            }
+            
+            return Ok(Envelope.Ok(result.Value));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting orders");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while getting orders"));
         }
     }
 }

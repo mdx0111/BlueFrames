@@ -23,7 +23,7 @@ public class GetCustomerOrdersQueryHandler : IRequestHandler<GetCustomerOrdersQu
             var customer = await _repository.GetByIdAsync(request.CustomerId, cancellationToken);
             if (customer is null)
             {
-                return Result.Failure<List<OrderDto>>($"Customer with Id {request.CustomerId} was not found");
+                return Result.Failure<List<OrderDto>>($"Customer not found");
             }
 
             var orders = customer
