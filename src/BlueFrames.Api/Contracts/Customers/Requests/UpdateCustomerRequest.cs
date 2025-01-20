@@ -1,6 +1,6 @@
 ﻿namespace BlueFrames.Api.Contracts.Customers.Requests;
 
-public class UpdateCustomerRequest
+public record UpdateCustomerRequest
 {
     [FromRoute(Name = "id")] public Guid Id { get; init; }
 

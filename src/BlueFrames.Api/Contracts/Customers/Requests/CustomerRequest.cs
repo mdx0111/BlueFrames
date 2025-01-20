@@ -1,6 +1,6 @@
 namespace BlueFrames.Api.Contracts.Customers.Requests;
 
-public class CustomerRequest
+public record CustomerRequest
 {
     public string FirstName { get; init; }
     public string LastName { get; init; }

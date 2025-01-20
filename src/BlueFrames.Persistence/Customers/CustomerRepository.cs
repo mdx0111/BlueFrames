@@ -13,7 +13,7 @@ public class CustomerRepository : ICustomerRepository
     {
         _appDbContext = appDbContext;
     }
-    
+
     public void Add(Customer entity)
     {
         _appDbContext.Customers.Add(entity);
@@ -28,7 +28,7 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _appDbContext
             .Customers
-            .FindAsync([id] , cancellationToken); 
+            .FindAsync([id], cancellationToken);
     }
 
     public async Task<List<Customer>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)

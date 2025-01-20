@@ -1,4 +1,3 @@
-using BlueFrames.Api.Contracts;
 using BlueFrames.Api.Contracts.Customers.Requests;
 using BlueFrames.Api.Contracts.Customers.Responses;
 using BlueFrames.Application.Customers.Commands.CreateCustomer;
