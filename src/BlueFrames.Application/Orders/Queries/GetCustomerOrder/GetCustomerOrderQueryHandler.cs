@@ -27,11 +27,7 @@ public class GetCustomerOrderQueryHandler : IRequestHandler<GetCustomerOrderQuer
             }
 
             var order = customer.FindOrderById(request.OrderId.Value);
-            if (order is null)
-            {
-                return Result.Failure<OrderDto>($"Order with Id {request.OrderId} was not found");
-            }
-            
+
             return Result.Success(OrderDto.From(order));
         }
         catch (Exception ex)

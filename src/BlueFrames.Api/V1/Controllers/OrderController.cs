@@ -144,11 +144,18 @@ public class OrderController : ApiController
         {
             var query = new GetCustomerOrderQuery(OrderId.From(orderId), CustomerId.From(customerId));
             var result = await _mediator.Send(query, cancellationToken);
+            
             if (result.IsFailure)
             {
                 return BadRequest(Envelope.Error(result.Error));
             }
             
+            var order = result.Value;
+            if (order is null)
+            {
+                return NotFound(Envelope.Error("Order not found"));
+            }
+
             return Ok(Envelope.Ok(result.Value));
         }
         catch (Exception ex)

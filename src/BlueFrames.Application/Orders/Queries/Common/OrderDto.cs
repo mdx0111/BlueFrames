@@ -13,6 +13,11 @@ public record OrderDto
     
     public static OrderDto From(Order order)
     {
+        if (order is null)
+        {
+            return null;
+        }
+
         return new OrderDto
         {
             Id = order.Id.Value,

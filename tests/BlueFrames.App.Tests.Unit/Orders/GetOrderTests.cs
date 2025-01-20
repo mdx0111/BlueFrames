@@ -71,7 +71,7 @@ public class GetOrderTests
     }
     
     [Fact]
-    public async Task GetCustomerOrder_ShouldReturnFailure_WhenOrderDoesNotExist()
+    public async Task GetCustomerOrder_ShouldReturnEmpty_WhenOrderDoesNotExist()
     {
         // Arrange
         var getOrder = new GetCustomerOrderQuery(
@@ -89,7 +89,7 @@ public class GetOrderTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<OrderDto>>();
-        result.IsFailure.Should().BeTrue();
+        result.Value.Should().BeNull();
     }
     
     [Fact]
