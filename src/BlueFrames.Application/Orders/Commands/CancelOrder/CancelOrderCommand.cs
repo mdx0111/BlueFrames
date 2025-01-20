@@ -3,7 +3,7 @@ using BlueFrames.Domain.Orders.Common;
 
 namespace BlueFrames.Application.Orders.Commands.CancelOrder;
 
-public record CancelOrderCommand : IRequest<Result>
+public record CancelOrderCommand : IRequest<Result<Guid>>
 {
     public OrderId OrderId { get; }
     public CustomerId CustomerId { get; }

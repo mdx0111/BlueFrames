@@ -2,7 +2,7 @@ using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Orders.Commands.CancelOrder;
 
-public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Result>
+public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IDateTimeService _dateTimeService;
@@ -21,7 +21,7 @@ public class CancelOrderCommandHandler : IRequestHandler<CancelOrderCommand, Res
         _logger = logger;
     }
     
-    public async Task<Result> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CancelOrderCommand request, CancellationToken cancellationToken)
     {
         try
         {

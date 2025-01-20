@@ -1,4 +1,5 @@
 using BlueFrames.Api.Contracts.Orders.Requests;
+using BlueFrames.Application.Orders.Commands.CancelOrder;
 using BlueFrames.Application.Orders.Commands.CompleteOrder;
 using BlueFrames.Application.Orders.Commands.PlaceOrder;
 using BlueFrames.Domain.Customers.Common;
@@ -92,6 +93,37 @@ public class OrderController : ApiController
         {
             _logger.LogError(ex, "Error occurred while trying to complete the order");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while trying to complete the order"));
+        }
+    }
+
+    [EndpointSummary("Cancels order by providing order id and returns the cancelled order details url")]
+    [ProducesResponseType(typeof(Envelope<Guid>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpPut("cancel")]
+    public async Task<IActionResult> Cancel(
+        [FromBody] CancelOrderRequest request,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new CancelOrderCommand(
+                OrderId.From(request.OrderId),
+                CustomerId.From(request.CustomerId));
+            var result = await _mediator.Send(command, cancellationToken);
+            
+            if (result.IsFailure)
+            {
+                return BadRequest(Envelope.Error(result.Error));
+            }
+
+            return Ok(Envelope.Ok(result.Value));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while trying to cancel the order");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while trying to cancel the order"));
         }
     }
     
