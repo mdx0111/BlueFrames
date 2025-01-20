@@ -34,4 +34,21 @@ public class CreateProductControllerTests : IClassFixture<BlueFramesApiFactory>
         createResponse.Result.Should().NotBeEmpty();
         createResponse.Result.Should().NotBe(Guid.Empty.ToString());
     }
+    
+    [Fact]
+    public async Task Create_ShouldReturnBadRequest_WhenProductIsInvalid()
+    {
+        // Arrange
+        var product = _productFaker.Clone()
+            .RuleFor(dto => dto.Name, string.Empty)
+            .Generate();
+
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("is not a valid product name");
+    }
 }
