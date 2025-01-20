@@ -224,7 +224,7 @@ public class OrderController : ApiController
             }
             
             var orders = result.Value;
-            if (orders is null)
+            if (orders is null || orders.Count == 0)
             {
                 return NotFound(Envelope.Error("Order not found"));
             }
