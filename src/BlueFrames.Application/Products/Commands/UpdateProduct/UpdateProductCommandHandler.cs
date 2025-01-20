@@ -22,7 +22,7 @@ public class UpdateProductCommandHandler : IRequestHandler<UpdateProductCommand,
     {
         try
         {
-            var product = await _repository.GetByIdAsync(request.Id.Value, cancellationToken);
+            var product = await _repository.GetByIdAsync(request.Id, cancellationToken);
             if (product is null)
             {
                 return Result.Failure<Guid>($"Customer with Id {request.Id} not found.");

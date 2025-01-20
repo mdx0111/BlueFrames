@@ -22,7 +22,7 @@ public class DeleteProductTests
             ProductDescription.From(_commerce.ProductDescription()),
             ProductSKU.From(_commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
 
-        _repository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
+        _repository.GetByIdAsync(_product.Id, _cancellationToken).Returns(_product);
     }
     
     [Fact]

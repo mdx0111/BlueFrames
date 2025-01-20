@@ -31,7 +31,7 @@ public class GetOrderTests
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
             ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
-        _productRepository.GetByIdAsync(product.Id.Value, _cancellationToken).Returns(product);
+        _productRepository.GetByIdAsync(product.Id, _cancellationToken).Returns(product);
 
         var faker = new Bogus.Faker("en_GB");
         var person = new Bogus.Person(locale: "en_GB");

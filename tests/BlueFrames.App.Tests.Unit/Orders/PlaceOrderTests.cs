@@ -27,7 +27,7 @@ public class PlaceOrderTests
             ProductName.From(commerce.ProductName()),
             ProductDescription.From(commerce.ProductDescription()),
             ProductSKU.From(commerce.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper()));
-        _productRepository.GetByIdAsync(_product.Id.Value, _cancellationToken).Returns(_product);
+        _productRepository.GetByIdAsync(_product.Id, _cancellationToken).Returns(_product);
 
         var faker = new Bogus.Faker("en_GB");
         var person = new Bogus.Person(locale: "en_GB");

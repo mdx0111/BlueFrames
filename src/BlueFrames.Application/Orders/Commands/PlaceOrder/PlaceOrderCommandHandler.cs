@@ -36,7 +36,7 @@ public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Resul
                 return Result.Failure<Guid>("Customer not found");
             }
             
-            var product = await _productRepository.GetByIdAsync(request.ProductId.Value, cancellationToken);
+            var product = await _productRepository.GetByIdAsync(request.ProductId, cancellationToken);
             if (product is null)
             {
                 return Result.Failure<Guid>("Product not found");

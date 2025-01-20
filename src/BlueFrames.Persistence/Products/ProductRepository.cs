@@ -1,5 +1,6 @@
 using BlueFrames.Application.Interfaces.Repositories;
 using BlueFrames.Domain.Products;
+using BlueFrames.Domain.Products.Common;
 using BlueFrames.Persistence.DataContext;
 
 namespace BlueFrames.Persistence.Products;
@@ -20,12 +21,14 @@ public class ProductRepository : IProductRepository
 
     public void Update(Product entity)
     {
-        throw new NotImplementedException();
+        _appDbContext.Products.Update(entity);
     }
 
-    public Task<Product> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+    public async Task<Product> GetByIdAsync(ProductId id, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
+        return await _appDbContext
+            .Products
+            .FindAsync([id], cancellationToken);
     }
 
     public Task<List<Product>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)

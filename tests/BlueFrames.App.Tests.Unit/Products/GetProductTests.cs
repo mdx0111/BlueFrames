@@ -78,7 +78,7 @@ public class GetProductTests
     {
         // Arrange
         var firstProduct = _listOfProducts.First();
-        _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).Returns(firstProduct);
+        _repository.GetByIdAsync(firstProduct.Id, _cancellationToken).Returns(firstProduct);
         
          var query = new GetProductByIdQuery(firstProduct.Id);
          var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
@@ -99,7 +99,7 @@ public class GetProductTests
     {
         // Arrange
         var firstProduct = _listOfProducts.First();
-        _repository.GetByIdAsync(firstProduct.Id.Value, _cancellationToken).ReturnsNull();
+        _repository.GetByIdAsync(firstProduct.Id, _cancellationToken).ReturnsNull();
         
         var query = new GetProductByIdQuery(firstProduct.Id);
         var logger = Substitute.For<ILoggerAdapter<GetProductByIdQueryHandler>>();
