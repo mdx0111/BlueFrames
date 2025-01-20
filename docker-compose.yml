@@ -1,0 +1,33 @@
+networks:
+  blue-frames-network-stack:
+
+services:
+  blue-frames-sql-server:
+    container_name: blue-frames-sql-server-container
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+      - sql_data_volume:/var/opt/mssql
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Password!123
+    networks:
+      - blue-frames-network-stack
+
+  blue-frames-api-app:
+    container_name: blue-frames-api-app-container
+    image: ${DOCKER_REGISTRY-}blue-frames
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on: 
+      - blue-frames-sql-server
+    environment:
+      - ConnectionStrings__BlueFramesDbConnection=Server=blue-frames-sql-server-container,1433;Database=BlueFrames;User Id=sa;Password=Password!123;MultipleActiveResultSets=True;TrustServerCertificate=True;
+    networks:
+      - blue-frames-network-stack
+
+volumes:
+  sql_data_volume:
+      
