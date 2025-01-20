@@ -4,6 +4,7 @@ using BlueFrames.Application.Orders.Commands.CancelOrder;
 using BlueFrames.Application.Orders.Commands.CompleteOrder;
 using BlueFrames.Application.Orders.Commands.PlaceOrder;
 using BlueFrames.Application.Orders.Queries.GetCustomerOrder;
+using BlueFrames.Application.Orders.Queries.GetCustomerOrderDetails;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders.Common;
 using BlueFrames.Domain.Products.Common;
@@ -162,6 +163,36 @@ public class OrderController : ApiController
         {
             _logger.LogError(ex, "Error occurred while getting order");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while getting order"));
+        }
+    }
+    
+    [EndpointSummary("Gets an order detail by providing customer id and order id")]
+    [ProducesResponseType(typeof(Envelope<List<OrderResponse>>), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpGet("{customerId:guid}/{orderId:guid}/details")]
+    public async Task<IActionResult> GetAll(
+        [FromRoute] Guid customerId,
+        [FromRoute] Guid orderId,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var query = new GetCustomerOrderDetailsQuery(OrderId.From(orderId), CustomerId.From(customerId));
+            var result = await _mediator.Send(query, cancellationToken);
+            
+            if (result.IsFailure)
+            {
+                return BadRequest(Envelope.Error(result.Error));
+            }
+            
+            return Ok(Envelope.Ok(result.Value));
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while getting order details");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while getting order details"));
         }
     }
 }

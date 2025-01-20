@@ -10,6 +10,11 @@ public record OrderDetailsDto : OrderDto
     
     public new static OrderDetailsDto From(Order order)
     {
+        if (order is null)
+        {
+            return null;
+        }
+        
         return new OrderDetailsDto
         {
             Id = order.Id.Value,

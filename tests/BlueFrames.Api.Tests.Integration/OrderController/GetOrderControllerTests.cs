@@ -91,4 +91,38 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         var getOrderResult = await getOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         getOrderResult.Errors["error"][0].Should().Contain("Customer not found");
     }
+    
+    [Fact]
+    public async Task GetOrderDetails_ShouldReturnOk_WhenOrderDetailsExist()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var productResponse = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = productResponse.Result;
+        
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = customerResponse.Result;
+
+        var orderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.Parse(productId)
+        };
+        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
+        var orderResponse = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        var orderId = orderResponse.Result;
+        
+        // Act
+        var getOrderDetailsResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{orderId}/Details");
+        
+        // Assert
+        getOrderDetailsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getOrderDetailsResult = await getOrderDetailsResponse.Content.ReadFromJsonAsync<Envelope<OrderDetailsResponse>>();
+        getOrderDetailsResult.Result.CustomerId.Should().Be(Guid.Parse(customerId));
+        getOrderDetailsResult.Result.ProductId.Should().Be(Guid.Parse(productId));
+        getOrderDetailsResult.Result.Id.Should().Be(Guid.Parse(orderId));
+    }
 }

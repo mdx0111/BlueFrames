@@ -1,6 +1,6 @@
 namespace BlueFrames.Api.Contracts.Orders.Responses;
 
-public class OrderResponse
+public record OrderResponse
 {
     public Guid Id { get; init; }
     public Guid CustomerId { get; init; }
