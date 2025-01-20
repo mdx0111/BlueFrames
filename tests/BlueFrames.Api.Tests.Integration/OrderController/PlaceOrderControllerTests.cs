@@ -57,4 +57,29 @@ public class PlaceOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         createResponse.Result.Should().NotBeEmpty();
         createResponse.Result.Should().NotBe(Guid.Empty.ToString());
     }
+    
+    [Fact]
+    public async Task PlaceOrder_ShouldReturnBadRequest_WhenProductIdIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+       
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createCustomerResponseContent.Result;
+        
+        var placeOrderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.NewGuid()
+        };
+        
+        // Act
+        var response = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+
+        //Assert
+        response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("Product not found");
+    }
 }

@@ -41,6 +41,11 @@ public class OrderController : ApiController
                 return CreatedAtAction(nameof(Get), new { id = result.Value }, Envelope.Ok(result.Value));
             }
 
+            if (result.IsFailure)
+            {
+                return BadRequest(Envelope.Error(result.Error));
+            }
+
             _logger.LogError("Error occurred while placing order - {Error}", result.Error);
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while placing order"));
         }
