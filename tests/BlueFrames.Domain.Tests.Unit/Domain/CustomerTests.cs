@@ -193,7 +193,7 @@ public class CustomerTests
         var dateTimeService = Substitute.For<IDateTimeService>();
         dateTimeService.UtcNow.Returns(createdDate.Value);
 
-        var order = Order.Create(productId, _customer.Id, createdDate, dateTimeService.UtcNow);
+        var order = Order.Create(productId, _customer.Id, createdDate);
 
         // Act
         _customer.PlaceOrder(order);

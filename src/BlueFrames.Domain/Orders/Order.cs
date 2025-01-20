@@ -18,22 +18,17 @@ public class Order : Entity, IAggregateRoot
     public Product Product { get; private set; }
     public Customer Customer { get; private set; }
 
-    public static Order Create(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
+    public static Order Create(ProductId productId, CustomerId customerId, OrderDate createdDate)
     {
-        return new Order(productId, customerId, createdDate, now);
+        return new Order(productId, customerId, createdDate);
     }
 
     protected Order()
     {
     }
 
-    private Order(ProductId productId, CustomerId customerId, OrderDate createdDate, DateTime now)
+    private Order(ProductId productId, CustomerId customerId, OrderDate createdDate)
     {
-        if (createdDate.Value < now)
-        {
-            throw new ValidationException("Invalid Created Date");
-        }
-
         Id = OrderId.From(GuidProvider.Create());
         ProductId = productId ?? throw new ValidationException("Product Id is required");
         CustomerId = customerId ?? throw new ValidationException("Customer Id is required");

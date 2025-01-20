@@ -43,7 +43,7 @@ public class PlaceOrderCommandHandler : IRequestHandler<PlaceOrderCommand, Resul
             }
 
             var createdDate = OrderDate.From(_dateTimeService.UtcNow);
-            var order = Order.Create(product.Id, customer.Id, createdDate, _dateTimeService.UtcNow);
+            var order = Order.Create(product.Id, customer.Id, createdDate);
             
             customer.PlaceOrder(order);
 
