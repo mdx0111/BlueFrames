@@ -87,4 +87,43 @@ public class CompleteOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         completeOrderResponseContent.Errors["error"][0].Should().Contain("Order not found");
     }
+    
+    [Fact]
+    public async Task CompleteOrder_ShouldReturnBadRequest_WhenCustomerIdIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createCustomerResponseContent.Result;
+
+        var product = _productFaker.Generate();
+        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createProductResponseContent.Result;
+        
+        var placeOrderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.Parse(productId)
+        };
+        
+        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+        var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        var orderId = placeOrderResponseContent.Result;
+
+        // Act
+        var completeOrderRequest = new CompleteOrderRequest
+        {
+            OrderId = Guid.Parse(orderId),
+            CustomerId = Guid.NewGuid()
+        };
+        
+        var completeOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Complete", completeOrderRequest);
+        var completeOrderResponseContent = await completeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        
+        // Assert
+        completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        completeOrderResponseContent.Errors["error"][0].Should().Contain("Customer not found");
+    }
 }
