@@ -63,4 +63,28 @@ public class CompleteOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         completeOrderResponseContent.Result.Should().Be(orderId);
     }
+    
+    [Fact]
+    public async Task CompleteOrder_ShouldReturnBadRequest_WhenOrderIdIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createCustomerResponseContent.Result;
+        
+        // Act
+        var completeOrderRequest = new CompleteOrderRequest
+        {
+            OrderId = Guid.NewGuid(),
+            CustomerId = Guid.Parse(customerId)
+        };
+        
+        var completeOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Complete", completeOrderRequest);
+        var completeOrderResponseContent = await completeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        
+        // Assert
+        completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        completeOrderResponseContent.Errors["error"][0].Should().Contain("Order not found");
+    }
 }
