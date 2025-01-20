@@ -54,6 +54,7 @@ public class DeleteProductTests
         var deleteResult = await deleteHandler.Handle(deleteProduct, _cancellationToken);
         
         // Assert
-        deleteResult.IsSuccess.Should().BeFalse();
+        deleteResult.IsSuccess.Should().BeTrue();
+        deleteResult.Value.Should().BeEmpty();
     }
 }

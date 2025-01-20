@@ -1,6 +1,7 @@
 using BlueFrames.Api.Contracts.Products.Requests;
 using BlueFrames.Api.Contracts.Products.Responses;
 using BlueFrames.Application.Products.Commands.CreateProduct;
+using BlueFrames.Application.Products.Commands.DeleteProduct;
 using BlueFrames.Application.Products.Commands.UpdateProduct;
 using BlueFrames.Application.Products.Queries.GetAllProducts;
 using BlueFrames.Application.Products.Queries.GetProductById;
@@ -177,6 +178,40 @@ public class ProductController : ApiController
         {
             _logger.LogError(ex, "Error occurred while returning products");
             return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while returning products"));
+        }
+    }
+    
+    [EndpointSummary("Deletes product by providing product id")]
+    [ProducesResponseType(typeof(Envelope), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(
+        [FromRoute] Guid id,
+        CancellationToken cancellationToken)
+    {
+        try
+        {
+            var command = new DeleteProductCommand(ProductId.From(id));
+            var result = await _mediator.Send(command, cancellationToken);
+            if (result.IsFailure)
+            {
+                _logger.LogError("Error occurred while deleting product - {Error}", result.Error);
+                return StatusCode(StatusCodes.Status500InternalServerError,
+                    Envelope.Error("An error occurred while deleting product"));
+            }
+            
+            if (result.Value == Guid.Empty)
+            {
+                return NotFound(Envelope.Error("Product not found"));
+            }
+            
+            return Ok(Envelope.Ok());
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Error occurred while deleting product");
+            return StatusCode(StatusCodes.Status500InternalServerError, Envelope.Error("An error occurred while deleting product"));
         }
     }
 }

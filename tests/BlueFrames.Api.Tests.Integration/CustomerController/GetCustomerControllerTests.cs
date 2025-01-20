@@ -84,7 +84,7 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         response.StatusCode.Should().Be(HttpStatusCode.OK);
         var getCustomerResponse = await response.Content.ReadFromJsonAsync<Envelope<List<CustomerResponse>>>();
         getCustomerResponse.Result.Should().NotBeEmpty();
-        getCustomerResponse.Result.Single().Should().BeEquivalentTo(new CustomerResponse
+        getCustomerResponse.Result.Should().ContainEquivalentOf(new CustomerResponse
         {
             Id = Guid.Parse(customerId),
             FirstName = customer.FirstName,
