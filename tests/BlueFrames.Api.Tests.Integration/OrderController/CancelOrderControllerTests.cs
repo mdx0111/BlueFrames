@@ -61,4 +61,43 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         cancelOrderResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+    
+    [Fact]
+    public async Task CancelOrder_ShouldReturnBadRequest_WhenCustomerIdIsInvalid()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createCustomerResponseContent.Result;
+        
+        var product = _productFaker.Generate();
+        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createProductResponseContent.Result;
+        
+        var placeOrderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.Parse(productId)
+        };
+        
+        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+        var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        var orderId = placeOrderResponseContent.Result;
+
+        var cancelOrderRequest = new CancelOrderRequest
+        {
+            OrderId = Guid.Parse(orderId),
+            CustomerId = Guid.NewGuid()
+        };
+        
+        // Act
+        var cancelOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
+        var cancelOrderResponseContent = await cancelOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+
+        // Assert
+        cancelOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        cancelOrderResponseContent.Errors["error"][0].Should().Contain("Customer not found");
+    }
 }
