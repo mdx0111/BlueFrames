@@ -41,4 +41,16 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
             SKU = product.SKU
         });
     }
+    
+    [Fact]
+    public async Task Get_ShouldReturnNotFound_WhenProductDoesNotExist()
+    {
+        // Act
+        var response = await _httpClient.GetAsync($"/api/v1/Product/{Guid.NewGuid()}");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("Product not found");
+    }
 }
