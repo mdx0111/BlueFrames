@@ -48,5 +48,7 @@ public class CreateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validationError = await response.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("is not a valid first name");
     }
 }
