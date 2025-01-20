@@ -1,4 +1,5 @@
 using BlueFrames.Api.Contracts.Products.Requests;
+using BlueFrames.Api.Contracts.Products.Responses;
 
 namespace BlueFrames.Api.Tests.Integration.ProductController;
 
@@ -30,9 +31,18 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
 
         // Act
         var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+        var getResponse = await _httpClient.GetAsync($"/api/v1/Product/{productId}");
+        var getProductResponse = await getResponse.Content.ReadFromJsonAsync<Envelope<ProductResponse>>();
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        getProductResponse.Result.Should().BeEquivalentTo(new ProductResponse
+        {
+            Id = Guid.Parse(productId),
+            Name = updatedProduct.Name,
+            Description = updatedProduct.Description,
+            SKU = updatedProduct.SKU
+        });
     }
     
     [Fact]
