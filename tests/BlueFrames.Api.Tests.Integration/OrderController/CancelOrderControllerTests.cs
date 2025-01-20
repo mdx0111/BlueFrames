@@ -121,8 +121,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         };
         
         var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
-        var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
-        var orderId = placeOrderResponseContent.Result;
+        placeOrderResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var cancelOrderRequest = new CancelOrderRequest
         {
