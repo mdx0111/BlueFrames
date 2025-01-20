@@ -28,7 +28,8 @@ public class CustomerRepository : ICustomerRepository
     {
         return await _appDbContext
             .Customers
-            .FindAsync([id], cancellationToken);
+            .Include(customer => customer.Orders)
+            .FirstOrDefaultAsync(customer => customer.Id == id, cancellationToken);
     }
 
     public async Task<List<Customer>> GetAllAsync(int limit, int offset, CancellationToken cancellationToken)

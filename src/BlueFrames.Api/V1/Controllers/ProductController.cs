@@ -28,6 +28,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(Envelope<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPost]
     public async Task<IActionResult> Post(
         [FromBody] ProductRequest request,
@@ -65,6 +66,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(Envelope<Guid>), StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put(
         [FromMultiSource] UpdateProductRequest request,
@@ -103,6 +105,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(Envelope<ProductResponse>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
@@ -137,6 +140,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(Envelope<List<ProductResponse>>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromQuery] int limit,
@@ -185,6 +189,7 @@ public class ProductController : ApiController
     [ProducesResponseType(typeof(Envelope), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,

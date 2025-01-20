@@ -1,6 +1,6 @@
 namespace BlueFrames.Api.Contracts.Products.Requests;
 
-public class UpdateProductRequest
+public record UpdateProductRequest
 {
     [FromRoute(Name = "id")]
     public Guid Id { get; init; }

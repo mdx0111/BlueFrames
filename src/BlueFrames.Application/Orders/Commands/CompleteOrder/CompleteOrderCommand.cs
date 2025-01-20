@@ -3,7 +3,7 @@ using BlueFrames.Domain.Orders.Common;
 
 namespace BlueFrames.Application.Orders.Commands.CompleteOrder;
 
-public record CompleteOrderCommand : IRequest<Result>
+public record CompleteOrderCommand : IRequest<Result<Guid>>
 {
     public OrderId OrderId { get; }
     public CustomerId CustomerId { get; }

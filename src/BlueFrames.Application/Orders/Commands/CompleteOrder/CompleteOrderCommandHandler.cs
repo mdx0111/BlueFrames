@@ -2,7 +2,7 @@ using BlueFrames.Application.Interfaces.Repositories;
 
 namespace BlueFrames.Application.Orders.Commands.CompleteOrder;
 
-public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommand, Result>
+public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommand, Result<Guid>>
 {
     private readonly ICustomerRepository _customerRepository;
     private readonly IDateTimeService _dateTimeService;
@@ -21,7 +21,7 @@ public class CompleteOrderCommandHandler : IRequestHandler<CompleteOrderCommand,
         _logger = logger;
     }
     
-    public async Task<Result> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
+    public async Task<Result<Guid>> Handle(CompleteOrderCommand request, CancellationToken cancellationToken)
     {
         try
         {
