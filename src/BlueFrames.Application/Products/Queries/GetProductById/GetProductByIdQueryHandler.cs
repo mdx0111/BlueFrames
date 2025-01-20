@@ -24,11 +24,6 @@ public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, R
                 request.Id,
                 cancellationToken);
             
-            if (product is null)
-            {
-                return Result.Failure<ProductDto>("Error retrieving product");
-            }
-
             var result = ProductDto.From(product);
             return Result.Success(result);
         }

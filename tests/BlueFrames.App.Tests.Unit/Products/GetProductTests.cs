@@ -95,7 +95,7 @@ public class GetProductTests
     }
     
     [Fact]
-    public async Task GetProduct_ShouldReturnFailure_WhenNotFound()
+    public async Task GetProduct_ShouldReturnEmpty_WhenNotFound()
     {
         // Arrange
         var firstProduct = _listOfProducts.First();
@@ -111,7 +111,6 @@ public class GetProductTests
         // Assert
         result.Should().NotBeNull();
         result.Should().BeOfType<Result<ProductDto>>();
-        result.IsFailure.Should().BeTrue();
         result.Value.Should().BeNull();
     }
 }

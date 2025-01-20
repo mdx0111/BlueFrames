@@ -11,6 +11,11 @@ public record ProductDto
     
     public static ProductDto From(Product product)
     {
+        if (product is null)
+        {
+            return null;
+        }
+        
         return new ProductDto
         {
             Id = product.Id.Value,
