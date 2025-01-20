@@ -77,5 +77,17 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
             Description = product.Description,
             SKU = product.SKU
         });
-    }    
+    }
+    
+    [Fact]
+    public async Task GetAll_ShouldReturnEmptyList_WhenNoProductsExist()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Product?offset=10&limit=10");
+
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        var getProductResponse = await response.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
+        getProductResponse.Result.Should().BeEmpty();
+    }
 }
