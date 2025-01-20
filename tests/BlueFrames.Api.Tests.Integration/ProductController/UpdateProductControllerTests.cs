@@ -34,4 +34,27 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.OK);
     }
+    
+    [Fact]
+    public async Task UpdateProduct_ShouldReturnBadRequest_WhenProductIsInvalid()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createResponseContent.Result;
+
+        var updatedProduct = _productFaker.Clone()
+            .RuleFor(dto => dto.Name, string.Empty)
+            .Generate();
+
+        // Act
+        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        var validationError = await updateResponse.Content.ReadFromJsonAsync<Envelope>();
+        validationError.Errors["error"][0].Should().Contain("is not a valid product name");
+    }
 }
