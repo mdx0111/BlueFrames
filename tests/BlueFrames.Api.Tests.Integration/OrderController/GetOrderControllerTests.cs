@@ -8,8 +8,6 @@ namespace BlueFrames.Api.Tests.Integration.OrderController;
 
 public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
 {
-    private readonly HttpClient _httpClient;
-    
     private const int ProductSKUCharacterCount = 5;
     private readonly Faker<ProductRequest> _productFaker = new Faker<ProductRequest> ("en_GB")
         .RuleFor(dto => dto.Name, f => f.Commerce.ProductName())
@@ -22,9 +20,13 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         .RuleFor(dto => dto.Phone, faker => faker.Phone.PhoneNumberFormat(1))
         .RuleFor(dto => dto.Email, faker => faker.Person.Email);
 
+    private readonly HttpClient _adminHttpClient;
+    private readonly HttpClient _httpClient;
+
     public GetOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateHttpClientWithAdminCredentials();
+        _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
+        _httpClient = factory.CreateClient();
     }
     
     [Fact]
@@ -32,12 +34,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = productResponse.Result;
         
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
 
@@ -46,12 +48,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             CustomerId = Guid.Parse(customerId),
             ProductId = Guid.Parse(productId)
         };
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
         var orderResponse = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         var orderId = orderResponse.Result;
         
         // Act
-        var getOrderResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{orderId}");
+        var getOrderResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/{orderId}");
         
         // Assert
         getOrderResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -67,12 +69,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
         
         // Act
-        var getOrderResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{Guid.NewGuid()}");
+        var getOrderResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/{Guid.NewGuid()}");
         
         // Assert
         getOrderResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -84,7 +86,7 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     public async Task Get_ShouldReturnBadRequest_WhenCustomerIdIsInvalid()
     {
         // Act
-        var getOrderResponse = await _httpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/{Guid.NewGuid()}");
+        var getOrderResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/{Guid.NewGuid()}");
         
         // Assert
         getOrderResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
@@ -97,12 +99,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = productResponse.Result;
         
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
 
@@ -111,12 +113,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             CustomerId = Guid.Parse(customerId),
             ProductId = Guid.Parse(productId)
         };
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
         var orderResponse = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         var orderId = orderResponse.Result;
         
         // Act
-        var getOrderDetailsResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{orderId}/Details");
+        var getOrderDetailsResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/{orderId}/Details");
         
         // Assert
         getOrderDetailsResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -131,12 +133,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
         
         // Act
-        var getOrderDetailsResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/{Guid.NewGuid()}/Details");
+        var getOrderDetailsResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/{Guid.NewGuid()}/Details");
         
         // Assert
         getOrderDetailsResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -149,12 +151,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = productResponse.Result;
         
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
 
@@ -163,12 +165,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             CustomerId = Guid.Parse(customerId),
             ProductId = Guid.Parse(productId)
         };
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", orderRequest);
         var orderResponse = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         var orderId = orderResponse.Result;
         
         // Act
-        var getAllOrdersResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/all");
+        var getAllOrdersResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/all");
         
         // Assert
         getAllOrdersResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -183,12 +185,12 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var customerResponse = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = customerResponse.Result;
         
         // Act
-        var getAllOrdersResponse = await _httpClient.GetAsync($"/api/v1/Order/{customerId}/all");
+        var getAllOrdersResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{customerId}/all");
         
         // Assert
         getAllOrdersResponse.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -200,11 +202,21 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     public async Task GetAllOrders_ShouldReturnBadRequest_WhenCustomerIdIsInvalid()
     {
         // Act
-        var getAllOrdersResponse = await _httpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/all");
+        var getAllOrdersResponse = await _adminHttpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/all");
         
         // Assert
         getAllOrdersResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var getAllOrdersResult = await getAllOrdersResponse.Content.ReadFromJsonAsync<Envelope>();
         getAllOrdersResult.Errors["error"][0].Should().Contain("Customer not found");
+    }
+    
+    [Fact]
+    public async Task Get_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Act
+        var getResponse = await _httpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/{Guid.NewGuid()}");
+        
+        // Assert
+        getResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
