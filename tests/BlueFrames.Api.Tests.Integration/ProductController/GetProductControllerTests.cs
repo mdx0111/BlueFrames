@@ -5,17 +5,19 @@ namespace BlueFrames.Api.Tests.Integration.ProductController;
 
 public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
 {
-    private readonly HttpClient _httpClient;
-
     private const int ProductSKUCharacterCount = 5;
     private readonly Faker<ProductRequest> _productFaker = new Faker<ProductRequest> ("en_GB")
         .RuleFor(dto => dto.Name, f => f.Commerce.ProductName())
         .RuleFor(dto => dto.Description, f => f.Commerce.ProductDescription())
         .RuleFor(dto => dto.SKU, f => f.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper());
-    
+
+    private readonly HttpClient _adminHttpClient;
+    private readonly HttpClient _httpClient;
+
     public GetProductControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateHttpClientWithAdminCredentials();
+        _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
+        _httpClient = factory.CreateClient();
     }
     
     [Fact]
@@ -23,7 +25,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = productResponse.Result;
 
@@ -59,7 +61,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = productResponse.Result;
 
@@ -84,7 +86,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        _ = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        _ = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
 
         // Act
         var firstResponse = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
