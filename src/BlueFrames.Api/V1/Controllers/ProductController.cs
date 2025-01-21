@@ -7,6 +7,7 @@ using BlueFrames.Application.Products.Queries.Common;
 using BlueFrames.Application.Products.Queries.GetAllProducts;
 using BlueFrames.Application.Products.Queries.GetProductById;
 using BlueFrames.Domain.Products.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Caching.Memory;
 
 namespace BlueFrames.Api.V1.Controllers;
@@ -34,6 +35,7 @@ public class ProductController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpPost]
     public async Task<IActionResult> Post(
         [FromBody] ProductRequest request,
