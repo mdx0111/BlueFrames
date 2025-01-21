@@ -13,11 +13,13 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
 
     private readonly HttpClient _adminHttpClient;
     private readonly HttpClient _userHttpClient;
+    private readonly HttpClient _httpClient;
 
     public UpdateProductControllerTests(BlueFramesApiFactory factory)
     {
         _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
         _userHttpClient = factory.CreateHttpClientWithUserCredentials();
+        _httpClient = factory.CreateClient();
     }
     
     [Fact]
@@ -87,5 +89,24 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task UpdateProduct_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createResponseContent.Result;
+
+        var updatedProduct = _productFaker.Generate();
+
+        // Act
+        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
