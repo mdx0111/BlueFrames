@@ -64,4 +64,20 @@ public class DeleteProductControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
+    
+    [Fact]
+    public async Task Delete_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = productResponse.Result;
+        
+        // Act
+        var response = await _httpClient.DeleteAsync($"/api/v1/Product/{productId}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }
