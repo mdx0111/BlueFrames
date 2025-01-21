@@ -12,11 +12,13 @@ public class DeleteCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 
     private readonly HttpClient _userHttpClient;
     private readonly HttpClient _adminHttpClient;
+    private readonly HttpClient _httpClient;
 
     public DeleteCustomerControllerTests(BlueFramesApiFactory factory)
     {
         _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
         _userHttpClient = factory.CreateHttpClientWithUserCredentials();
+        _httpClient = factory.CreateClient();
     }
     
     [Fact]
@@ -61,5 +63,21 @@ public class DeleteCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task Delete_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var customerResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = customerResponse.Result;
+        
+        // Act
+        var response = await _httpClient.DeleteAsync($"/api/v1/Customer/{customerId}");
+        
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
