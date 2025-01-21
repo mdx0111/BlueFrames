@@ -108,6 +108,7 @@ public class OrderController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("User")]
     [HttpPut("cancel")]
     public async Task<IActionResult> Cancel(
         [FromBody] CancelOrderRequest request,
