@@ -5,17 +5,20 @@ namespace BlueFrames.Api.Tests.Integration.CustomerController;
 
 public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 {
-    private readonly HttpClient _httpClient;
 
     private readonly Faker<CustomerRequest> _customerFaker = new Faker<CustomerRequest>("en_GB")
         .RuleFor(dto => dto.FirstName, faker => faker.Person.FirstName)
         .RuleFor(dto => dto.LastName, faker => faker.Person.LastName)
         .RuleFor(dto => dto.Phone, faker => faker.Phone.PhoneNumberFormat(1).Replace(" ", string.Empty))
         .RuleFor(dto => dto.Email, faker => faker.Person.Email);
-    
+
+    private readonly HttpClient _adminHttpClient;
+    private readonly HttpClient _userHttpClient;
+
     public UpdateCustomerControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateHttpClientWithAdminCredentials();
+        _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
+        _userHttpClient = factory.CreateHttpClientWithUserCredentials();
     }
 
     [Fact]
@@ -23,15 +26,15 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = createResponseContent.Result;
 
         var updatedCustomer = _customerFaker.Generate();
 
         // Act
-        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
-        var getResponse = await _httpClient.GetAsync($"/api/v1/Customer/{customerId}");
+        var updateResponse = await _adminHttpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+        var getResponse = await _adminHttpClient.GetAsync($"/api/v1/Customer/{customerId}");
         var getCustomerResponse = await getResponse.Content.ReadFromJsonAsync<Envelope<CustomerResponse>>();
 
         // Assert
@@ -51,7 +54,7 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = createResponseContent.Result;
 
@@ -60,11 +63,29 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
             .Generate();
 
         // Act
-        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+        var updateResponse = await _adminHttpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var validationError = await updateResponse.Content.ReadFromJsonAsync<Envelope>();
         validationError.Errors["error"][0].Should().Contain("is not a valid email address");
+    }
+    
+    [Fact]
+    public async Task UpdateCustomer_ShouldReturnForbidden_WhenUserIsNotAdmin()
+    {
+        // Arrange
+        var customer = _customerFaker.Generate();
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createResponseContent.Result;
+
+        var updatedCustomer = _customerFaker.Generate();
+
+        // Act
+        var updateResponse = await _userHttpClient.PutAsJsonAsync($"/api/v1/Customer/{customerId}", updatedCustomer);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }
