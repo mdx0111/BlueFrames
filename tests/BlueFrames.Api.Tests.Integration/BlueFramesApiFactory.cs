@@ -65,6 +65,11 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         return CreateClient().WithUserCredentials("admin", JwtConfig); 
     }
 
+    public HttpClient CreateHttpClientWithUserCredentials()
+    {
+        return CreateClient().WithUserCredentials("user", JwtConfig); 
+    }
+
     public new async Task DisposeAsync()
     {
         await _msSqlContainer.StopAsync();
