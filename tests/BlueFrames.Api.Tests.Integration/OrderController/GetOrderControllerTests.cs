@@ -219,4 +219,14 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         getResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+    
+    [Fact]
+    public async Task GetOrderDetails_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Act
+        var getResponse = await _httpClient.GetAsync($"/api/v1/Order/{Guid.NewGuid()}/{Guid.NewGuid()}/Details");
+        
+        // Assert
+        getResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }

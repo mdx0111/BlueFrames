@@ -177,6 +177,7 @@ public class OrderController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("User")]
     [HttpGet("{customerId:guid}/{orderId:guid}/details")]
     public async Task<IActionResult> GetAll(
         [FromRoute] Guid customerId,
