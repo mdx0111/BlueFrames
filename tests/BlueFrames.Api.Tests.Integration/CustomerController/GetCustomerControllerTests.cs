@@ -14,11 +14,13 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
 
     private readonly HttpClient _adminHttpClient;
     private readonly HttpClient _userHttpClient;
+    private readonly HttpClient _httpClient;
 
     public GetCustomerControllerTests(BlueFramesApiFactory factory)
     {
         _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
         _userHttpClient = factory.CreateHttpClientWithUserCredentials();
+        _httpClient = factory.CreateClient();
     }
 
     [Fact, TestPriority(4)]
@@ -104,5 +106,15 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
     
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task GetAll_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Act
+        var response = await _httpClient.GetAsync("/api/v1/Customer?offset=0&limit=10");
+    
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
