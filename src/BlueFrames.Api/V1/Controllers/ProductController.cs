@@ -3,9 +3,11 @@ using BlueFrames.Api.Contracts.Products.Responses;
 using BlueFrames.Application.Products.Commands.CreateProduct;
 using BlueFrames.Application.Products.Commands.DeleteProduct;
 using BlueFrames.Application.Products.Commands.UpdateProduct;
+using BlueFrames.Application.Products.Queries.Common;
 using BlueFrames.Application.Products.Queries.GetAllProducts;
 using BlueFrames.Application.Products.Queries.GetProductById;
 using BlueFrames.Domain.Products.Common;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BlueFrames.Api.V1.Controllers;
 
@@ -14,13 +16,16 @@ namespace BlueFrames.Api.V1.Controllers;
 public class ProductController : ApiController
 {
     private readonly IMediator _mediator;
+    private readonly IMemoryCache _memoryCache;
     private readonly ILoggerAdapter<ProductController> _logger;
 
     public ProductController(
         IMediator mediator,
+        IMemoryCache memoryCache,
         ILoggerAdapter<ProductController> logger)
     {
         _mediator = mediator;
+        _memoryCache = memoryCache;
         _logger = logger;
     }
     
@@ -159,6 +164,12 @@ public class ProductController : ApiController
         {
             return BadRequest(Envelope.Error("offset", "Offset must be greater than 0"));
         }
+
+        var cachedData = _memoryCache.Get<Envelope<List<ProductDto>>>($"products_{limit}_{offset}");
+        if (cachedData is not null)
+        {
+            return Ok(cachedData);
+        }
         
         try
         {
@@ -175,8 +186,10 @@ public class ProductController : ApiController
             {
                 return NotFound(Envelope.Error("Products not found"));
             }
-            
-            return Ok(Envelope.Ok(result.Value));
+
+            var response = Envelope.Ok(result.Value);
+            _memoryCache.Set($"products_{limit}_{offset}", response);
+            return Ok(response);
         }
         catch (Exception ex)
         {

@@ -80,6 +80,34 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
     }
     
     [Fact]
+    public async Task GetAll_ShouldReturnProductsFromCache_WhenRequestedSubsequently()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = productResponse.Result;
+
+        // Act
+        var firstResponse = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
+        await Task.Delay(TimeSpan.FromSeconds(2));
+        var secondResponse = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
+
+        // Assert
+        firstResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var firstGetProductResponse = await firstResponse.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
+        var firstResponseGeneratedTime = firstGetProductResponse.TimeGenerated;
+        firstGetProductResponse.Result.Should().NotBeEmpty();
+        
+        secondResponse.StatusCode.Should().Be(HttpStatusCode.OK);
+        var secondResponseGeneratedTime = firstGetProductResponse.TimeGenerated;
+        var secondGetProductResponse = await secondResponse.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
+        secondGetProductResponse.Result.Should().NotBeEmpty();
+
+        firstResponseGeneratedTime.Should().Be(secondResponseGeneratedTime);
+    }
+    
+    [Fact]
     public async Task GetAll_ShouldReturnEmptyList_WhenNoProductsExist()
     {
         // Act
