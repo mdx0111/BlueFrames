@@ -117,4 +117,14 @@ public class GetCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
+    
+    [Fact]
+    public async Task Get_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Act
+        var response = await _httpClient.GetAsync($"/api/v1/Customer/{Guid.NewGuid()}");
+    
+        // Assert
+        response.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
+    }
 }
