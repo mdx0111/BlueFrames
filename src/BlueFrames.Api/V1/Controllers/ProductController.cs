@@ -74,6 +74,7 @@ public class ProductController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put(
         [FromMultiSource] UpdateProductRequest request,

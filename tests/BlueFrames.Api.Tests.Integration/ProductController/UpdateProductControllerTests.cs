@@ -5,17 +5,19 @@ namespace BlueFrames.Api.Tests.Integration.ProductController;
 
 public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
 {
-    private readonly HttpClient _httpClient;
-
     private const int ProductSKUCharacterCount = 5;
     private readonly Faker<ProductRequest> _productFaker = new Faker<ProductRequest> ("en_GB")
         .RuleFor(dto => dto.Name, f => f.Commerce.ProductName())
         .RuleFor(dto => dto.Description, f => f.Commerce.ProductDescription())
         .RuleFor(dto => dto.SKU, f => f.Random.AlphaNumeric(ProductSKUCharacterCount).ToUpper());
-    
+
+    private readonly HttpClient _adminHttpClient;
+    private readonly HttpClient _userHttpClient;
+
     public UpdateProductControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateHttpClientWithAdminCredentials();
+        _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
+        _userHttpClient = factory.CreateHttpClientWithUserCredentials();
     }
     
     [Fact]
@@ -23,15 +25,15 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = createResponseContent.Result;
 
         var updatedProduct = _productFaker.Generate();
 
         // Act
-        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
-        var getResponse = await _httpClient.GetAsync($"/api/v1/Product/{productId}");
+        var updateResponse = await _adminHttpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+        var getResponse = await _adminHttpClient.GetAsync($"/api/v1/Product/{productId}");
         var getProductResponse = await getResponse.Content.ReadFromJsonAsync<Envelope<ProductResponse>>();
 
         // Assert
@@ -51,7 +53,7 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
         // Arrange
         var product = _productFaker.Generate();
 
-        var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = createResponseContent.Result;
 
@@ -60,11 +62,30 @@ public class UpdateProductControllerTests : IClassFixture<BlueFramesApiFactory>
             .Generate();
 
         // Act
-        var updateResponse = await _httpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+        var updateResponse = await _adminHttpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
 
         // Assert
         updateResponse.StatusCode.Should().Be(HttpStatusCode.BadRequest);
         var validationError = await updateResponse.Content.ReadFromJsonAsync<Envelope>();
         validationError.Errors["error"][0].Should().Contain("is not a valid product name");
+    }
+    
+    [Fact]
+    public async Task UpdateProduct_ShouldReturnForbidden_WhenUserIsNotAdmin()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+
+        var createResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createResponseContent = await createResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createResponseContent.Result;
+
+        var updatedProduct = _productFaker.Generate();
+
+        // Act
+        var updateResponse = await _userHttpClient.PutAsJsonAsync($"/api/v1/Product/{productId}", updatedProduct);
+
+        // Assert
+        updateResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
     }
 }
