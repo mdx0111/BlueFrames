@@ -8,18 +8,14 @@ namespace BlueFrames.Persistence.DataContext;
 
 public class AppDbContext : DbContext
 {
-    private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
-
     public DbSet<Customer> Customers { get; private set; }
     public DbSet<Product> Products { get; private set; }
     public DbSet<Order> Orders { get; private set; }
     
     public AppDbContext(
-        DbContextOptions options,
-        AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor)
+        DbContextOptions options)
         : base(options)
     {
-        _auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
     }
 
     protected override void OnModelCreating(ModelBuilder builder)
@@ -32,13 +28,5 @@ public class AppDbContext : DbContext
         builder.Entity<Product>().HasQueryFilter(product => product.IsDeleted == false);
 
         base.OnModelCreating(builder);
-    }
-
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        if (_auditableEntitySaveChangesInterceptor is not null)
-        {
-            optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
-        }
     }
 }
