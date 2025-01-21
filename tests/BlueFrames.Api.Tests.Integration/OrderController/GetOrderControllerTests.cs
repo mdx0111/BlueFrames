@@ -24,7 +24,7 @@ public class GetOrderControllerTests : IClassFixture<BlueFramesApiFactory>
 
     public GetOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
     
     [Fact]

@@ -22,7 +22,7 @@ public class CompleteOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public CompleteOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
 
     [Fact]

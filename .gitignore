@@ -39,4 +39,5 @@ nuget.config
 
 # .net app settings
 appsettings.Development.json
+appsettings.Integration.json
 

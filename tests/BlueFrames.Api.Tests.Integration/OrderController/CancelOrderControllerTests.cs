@@ -22,7 +22,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public CancelOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
 
     [Fact]

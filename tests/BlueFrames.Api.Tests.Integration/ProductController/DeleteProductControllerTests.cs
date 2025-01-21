@@ -15,7 +15,7 @@ public class DeleteProductControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public DeleteProductControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
     
     [Fact]

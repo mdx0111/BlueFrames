@@ -10,6 +10,10 @@ public static class ConfigureApp
     public static void ConfigureHost(this WebApplication app, IConfiguration configuration)
     {
         app.UseRouting();
+        
+        app.UseAuthentication();
+
+        app.UseAuthorization();
 
         app.MapControllers();
         

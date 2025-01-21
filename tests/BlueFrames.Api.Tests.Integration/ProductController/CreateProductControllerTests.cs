@@ -14,7 +14,7 @@ public class CreateProductControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public CreateProductControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
     
     [Fact]

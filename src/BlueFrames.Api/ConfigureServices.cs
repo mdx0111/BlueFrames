@@ -1,4 +1,10 @@
+using System.Security.Claims;
+using System.Text;
+using BlueFrames.Api.Configs;
+using BlueFrames.Api.Services;
 using BlueFrames.Persistence.DataContext;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -9,6 +15,39 @@ public static class ConfigureServices
 {
     public static IServiceCollection AddApiServices(this IServiceCollection services, IConfiguration configuration)
     {
+        services
+            .AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+            .AddJwtBearer(options =>
+            {
+                var jwtConfig = configuration.GetSection(nameof(JwtConfig)).Get<JwtConfig>();
+
+                options.RequireHttpsMetadata = false;
+                options.SaveToken = true;
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(jwtConfig.PrivateKey)),
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtConfig.Issuer,
+                    ValidateAudience = true,
+                    ValidAudience = jwtConfig.Audience,
+                    ClockSkew = TimeSpan.Zero,
+                    RequireSignedTokens = false
+                };
+            });
+        
+        services.ConfigureOptions<JwtConfigSetup>();
+        services.AddTransient<IJwtTokenService, JwtTokenService>();
+        
+        services
+            .AddAuthorizationBuilder()
+            .AddPolicy("Admin", policy => policy.RequireClaim(ClaimTypes.Role,"admin"))
+            .AddPolicy("User", policy => policy.RequireClaim(ClaimTypes.Role,"user", "admin"));
+
         var apiVersioningBuilder = services.AddApiVersioning(options =>
         {
             options.AssumeDefaultVersionWhenUnspecified = true;
@@ -22,7 +61,7 @@ public static class ConfigureServices
                 options.GroupNameFormat = "'v'VVV";
                 options.SubstituteApiVersionInUrl = true;
             });
-        
+
         services.AddSerilog(config =>
         {
             config
@@ -46,6 +85,8 @@ public static class ConfigureServices
                 };
                 return Task.CompletedTask;
             });
+            
+            options.AddDocumentTransformer<BearerSecuritySchemeTransformer>();
         });
         
         services.AddHttpContextAccessor();

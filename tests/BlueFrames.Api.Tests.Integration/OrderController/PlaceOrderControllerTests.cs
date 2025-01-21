@@ -22,7 +22,7 @@ public class PlaceOrderControllerTests : IClassFixture<BlueFramesApiFactory>
 
     public PlaceOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
 
     [Fact]

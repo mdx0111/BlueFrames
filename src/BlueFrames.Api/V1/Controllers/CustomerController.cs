@@ -6,6 +6,7 @@ using BlueFrames.Application.Customers.Commands.UpdateCustomer;
 using BlueFrames.Application.Customers.Queries.GetAllCustomers;
 using BlueFrames.Application.Customers.Queries.GetCustomerById;
 using BlueFrames.Domain.Customers.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlueFrames.Api.V1.Controllers;
 
@@ -29,6 +30,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpPost]
     public async Task<IActionResult> Post(
         [FromBody] CustomerRequest request,
@@ -68,6 +70,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> Put(
         [FromMultiSource] UpdateCustomerRequest request,
@@ -108,6 +111,8 @@ public class CustomerController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
+    [Authorize("User")]
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(
         [FromRoute] Guid id,
@@ -143,6 +148,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpGet]
     public async Task<IActionResult> Get(
         [FromQuery] int limit,
@@ -192,6 +198,7 @@ public class CustomerController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> Delete(
         [FromRoute] Guid id,

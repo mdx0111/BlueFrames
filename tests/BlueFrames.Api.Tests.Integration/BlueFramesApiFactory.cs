@@ -1,9 +1,11 @@
+using BlueFrames.Api.Configs;
 using BlueFrames.Persistence.DataContext;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
@@ -19,6 +21,9 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         .WithPassword("Password123!")
         .Build();
 
+    private IConfiguration Configuration { get; set; }
+    private JwtConfig JwtConfig { get; set; }
+    
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Test");
@@ -27,13 +32,22 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         {
             logging.ClearProviders();
         });
+        
+        builder.ConfigureAppConfiguration((_, conf) =>
+        {
+            conf.AddJsonFile(Path.Combine(Directory.GetCurrentDirectory(), "appsettings.Integration.json"));
+            conf.AddEnvironmentVariables();
+            Configuration = conf.Build();
+        });
 
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<AppDbContext>();
-             services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()),
-                 ServiceLifetime.Scoped,
-                 ServiceLifetime.Singleton);
+            services.AddDbContext<AppDbContext>(options => options.UseSqlServer(_msSqlContainer.GetConnectionString()),
+                ServiceLifetime.Scoped,
+                ServiceLifetime.Singleton);
+
+            JwtConfig = Configuration.GetSection(nameof(JwtConfig)).Get<JwtConfig>();
         });
     }
 
@@ -44,6 +58,11 @@ public class BlueFramesApiFactory : WebApplicationFactory<IApiMarker>, IAsyncLif
         using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         await dbContext.Database.MigrateAsync();
+    }
+
+    public HttpClient CreateHttpClientWithAdminCredentials()
+    {
+        return CreateClient().WithUserCredentials("admin", JwtConfig); 
     }
 
     public new async Task DisposeAsync()

@@ -15,7 +15,7 @@ public class UpdateCustomerControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public UpdateCustomerControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateClient();
+        _httpClient = factory.CreateHttpClientWithAdminCredentials();
     }
 
     [Fact]
