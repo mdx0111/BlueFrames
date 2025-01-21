@@ -6,7 +6,7 @@ namespace BlueFrames.Api.Tests.Integration.OrderController;
 
 public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _adminHttpClient;
     
     private const int ProductSKUCharacterCount = 5;
     private readonly Faker<ProductRequest> _productFaker = new Faker<ProductRequest> ("en_GB")
@@ -22,7 +22,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     
     public CancelOrderControllerTests(BlueFramesApiFactory factory)
     {
-        _httpClient = factory.CreateHttpClientWithAdminCredentials();
+        _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
     }
 
     [Fact]
@@ -30,12 +30,12 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = createProductResponseContent.Result;
         
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = createCustomerResponseContent.Result;
         
@@ -45,7 +45,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             ProductId = Guid.Parse(productId)
         };
         
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
         var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         var orderId = placeOrderResponseContent.Result;
 
@@ -56,7 +56,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         };
         
         // Act
-        var cancelOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
+        var cancelOrderResponse = await _adminHttpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
         
         // Assert
         cancelOrderResponse.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -67,12 +67,12 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         // Arrange
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = createCustomerResponseContent.Result;
         
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = createProductResponseContent.Result;
         
@@ -82,7 +82,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             ProductId = Guid.Parse(productId)
         };
         
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
         var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
         var orderId = placeOrderResponseContent.Result;
 
@@ -93,7 +93,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         };
         
         // Act
-        var cancelOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
+        var cancelOrderResponse = await _adminHttpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
         var cancelOrderResponseContent = await cancelOrderResponse.Content.ReadFromJsonAsync<Envelope>();
 
         // Assert
@@ -105,12 +105,12 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     public async Task CancelOrder_ShouldReturnBadRequest_WhenOrderIdIsInvalid()
     {
         var customer = _customerFaker.Generate();
-        var createCustomerResponse = await _httpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
         var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
         var customerId = createCustomerResponseContent.Result;
         
         var product = _productFaker.Generate();
-        var createProductResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
         var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
         var productId = createProductResponseContent.Result;
         
@@ -120,7 +120,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
             ProductId = Guid.Parse(productId)
         };
         
-        var placeOrderResponse = await _httpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);
         placeOrderResponse.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var cancelOrderRequest = new CancelOrderRequest
@@ -130,7 +130,7 @@ public class CancelOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         };
         
         // Act
-        var cancelOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
+        var cancelOrderResponse = await _adminHttpClient.PutAsJsonAsync("/api/v1/Order/Cancel", cancelOrderRequest);
         var cancelOrderResponseContent = await cancelOrderResponse.Content.ReadFromJsonAsync<Envelope>();
 
         // Assert

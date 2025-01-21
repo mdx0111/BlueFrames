@@ -9,6 +9,7 @@ using BlueFrames.Application.Orders.Queries.GetCustomerOrders;
 using BlueFrames.Domain.Customers.Common;
 using BlueFrames.Domain.Orders.Common;
 using BlueFrames.Domain.Products.Common;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlueFrames.Api.V1.Controllers;
 
@@ -32,6 +33,8 @@ public class OrderController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
+    [Authorize("User")]
     [HttpPost]
     public async Task<IActionResult> Post(
         [FromBody] PlaceOrderRequest request,
