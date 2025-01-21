@@ -61,7 +61,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
         var product = _productFaker.Generate();
         var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
-        var customerId = productResponse.Result;
+        var productId = productResponse.Result;
 
         // Act
         var response = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
@@ -72,7 +72,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
         getProductResponse.Result.Should().NotBeEmpty();
         getProductResponse.Result.Should().ContainEquivalentOf(new ProductResponse
         {
-            Id = Guid.Parse(customerId),
+            Id = Guid.Parse(productId),
             Name = product.Name,
             Description = product.Description,
             SKU = product.SKU
@@ -86,7 +86,7 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
         var product = _productFaker.Generate();
         var createResponse = await _httpClient.PostAsJsonAsync("/api/v1/Product", product);
         var productResponse = await createResponse.Content.ReadFromJsonAsync<Envelope>();
-        var customerId = productResponse.Result;
+        var productId = productResponse.Result;
 
         // Act
         var firstResponse = await _httpClient.GetAsync("/api/v1/Product?offset=0&limit=10");
@@ -98,11 +98,25 @@ public class GetProductControllerTests : IClassFixture<BlueFramesApiFactory>
         var firstGetProductResponse = await firstResponse.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
         var firstResponseGeneratedTime = firstGetProductResponse.TimeGenerated;
         firstGetProductResponse.Result.Should().NotBeEmpty();
+        firstGetProductResponse.Result.Should().ContainEquivalentOf(new ProductResponse
+        {
+            Id = Guid.Parse(productId),
+            Name = product.Name,
+            Description = product.Description,
+            SKU = product.SKU
+        });
         
         secondResponse.StatusCode.Should().Be(HttpStatusCode.OK);
         var secondResponseGeneratedTime = firstGetProductResponse.TimeGenerated;
         var secondGetProductResponse = await secondResponse.Content.ReadFromJsonAsync<Envelope<List<ProductResponse>>>();
         secondGetProductResponse.Result.Should().NotBeEmpty();
+        secondGetProductResponse.Result.Should().ContainEquivalentOf(new ProductResponse
+        {
+            Id = Guid.Parse(productId),
+            Name = product.Name,
+            Description = product.Description,
+            SKU = product.SKU
+        });
 
         firstResponseGeneratedTime.Should().Be(secondResponseGeneratedTime);
     }
