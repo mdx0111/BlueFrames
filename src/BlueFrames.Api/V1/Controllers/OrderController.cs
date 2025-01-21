@@ -33,7 +33,6 @@ public class OrderController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    [Authorize("Admin")]
     [Authorize("User")]
     [HttpPost]
     public async Task<IActionResult> Post(
@@ -77,6 +76,7 @@ public class OrderController : ApiController
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [Authorize("Admin")]
     [HttpPut("complete")]
     public async Task<IActionResult> Complete(
         [FromBody] CompleteOrderRequest request,
