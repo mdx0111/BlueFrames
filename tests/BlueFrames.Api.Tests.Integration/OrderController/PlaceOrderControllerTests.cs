@@ -25,7 +25,6 @@ public class PlaceOrderControllerTests : IClassFixture<BlueFramesApiFactory>
     {
         _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
         _httpClient = factory.CreateClient();
-        
     }
 
     [Fact]

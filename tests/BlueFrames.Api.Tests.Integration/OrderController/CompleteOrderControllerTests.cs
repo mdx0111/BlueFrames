@@ -20,11 +20,13 @@ public class CompleteOrderControllerTests : IClassFixture<BlueFramesApiFactory>
 
     private readonly HttpClient _adminHttpClient;
     private readonly HttpClient _userHttpClient;
+    private readonly HttpClient _httpClient;
 
     public CompleteOrderControllerTests(BlueFramesApiFactory factory)
     {
         _adminHttpClient = factory.CreateHttpClientWithAdminCredentials();
         _userHttpClient = factory.CreateHttpClientWithUserCredentials();
+        _httpClient = factory.CreateClient();
     }
 
     [Fact]
@@ -164,5 +166,42 @@ public class CompleteOrderControllerTests : IClassFixture<BlueFramesApiFactory>
         
         // Assert
         completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.Forbidden);
+    }
+    
+    [Fact]
+    public async Task CompleteOrder_ShouldReturnUnauthorized_WhenUserIsNotAuthenticated()
+    {
+        // Arrange
+        var product = _productFaker.Generate();
+        var createProductResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Product", product);
+        var createProductResponseContent = await createProductResponse.Content.ReadFromJsonAsync<Envelope>();
+        var productId = createProductResponseContent.Result;
+        
+        var customer = _customerFaker.Generate();
+        var createCustomerResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Customer", customer);
+        var createCustomerResponseContent = await createCustomerResponse.Content.ReadFromJsonAsync<Envelope>();
+        var customerId = createCustomerResponseContent.Result;
+        
+        var placeOrderRequest = new PlaceOrderRequest
+        {
+            CustomerId = Guid.Parse(customerId),
+            ProductId = Guid.Parse(productId)
+        };
+        
+        var placeOrderResponse = await _adminHttpClient.PostAsJsonAsync("/api/v1/Order", placeOrderRequest);        
+        var placeOrderResponseContent = await placeOrderResponse.Content.ReadFromJsonAsync<Envelope>();
+        var orderId = placeOrderResponseContent.Result;
+
+        // Act
+        var completeOrderRequest = new CompleteOrderRequest
+        {
+            OrderId = Guid.Parse(orderId),
+            CustomerId = Guid.Parse(customerId)
+        };
+        
+        var completeOrderResponse = await _httpClient.PutAsJsonAsync("/api/v1/Order/Complete", completeOrderRequest);
+        
+        // Assert
+        completeOrderResponse.StatusCode.Should().Be(HttpStatusCode.Unauthorized);
     }
 }
